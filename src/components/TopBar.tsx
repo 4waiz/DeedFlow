@@ -9,7 +9,6 @@ import {
   Zap,
   BookOpen,
   LayoutDashboard,
-  Info,
   Gavel,
   Moon,
   Sun,
@@ -28,7 +27,6 @@ export default function TopBar() {
 
   const navItems = [
     { href: "/app", label: t("nav.dashboard", lang), icon: LayoutDashboard },
-    { href: "/about", label: t("nav.about", lang), icon: Info },
     { href: "/judge", label: t("nav.judge", lang), icon: Gavel },
   ];
 

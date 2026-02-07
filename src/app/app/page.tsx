@@ -15,7 +15,8 @@ import AuditFeed from "@/components/AuditFeed";
 import DemoScriptModal from "@/components/DemoScriptModal";
 import ToastStack from "@/components/ToastStack";
 import { cn } from "@/lib/cn";
-import { MapPin, Building2, Coins, DollarSign, Hash, Calendar } from "lucide-react";
+import { MapPin, Building2, Coins, DollarSign, Hash, Calendar, TrendingUp } from "lucide-react";
+import Link from "next/link";
 
 export default function Dashboard() {
   const router = useRouter();
@@ -166,6 +167,21 @@ export default function Dashboard() {
                     >
                       ↑ Upload Document
                     </button>
+                  </motion.div>
+
+                  {/* My Property Button */}
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.1 }}
+                  >
+                    <Link
+                      href="/app/property"
+                      className="w-full px-4 py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-lg font-semibold transition-all shadow-lg hover:shadow-blue-500/20 flex items-center justify-center gap-2"
+                    >
+                      <TrendingUp size={18} />
+                      My Property
+                    </Link>
                   </motion.div>
 
                   {/* Workflow Timeline */}
