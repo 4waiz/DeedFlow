@@ -14,6 +14,7 @@ import AgentPanel from "@/components/AgentPanel";
 import AuditFeed from "@/components/AuditFeed";
 import DemoScriptModal from "@/components/DemoScriptModal";
 import ToastStack from "@/components/ToastStack";
+import ChatBot from "@/components/ChatBot";
 import { cn } from "@/lib/cn";
 import { MapPin, Building2, Coins, DollarSign, Hash, Calendar, TrendingUp } from "lucide-react";
 import Link from "next/link";
@@ -261,6 +262,7 @@ export default function Dashboard() {
       {/* Overlays */}
       <DemoScriptModal />
       <ToastStack />
+      <ChatBot />
     </div>
   );
 }

@@ -99,6 +99,14 @@ const translations: Record<string, Record<Lang, string>> = {
   "ocr.scan.error": { en: "OCR scan failed. Please try again.", ar: "فشل المسح. يرجى المحاولة مرة أخرى." },
   "ocr.ai_extracted": { en: "AI Extracted", ar: "مستخرج بالذكاء الاصطناعي" },
 
+  // Chatbot
+  "chat.title": { en: "DeedFlow AI", ar: "مساعد ديدفلو" },
+  "chat.subtitle": { en: "Compliance Assistant", ar: "مساعد الامتثال" },
+  "chat.welcome": { en: "How can I help?", ar: "كيف يمكنني المساعدة؟" },
+  "chat.welcome_sub": { en: "Ask me about compliance, documents, or your deal progress.", ar: "اسألني عن الامتثال أو المستندات أو تقدم صفقتك." },
+  "chat.placeholder": { en: "Ask about compliance...", ar: "اسأل عن الامتثال..." },
+  "chat.powered_by": { en: "Powered by Groq AI", ar: "مدعوم بـ Groq AI" },
+
   // Misc
   "upload.doc": { en: "Upload Document", ar: "رفع مستند" },
   "field.reports": { en: "Field Reports", ar: "تقارير ميدانية" },
