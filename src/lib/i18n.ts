@@ -82,6 +82,23 @@ const translations: Record<string, Record<Lang, string>> = {
   "doc.passport": { en: "Passport", ar: "جواز السفر" },
   "doc.emirates_id": { en: "Emirates ID", ar: "هوية إماراتية" },
 
+  // Trace OCR
+  "ocr.title": { en: "Document Scanner", ar: "ماسح المستندات" },
+  "ocr.subtitle": { en: "Powered by Trace OCR", ar: "مدعوم بـ Trace OCR" },
+  "ocr.step1": { en: "1. Select document type", ar: "1. اختر نوع المستند" },
+  "ocr.step2": { en: "2. Upload file (optional for demo)", ar: "2. ارفع الملف (اختياري للعرض)" },
+  "ocr.drop": { en: "Click to browse or drag & drop a file", ar: "انقر للتصفح أو اسحب وأفلت ملف" },
+  "ocr.formats": { en: "Images (PNG, JPG) or PDF", ar: "صور (PNG, JPG) أو PDF" },
+  "ocr.scan_btn": { en: "Scan with Trace OCR", ar: "مسح بـ Trace OCR" },
+  "ocr.scanning": { en: "Scanning document...", ar: "جاري مسح المستند..." },
+  "ocr.results": { en: "Extracted Fields", ar: "الحقول المستخرجة" },
+  "ocr.confidence": { en: "confidence", ar: "ثقة" },
+  "ocr.done": { en: "Done — Document Added", ar: "تم — أُضيف المستند" },
+  "ocr.extracted_fields": { en: "Extracted Fields:", ar: "الحقول المستخرجة:" },
+  "ocr.scan.success": { en: "Document scanned & fields extracted!", ar: "تم مسح المستند واستخراج البيانات!" },
+  "ocr.scan.error": { en: "OCR scan failed. Please try again.", ar: "فشل المسح. يرجى المحاولة مرة أخرى." },
+  "ocr.ai_extracted": { en: "AI Extracted", ar: "مستخرج بالذكاء الاصطناعي" },
+
   // Misc
   "upload.doc": { en: "Upload Document", ar: "رفع مستند" },
   "field.reports": { en: "Field Reports", ar: "تقارير ميدانية" },
