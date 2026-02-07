@@ -56,11 +56,6 @@ const translations: Record<string, Record<Lang, string>> = {
   "agent.send_doc_request": { en: "Send Doc Request", ar: "إرسال طلب مستند" },
   "agent.generate_pack": { en: "Generate Settlement Pack", ar: "إنشاء حزمة التسوية" },
 
-  // Governance
-  "governance.majority": { en: "Majority Control Activated", ar: "تم تفعيل سيطرة الأغلبية" },
-  "governance.normal": { en: "Normal Governance", ar: "حوكمة عادية" },
-  "governance.threshold": { en: "Majority Threshold", ar: "حد الأغلبية" },
-
   // Audit
   "audit.title": { en: "Live Activity Feed", ar: "سجل النشاط المباشر" },
   "audit.leaderboard": { en: "Most Helpful Reviewers", ar: "أفضل المراجعين" },
@@ -69,7 +64,6 @@ const translations: Record<string, Record<Lang, string>> = {
   "sim.approval_delay": { en: "Simulate Approval Delay", ar: "محاكاة تأخير الموافقة" },
   "sim.missing_doc": { en: "Simulate Missing Doc", ar: "محاكاة مستند مفقود" },
   "sim.fast_forward": { en: "Fast-forward 30m", ar: "تقديم سريع 30 دقيقة" },
-  "sim.majority_flip": { en: "Trigger 51% Flip", ar: "تفعيل انقلاب 51%" },
   "sim.risk_surge": { en: "Surge Risk Score", ar: "ارتفاع مفاجئ في المخاطر" },
 
   // Pages
@@ -110,7 +104,6 @@ const mockArTranslations: Record<string, string> = {
   "KYC verification completed": "اكتمل التحقق من الهوية",
   "Settlement funds secured in escrow": "تم تأمين أموال التسوية في حساب الضمان",
   "Property valuation received": "تم استلام تقييم العقار",
-  "Buyer crosses 51% threshold": "تجاوز المشتري حد 51%",
   "All clear for settlement": "الوضع جاهز للتسوية",
   "Missing documentation detected": "تم اكتشاف نقص في المستندات",
   "Risk assessment updated": "تم تحديث تقييم المخاطر",

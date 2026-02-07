@@ -85,9 +85,6 @@ export const useStore = create<AppState>((set, get) => ({
       .filter((d) => d.verificationStatus === "verified")
       .map((d) => d.type);
     const missingDocs = pendingDocs.filter((d) => !uploadedDocTypes.includes(d as typeof uploadedDocTypes[number]));
-    const hasMajority = deal.parties.some(
-      (p) => p.role === "buyer" && (p.sharePercent || 0) >= deal.governanceRule.majorityThreshold
-    );
 
     if (blockedSteps.length > 0) {
       return {
@@ -135,12 +132,12 @@ export const useStore = create<AppState>((set, get) => ({
         rationale: [
           `Risk score elevated at ${deal.metrics.riskScore}/100`,
           "Additional due diligence recommended",
-          hasMajority ? "51% majority control is active — governance review needed" : "Review all party compliance status",
+          "Review all party compliance status",
         ],
         rationaleAr: [
           `مستوى المخاطر مرتفع عند ${deal.metrics.riskScore}/100`,
           "يُوصى بمزيد من العناية الواجبة",
-          hasMajority ? "سيطرة الأغلبية 51% مفعلة — مراجعة الحوكمة مطلوبة" : "مراجعة حالة الامتثال لجميع الأطراف",
+          "مراجعة حالة الامتثال لجميع الأطراف",
         ],
         actions: [
           { label: "Request Review", labelAr: "طلب مراجعة", action: "request_review" },
@@ -154,12 +151,12 @@ export const useStore = create<AppState>((set, get) => ({
       rationale: [
         `Compliance score: ${deal.metrics.complianceScore}/100 — looking good!`,
         `Estimated ${deal.metrics.estTimeToCloseDays} days to close`,
-        hasMajority ? "51% majority control detected — governance rules apply" : "All governance rules satisfied",
+        "All compliance rules satisfied",
       ],
       rationaleAr: [
         `نقاط الامتثال: ${deal.metrics.complianceScore}/100 — ممتاز!`,
         `${deal.metrics.estTimeToCloseDays} أيام متبقية حتى الإغلاق`,
-        hasMajority ? "تم اكتشاف سيطرة الأغلبية 51% — قواعد الحوكمة سارية" : "جميع قواعد الحوكمة مستوفاة",
+        "جميع قواعد الامتثال مستوفاة",
       ],
       actions: [
         { label: "Generate Settlement Pack", labelAr: "إنشاء حزمة التسوية", action: "generate_pack" },
@@ -197,25 +194,6 @@ export const useStore = create<AppState>((set, get) => ({
         });
         addAuditEntry(event.dealId, { ts: now, actor: "Developer", action: "NOC Delayed", detail: "NOC processing delayed — someone's stuck in traffic on SZR 🚗", emoji: "⏳" });
         addToast("NOC has been delayed by the developer.", "warning");
-        break;
-      }
-      case "majority_flip": {
-        updateDeal(event.dealId, (d) => {
-          const buyers = d.parties.filter((p) => p.role === "buyer");
-          if (buyers.length > 0) {
-            buyers[0].sharePercent = 55;
-            if (buyers.length > 1) {
-              const remaining = 100 - 55;
-              const otherBuyers = buyers.slice(1);
-              otherBuyers.forEach((b) => {
-                b.sharePercent = Math.round(remaining / otherBuyers.length);
-              });
-            }
-          }
-          return { ...d, metrics: { ...d.metrics, riskScore: Math.min(100, d.metrics.riskScore + 15) } };
-        });
-        addAuditEntry(event.dealId, { ts: now, actor: "DeedFlow AI", action: "Governance Alert", detail: "Buyer crossed 51% threshold — majority control activated! 🦅", emoji: "🦅" });
-        addToast("51% majority control activated! Governance rules changed.", "info");
         break;
       }
       case "risk_surge": {

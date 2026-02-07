@@ -69,7 +69,6 @@ export interface Deal {
   totalShares: number;
   sharePrice: number;
   currency: "AED";
-  governanceRule: { majorityThreshold: number };
   parties: Party[];
   steps: DealStep[];
   docs: DealDoc[];
@@ -92,7 +91,7 @@ export interface CopilotInsight {
 }
 
 export interface SimulateEvent {
-  type: "missing_doc" | "noc_delay" | "majority_flip" | "risk_surge" | "doc_verified" | "step_completed" | "approval_delay";
+  type: "missing_doc" | "noc_delay" | "risk_surge" | "doc_verified" | "step_completed" | "approval_delay";
   dealId: string;
 }
 

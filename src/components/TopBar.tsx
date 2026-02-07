@@ -117,7 +117,6 @@ function SimulateDropdown() {
     { type: "doc_verified" as const, label: "Verify Document", icon: "📜" },
     { type: "missing_doc" as const, label: t("sim.missing_doc", lang), icon: "⚠️" },
     { type: "noc_delay" as const, label: "NOC Delay", icon: "⏳" },
-    { type: "majority_flip" as const, label: t("sim.majority_flip", lang), icon: "🦅" },
     { type: "risk_surge" as const, label: t("sim.risk_surge", lang), icon: "📈" },
     { type: "approval_delay" as const, label: t("sim.approval_delay", lang), icon: "⏱️" },
   ];
