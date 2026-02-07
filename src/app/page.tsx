@@ -13,33 +13,33 @@ export default function LandingPage() {
 
       {/* Simple header */}
       <header className="relative z-10 border-b border-white/[0.06]">
-        <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <div className="flex items-center gap-2">
             <Image
               src="/logo.png"
               alt="DeedFlow"
               width={140}
               height={36}
-              className="h-9 w-auto brightness-0 invert opacity-90"
+              className="h-8 sm:h-9 w-auto brightness-0 invert opacity-90"
               priority
             />
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center justify-center sm:justify-end gap-2 sm:gap-3">
             <Link
               href="/about"
-              className="px-4 py-2 text-sm font-medium text-gray-300 hover:text-white transition-colors"
+              className="px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium text-gray-300 hover:text-white transition-colors"
             >
               About
             </Link>
             <Link
               href="/login"
-              className="px-4 py-2 text-sm font-medium text-gray-300 hover:text-white transition-colors"
+              className="px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium text-gray-300 hover:text-white transition-colors"
             >
               Log In
             </Link>
             <Link
               href="/signup"
-              className="px-4 py-2 text-sm font-semibold rounded-lg bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 hover:bg-emerald-500/30 transition-colors"
+              className="px-3 sm:px-4 py-2 text-xs sm:text-sm font-semibold rounded-lg bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 hover:bg-emerald-500/30 transition-colors"
             >
               Get Started
             </Link>
@@ -48,7 +48,7 @@ export default function LandingPage() {
       </header>
 
       {/* Hero section */}
-      <section className="relative z-10 max-w-5xl mx-auto px-6 pt-20 pb-16 text-center">
+      <section className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 pt-16 sm:pt-20 pb-12 sm:pb-16 text-center">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -59,22 +59,22 @@ export default function LandingPage() {
             AI-Powered Compliance Engine
           </div>
 
-          <h1 className="text-5xl md:text-6xl font-black text-white mb-6 leading-tight">
+          <h1 className="text-3xl sm:text-4xl lg:text-6xl font-black text-white mb-5 sm:mb-6 leading-tight">
             AI-powered transaction orchestration for{" "}
             <span className="text-gradient-hero">fractional & tokenized</span> real estate
           </h1>
 
-          <p className="text-xl text-gray-400 mb-10 max-w-3xl mx-auto leading-relaxed">
+          <p className="text-base sm:text-lg lg:text-xl text-gray-400 mb-8 sm:mb-10 max-w-3xl mx-auto leading-relaxed">
             Guided compliance checklist, settlement gating, audit trail, and post-close automation.
             Turn complex property transactions into a streamlined, compliant workflow.
           </p>
 
-          <div className="flex items-center justify-center gap-4">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3 sm:gap-4">
             <Link href="/login?demo=true">
               <motion.button
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                className="px-8 py-4 text-base font-bold rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-700 text-white shadow-[0_8px_32px_rgba(16,185,129,0.25)] hover:shadow-[0_12px_40px_rgba(16,185,129,0.35)] transition-all flex items-center gap-2"
+                className="w-full sm:w-auto px-6 sm:px-8 py-3.5 sm:py-4 text-sm sm:text-base font-bold rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-700 text-white shadow-[0_8px_32px_rgba(16,185,129,0.25)] hover:shadow-[0_12px_40px_rgba(16,185,129,0.35)] transition-all flex items-center justify-center gap-2"
               >
                 Start Demo
                 <ArrowRight size={18} />
@@ -84,7 +84,7 @@ export default function LandingPage() {
               <motion.button
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                className="px-8 py-4 text-base font-semibold rounded-xl bg-white/[0.04] text-gray-300 border border-white/[0.12] hover:bg-white/[0.08] hover:border-white/[0.18] transition-all"
+                className="w-full sm:w-auto px-6 sm:px-8 py-3.5 sm:py-4 text-sm sm:text-base font-semibold rounded-xl bg-white/[0.04] text-gray-300 border border-white/[0.12] hover:bg-white/[0.08] hover:border-white/[0.18] transition-all"
               >
                 Judge View
               </motion.button>
@@ -94,8 +94,8 @@ export default function LandingPage() {
       </section>
 
       {/* Feature cards */}
-      <section className="relative z-10 max-w-5xl mx-auto px-6 py-16">
-        <div className="grid md:grid-cols-3 gap-6">
+      <section className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           <FeatureCard
             icon={Shield}
             title="Orchestrate"
@@ -118,12 +118,12 @@ export default function LandingPage() {
       </section>
 
       {/* Screenshot placeholder */}
-      <section className="relative z-10 max-w-5xl mx-auto px-6 py-16">
+      <section className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.4 }}
-          className="relative rounded-2xl border border-white/[0.08] bg-gradient-to-br from-[#141825] to-[#0e1119] p-8 overflow-hidden shadow-[0_20px_80px_rgba(0,0,0,0.5)]"
+          className="relative rounded-2xl border border-white/[0.08] bg-gradient-to-br from-[#141825] to-[#0e1119] p-4 sm:p-6 lg:p-8 overflow-hidden shadow-[0_20px_80px_rgba(0,0,0,0.5)]"
         >
           {/* Decorative gradient border */}
           <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-emerald-500/20 via-transparent to-gold-500/20 opacity-50 blur-2xl" />
@@ -145,8 +145,8 @@ export default function LandingPage() {
       </section>
 
       {/* Footer disclaimer */}
-      <footer className="relative z-10 border-t border-white/[0.06] mt-20">
-        <div className="max-w-5xl mx-auto px-6 py-8 text-center">
+      <footer className="relative z-10 border-t border-white/[0.06] mt-16 sm:mt-20">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8 text-center">
           <p className="text-xs text-gray-600">
             Demo uses synthetic data for illustration purposes only. Not legal or financial advice.
             Designed for UAE property compliance workflows.

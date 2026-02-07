@@ -57,17 +57,17 @@ export default function PropertyPage() {
   }
 
   return (
-    <div dir={dir} className="h-screen flex flex-col bg-[#0c0f1a]">
+    <div dir={dir} className="min-h-[100dvh] flex flex-col bg-[#0c0f1a]">
       <div className="bg-particles" />
       <TopBar />
 
-      <div className="flex-1 overflow-y-auto p-4">
+      <div className="flex-1 min-h-0 overflow-y-auto p-3 sm:p-4">
         <div className="max-w-6xl mx-auto">
           {/* Header with Back Button */}
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mb-6 flex items-center gap-4"
+            className="mb-6 flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4"
           >
             <Link
               href="/app"
@@ -100,7 +100,7 @@ export default function PropertyPage() {
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="flex items-center justify-center h-[400px] text-gray-400"
+              className="flex items-center justify-center min-h-[240px] sm:min-h-[320px] lg:min-h-[400px] text-gray-400"
             >
               <p className="text-sm">No property selected. Please select a property from the dashboard.</p>
             </motion.div>

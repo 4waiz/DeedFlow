@@ -95,15 +95,15 @@ export default function Dashboard() {
   }
 
   return (
-    <div dir={dir} className="h-screen flex flex-col bg-[#0c0f1a]">
+    <div dir={dir} className="min-h-[100dvh] flex flex-col bg-[#0c0f1a]">
       <div className="bg-particles" />
       <TopBar />
 
-      <div className="flex-1 flex overflow-hidden">
+      <div className="flex-1 flex min-h-0 overflow-hidden">
         {/* Main Content */}
-        <main className="flex-1 overflow-y-auto p-4 bg-[#0c0f1a]">
+        <main className="flex-1 overflow-y-auto overflow-x-hidden p-3 sm:p-4 bg-[#0c0f1a]">
           {deal ? (
-            <div className="max-w-5xl mx-auto space-y-4">
+            <div className="max-w-5xl mx-auto space-y-3 sm:space-y-4">
               {/* Deal Header Card */}
               <motion.div
                 key={deal.id}
@@ -114,7 +114,7 @@ export default function Dashboard() {
                 {/* Subtle gradient top border */}
                 <div className="absolute inset-x-0 top-0 h-[1px] bg-gradient-to-r from-transparent via-emerald-500/40 to-transparent" />
 
-                <div className="flex items-start justify-between mb-3">
+                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-3">
                   <div>
                     <h2 className="text-xl font-bold text-white">
                       {lang === "ar" ? deal.nameAr : deal.name}
@@ -146,16 +146,16 @@ export default function Dashboard() {
                 </div>
 
                 {/* Metrics Row */}
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <ComplianceMeter score={deal.metrics.complianceScore} type="compliance" />
                   <ComplianceMeter score={deal.metrics.riskScore} type="risk" />
                 </div>
               </motion.div>
 
               {/* Main Layout: Left Timeline + Upload, Right Main Content */}
-              <div className="grid grid-cols-12 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
                 {/* LEFT SIDEBAR — Timeline (3 cols) */}
-                <div className="col-span-3 space-y-4">
+                <div className="md:col-span-3 space-y-4">
                   {/* Upload Document Button */}
                   <motion.div
                     initial={{ opacity: 0, y: 10 }}
@@ -205,9 +205,9 @@ export default function Dashboard() {
                 </div>
 
                 {/* RIGHT MAIN CONTENT (9 cols) */}
-                <div className="col-span-9 space-y-4">
+                <div className="md:col-span-9 space-y-4">
                   {/* Blockers & Required Documents */}
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {/* AI Recommendations */}
                     <motion.div
                       id="compliance-panel"

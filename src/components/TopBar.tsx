@@ -38,16 +38,16 @@ export default function TopBar() {
         boxShadow: "0 4px 30px rgba(0, 0, 0, 0.4)",
       }}
     >
-      <div className="flex items-center justify-between px-4 py-2.5">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2 px-3 sm:px-4 py-2.5">
         {/* Logo + Badge */}
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-2">
           <Link href="/" className="flex items-center gap-2 group">
             <Image
               src="/logo.png"
               alt="DeedFlow"
               width={140}
               height={36}
-              className="h-9 w-auto brightness-0 invert opacity-90 group-hover:opacity-100 transition-opacity"
+              className="h-8 sm:h-9 w-auto brightness-0 invert opacity-90 group-hover:opacity-100 transition-opacity"
               priority
             />
           </Link>
@@ -69,7 +69,7 @@ export default function TopBar() {
         </div>
 
         {/* Navigation */}
-        <nav className="hidden md:flex items-center gap-1">
+        <nav className="flex flex-wrap items-center justify-center md:justify-start gap-1">
           {navItems.map((item) => {
             const isActive = pathname === item.href;
             return (
@@ -77,7 +77,7 @@ export default function TopBar() {
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-200"
+                  "flex items-center gap-1.5 px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg text-[11px] sm:text-sm font-medium transition-all duration-200"
                 )}
                 style={
                   isActive
@@ -115,13 +115,13 @@ export default function TopBar() {
         </nav>
 
         {/* Actions */}
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center justify-center md:justify-end gap-2">
           {/* Demo Script — emerald accent */}
           <motion.button
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.97 }}
             onClick={() => setDemoScriptOpen(true)}
-            className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-lg transition-all duration-200"
+            className="flex items-center gap-1.5 px-2 sm:px-3 py-1 sm:py-1.5 text-[11px] sm:text-sm font-medium rounded-lg transition-all duration-200"
             style={{
               background: "rgba(52, 211, 153, 0.1)",
               color: "#6ee7b7",
@@ -148,7 +148,7 @@ export default function TopBar() {
           {/* Settings Button */}
           <Link
             href="/app/settings"
-            className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-lg transition-all duration-200"
+            className="flex items-center gap-1.5 px-2 sm:px-3 py-1 sm:py-1.5 text-[11px] sm:text-sm font-medium rounded-lg transition-all duration-200"
             style={{
               background: "rgba(255, 255, 255, 0.04)",
               color: "#d1d5db",
@@ -176,7 +176,7 @@ export default function TopBar() {
               <motion.button
                 whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.97 }}
-                className="flex items-center gap-2 px-3 py-1.5 text-sm font-medium rounded-lg transition-all duration-200"
+                className="flex items-center gap-2 px-2 sm:px-3 py-1 sm:py-1.5 text-[11px] sm:text-sm font-medium rounded-lg transition-all duration-200"
                 style={{
                   background: "rgba(255, 255, 255, 0.04)",
                   color: "#d1d5db",
@@ -188,7 +188,7 @@ export default function TopBar() {
                     {user.name.charAt(0).toUpperCase()}
                   </span>
                 </div>
-                <span className="text-xs">{user.name}</span>
+                <span className="text-xs hidden sm:inline">{user.name}</span>
               </motion.button>
 
               {/* Dropdown */}
@@ -243,7 +243,7 @@ function SimulateDropdown() {
       <motion.button
         whileHover={{ scale: 1.03 }}
         whileTap={{ scale: 0.97 }}
-        className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-lg transition-all duration-200"
+        className="flex items-center gap-1.5 px-2 sm:px-3 py-1 sm:py-1.5 text-[11px] sm:text-sm font-medium rounded-lg transition-all duration-200"
         style={{
           background: "rgba(251, 191, 36, 0.1)",
           color: "#fbbf24",
@@ -265,7 +265,7 @@ function SimulateDropdown() {
       </motion.button>
       {/* Dark dropdown panel */}
       <div
-        className="absolute right-0 top-full mt-1 w-56 rounded-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50"
+        className="absolute right-0 top-full mt-1 w-48 sm:w-56 rounded-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50"
         style={{
           background: "rgba(20, 24, 37, 0.95)",
           backdropFilter: "blur(20px)",

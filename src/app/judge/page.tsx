@@ -53,7 +53,7 @@ export default function JudgePage() {
     <div dir={dir} className="min-h-screen bg-[#0c0f1a]">
       <TopBar />
 
-      <div className="max-w-5xl mx-auto px-6 py-10">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8 sm:py-10">
         {/* Header */}
         <motion.div {...fadeUp} className="text-center mb-12">
           <Image
@@ -61,16 +61,16 @@ export default function JudgePage() {
             alt="DeedFlow"
             width={200}
             height={50}
-            className="h-12 w-auto mx-auto mb-4 brightness-0 invert opacity-90"
+            className="h-10 sm:h-12 w-auto mx-auto mb-4 brightness-0 invert opacity-90"
             priority
           />
           <span className="inline-block px-3 py-1 text-xs font-bold bg-amber-500/15 text-amber-400 rounded-full mb-4 border border-amber-500/25">
             Judge View
           </span>
-          <h1 className="text-3xl font-black text-white mb-3">
+          <h1 className="text-2xl sm:text-3xl font-black text-white mb-3">
             AI-Powered Property Compliance
           </h1>
-          <p className="text-base text-gray-400 max-w-2xl mx-auto">
+          <p className="text-sm sm:text-base text-gray-400 max-w-2xl mx-auto">
             TurboTax + DocuSign + compliance ops for fractional/tokenized real estate in the UAE
           </p>
         </motion.div>
@@ -145,7 +145,7 @@ export default function JudgePage() {
             </span>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
             {[
               { label: "Total Deals", value: totalDeals, icon: FileCheck, color: "text-emerald-400", bg: "bg-emerald-500/[0.06] border-emerald-500/15" },
               { label: "Active Deals", value: activeDeals, icon: Zap, color: "text-amber-400", bg: "bg-amber-500/[0.06] border-amber-500/15" },

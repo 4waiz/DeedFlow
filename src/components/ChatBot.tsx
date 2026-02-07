@@ -358,7 +358,7 @@ Missing docs: ${deal.steps.filter((s) => s.status !== "done").flatMap((s) => s.r
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
             onClick={() => setIsOpen(true)}
-            className="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full flex items-center justify-center shadow-2xl"
+            className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 w-12 h-12 sm:w-14 sm:h-14 rounded-full flex items-center justify-center shadow-2xl"
             style={{
               background: "linear-gradient(135deg, #8b5cf6, #6d28d9)",
               boxShadow: "0 8px 32px rgba(139, 92, 246, 0.4)",
@@ -378,7 +378,7 @@ Missing docs: ${deal.steps.filter((s) => s.status !== "done").flatMap((s) => s.r
             initial={{ opacity: 0, y: 20, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
-            className="fixed bottom-6 right-6 z-50 w-[380px] h-[520px] flex flex-col rounded-2xl overflow-hidden"
+            className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 w-[min(380px,calc(100vw-2rem))] h-[520px] max-h-[calc(100dvh-8rem)] flex flex-col rounded-2xl overflow-hidden"
             style={{
               background: "rgba(20, 24, 37, 0.98)",
               backdropFilter: "blur(20px)",
@@ -447,7 +447,7 @@ Missing docs: ${deal.steps.filter((s) => s.status !== "done").flatMap((s) => s.r
                   <p className="text-sm font-semibold text-white mb-1">
                     {t("chat.welcome", lang)}
                   </p>
-                  <p className="text-[11px] text-gray-500 max-w-[240px]">
+                  <p className="text-[11px] text-gray-500 max-w-[220px] sm:max-w-[240px]">
                     {t("chat.welcome_sub", lang)}
                   </p>
                   {/* Quick actions */}

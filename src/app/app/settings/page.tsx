@@ -72,17 +72,17 @@ export default function SettingsPage() {
   }
 
   return (
-    <div dir={dir} className="h-screen flex flex-col bg-[#0c0f1a]">
+    <div dir={dir} className="min-h-[100dvh] flex flex-col bg-[#0c0f1a]">
       <div className="bg-particles" />
       <TopBar />
 
-      <div className="flex-1 overflow-y-auto p-4">
+      <div className="flex-1 min-h-0 overflow-y-auto p-3 sm:p-4">
         <div className="max-w-2xl mx-auto">
           {/* Header with Back Button */}
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mb-8 flex items-center gap-4"
+            className="mb-8 flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4"
           >
             <Link
               href="/app"
@@ -99,7 +99,7 @@ export default function SettingsPage() {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.05 }}
-            className="bg-[#141825] rounded-2xl border border-white/[0.06] shadow-[0_8px_32px_rgba(0,0,0,0.3)] p-6 mb-6"
+            className="bg-[#141825] rounded-2xl border border-white/[0.06] shadow-[0_8px_32px_rgba(0,0,0,0.3)] p-4 sm:p-6 mb-6"
           >
             <div className="flex items-center gap-3 mb-6">
               <User size={20} className="text-emerald-400" />
@@ -142,7 +142,7 @@ export default function SettingsPage() {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="bg-[#141825] rounded-2xl border border-white/[0.06] shadow-[0_8px_32px_rgba(0,0,0,0.3)] p-6 mb-6"
+            className="bg-[#141825] rounded-2xl border border-white/[0.06] shadow-[0_8px_32px_rgba(0,0,0,0.3)] p-4 sm:p-6 mb-6"
           >
             <div className="flex items-center gap-3 mb-6">
               <Bell size={20} className="text-blue-400" />
@@ -157,7 +157,7 @@ export default function SettingsPage() {
                   Language
                 </label>
               </div>
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <motion.button
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
@@ -197,7 +197,7 @@ export default function SettingsPage() {
                   Appearance
                 </label>
               </div>
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <motion.button
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
@@ -233,7 +233,7 @@ export default function SettingsPage() {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.15 }}
-            className="bg-[#141825] rounded-2xl border border-white/[0.06] shadow-[0_8px_32px_rgba(0,0,0,0.3)] p-6"
+            className="bg-[#141825] rounded-2xl border border-white/[0.06] shadow-[0_8px_32px_rgba(0,0,0,0.3)] p-4 sm:p-6"
           >
             <div className="flex items-center gap-3 mb-6">
               <Lock size={20} className="text-amber-400" />
@@ -241,7 +241,7 @@ export default function SettingsPage() {
             </div>
 
             <div className="space-y-3">
-              <div className="flex items-center justify-between p-4 bg-white/[0.02] rounded-lg border border-white/[0.04]">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-4 bg-white/[0.02] rounded-lg border border-white/[0.04]">
                 <div>
                   <p className="text-sm font-medium text-white">
                     Two-Factor Authentication
@@ -255,7 +255,7 @@ export default function SettingsPage() {
                 </div>
               </div>
 
-              <div className="flex items-center justify-between p-4 bg-white/[0.02] rounded-lg border border-white/[0.04]">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-4 bg-white/[0.02] rounded-lg border border-white/[0.04]">
                 <div>
                   <p className="text-sm font-medium text-white">
                     Login Notifications

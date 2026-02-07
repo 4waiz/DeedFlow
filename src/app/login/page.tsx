@@ -56,20 +56,20 @@ export default function LoginPage() {
 
       {/* Simple header */}
       <div className="absolute top-0 left-0 right-0 z-20 border-b border-white/[0.06]">
-        <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
           <Link href="/" className="flex items-center gap-2">
             <Image
               src="/logo.png"
               alt="DeedFlow"
               width={140}
               height={36}
-              className="h-9 w-auto brightness-0 invert opacity-90"
+              className="h-8 sm:h-9 w-auto brightness-0 invert opacity-90"
               priority
             />
           </Link>
           <Link
             href="/signup"
-            className="text-sm text-gray-400 hover:text-gray-300 transition-colors"
+            className="text-xs sm:text-sm text-gray-400 hover:text-gray-300 transition-colors"
           >
             Need an account? <span className="text-emerald-400 font-semibold">Sign up</span>
           </Link>
@@ -77,12 +77,12 @@ export default function LoginPage() {
       </div>
 
       {/* Login card */}
-      <div className="relative z-10 w-full max-w-md px-6">
+      <div className="relative z-10 w-full max-w-md px-4 sm:px-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="bg-[#141825] rounded-2xl border border-white/[0.08] p-8 shadow-[0_20px_80px_rgba(0,0,0,0.5)]"
+          className="bg-[#141825] rounded-2xl border border-white/[0.08] p-6 sm:p-8 shadow-[0_20px_80px_rgba(0,0,0,0.5)]"
         >
           <div className="text-center mb-8">
             <h1 className="text-2xl font-bold text-white mb-2">Welcome back</h1>

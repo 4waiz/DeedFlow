@@ -45,7 +45,7 @@ export default function MyProperty({ deal }: MyPropertyProps) {
   return (
     <div className="space-y-6">
       {/* Property Overview Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -109,54 +109,56 @@ export default function MyProperty({ deal }: MyPropertyProps) {
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
-        className="bg-[#141825] rounded-2xl border border-white/[0.06] p-6"
+        className="bg-[#141825] rounded-2xl border border-white/[0.06] p-4 sm:p-6"
       >
         <h3 className="text-sm font-semibold text-gray-300 uppercase tracking-wide mb-6">
           Market Value Comparison
         </h3>
-        <ResponsiveContainer width="100%" height={300}>
-          <LineChart data={marketData}>
-            <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.08)" />
-            <XAxis dataKey="month" stroke="#9ca3af" style={{ fontSize: "12px" }} />
-            <YAxis stroke="#9ca3af" style={{ fontSize: "12px" }} />
-            <Tooltip
-              contentStyle={{
-                background: "rgba(20, 24, 37, 0.95)",
-                border: "1px solid rgba(255, 255, 255, 0.1)",
-                borderRadius: "8px",
-              }}
-              labelStyle={{ color: "#fff" }}
-            />
-            <Legend wrapperStyle={{ paddingTop: "20px" }} />
-            <Line
-              type="monotone"
-              dataKey="yourProperty"
-              stroke="#34d399"
-              strokeWidth={2.5}
-              name="Your Property"
-              dot={{ fill: "#34d399", r: 4 }}
-              activeDot={{ r: 6 }}
-            />
-            <Line
-              type="monotone"
-              dataKey="marketAvg"
-              stroke="#9ca3af"
-              strokeWidth={2}
-              name="Market Average"
-              dot={{ fill: "#9ca3af", r: 4 }}
-              activeDot={{ r: 6 }}
-            />
-            <Line
-              type="monotone"
-              dataKey="premium"
-              stroke="#fbbf24"
-              strokeWidth={2}
-              name="Premium Market"
-              dot={{ fill: "#fbbf24", r: 4 }}
-              activeDot={{ r: 6 }}
-            />
-          </LineChart>
-        </ResponsiveContainer>
+        <div className="h-56 sm:h-72">
+          <ResponsiveContainer width="100%" height="100%">
+            <LineChart data={marketData}>
+              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.08)" />
+              <XAxis dataKey="month" stroke="#9ca3af" style={{ fontSize: "12px" }} />
+              <YAxis stroke="#9ca3af" style={{ fontSize: "12px" }} />
+              <Tooltip
+                contentStyle={{
+                  background: "rgba(20, 24, 37, 0.95)",
+                  border: "1px solid rgba(255, 255, 255, 0.1)",
+                  borderRadius: "8px",
+                }}
+                labelStyle={{ color: "#fff" }}
+              />
+              <Legend wrapperStyle={{ paddingTop: "20px" }} />
+              <Line
+                type="monotone"
+                dataKey="yourProperty"
+                stroke="#34d399"
+                strokeWidth={2.5}
+                name="Your Property"
+                dot={{ fill: "#34d399", r: 4 }}
+                activeDot={{ r: 6 }}
+              />
+              <Line
+                type="monotone"
+                dataKey="marketAvg"
+                stroke="#9ca3af"
+                strokeWidth={2}
+                name="Market Average"
+                dot={{ fill: "#9ca3af", r: 4 }}
+                activeDot={{ r: 6 }}
+              />
+              <Line
+                type="monotone"
+                dataKey="premium"
+                stroke="#fbbf24"
+                strokeWidth={2}
+                name="Premium Market"
+                dot={{ fill: "#fbbf24", r: 4 }}
+                activeDot={{ r: 6 }}
+              />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
       </motion.div>
 
       {/* Price Comparison Bar Chart */}
@@ -164,7 +166,7 @@ export default function MyProperty({ deal }: MyPropertyProps) {
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.25 }}
-        className="bg-[#141825] rounded-2xl border border-white/[0.06] p-6"
+        className="bg-[#141825] rounded-2xl border border-white/[0.06] p-4 sm:p-6"
       >
         <h3 className="text-sm font-semibold text-gray-300 uppercase tracking-wide mb-6">
           Price Per Square Foot Comparison

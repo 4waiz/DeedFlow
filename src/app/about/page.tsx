@@ -13,27 +13,27 @@ export default function AboutPage() {
 
       {/* Header */}
       <header className="relative z-10 border-b border-white/[0.06]">
-        <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <Link href="/" className="flex items-center gap-2">
             <Image
               src="/logo.png"
               alt="DeedFlow"
               width={140}
               height={36}
-              className="h-9 w-auto brightness-0 invert opacity-90"
+              className="h-8 sm:h-9 w-auto brightness-0 invert opacity-90"
               priority
             />
           </Link>
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center justify-center sm:justify-end gap-2 sm:gap-3">
             <Link
               href="/login"
-              className="px-4 py-2 text-sm font-medium text-gray-300 hover:text-white transition-colors"
+              className="px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium text-gray-300 hover:text-white transition-colors"
             >
               Log In
             </Link>
             <Link
               href="/signup"
-              className="px-4 py-2 text-sm font-semibold rounded-lg bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 hover:bg-emerald-500/30 transition-colors"
+              className="px-3 sm:px-4 py-2 text-xs sm:text-sm font-semibold rounded-lg bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 hover:bg-emerald-500/30 transition-colors"
             >
               Get Started
             </Link>
@@ -42,7 +42,7 @@ export default function AboutPage() {
       </header>
 
       {/* Main Content */}
-      <main className="relative z-10 max-w-5xl mx-auto px-6 py-16">
+      <main className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
         {/* Back button */}
         <motion.div
           initial={{ opacity: 0, y: -10 }}
@@ -65,10 +65,10 @@ export default function AboutPage() {
           transition={{ duration: 0.6 }}
           className="mb-16"
         >
-          <h1 className="text-5xl md:text-5xl font-black text-white mb-6">
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-white mb-5 sm:mb-6">
             About DeedFlow
           </h1>
-          <p className="text-xl text-gray-400 leading-relaxed max-w-3xl">
+          <p className="text-base sm:text-lg text-gray-400 leading-relaxed max-w-3xl">
             Transforming how fractional and tokenized real estate transactions work by combining AI-powered compliance orchestration with human oversight.
           </p>
         </motion.div>
@@ -80,12 +80,12 @@ export default function AboutPage() {
           transition={{ duration: 0.6, delay: 0.1 }}
           className="mb-16"
         >
-          <div className="bg-[#141825] rounded-2xl border border-white/[0.06] p-8">
+          <div className="bg-[#141825] rounded-2xl border border-white/[0.06] p-5 sm:p-8">
             <h2 className="text-2xl font-bold text-white mb-4">Our Mission</h2>
-            <p className="text-gray-400 text-lg leading-relaxed mb-4">
+            <p className="text-gray-400 text-base sm:text-lg leading-relaxed mb-4">
               Property transactions in emerging markets are complex, fragmented, and risky. Parties struggle with compliance, verification, and settlement across multiple jurisdictions.
             </p>
-            <p className="text-gray-400 text-lg leading-relaxed">
+            <p className="text-gray-400 text-base sm:text-lg leading-relaxed">
               DeedFlow solves this by providing a single orchestration platform where compliance workflows are guided by AI, every step is gated, and complete auditability is guaranteed.
             </p>
           </div>
@@ -99,7 +99,7 @@ export default function AboutPage() {
           className="mb-16"
         >
           <h2 className="text-3xl font-bold text-white mb-8">Core Pillars</h2>
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             <PillarCard
               icon={Zap}
               title="Orchestrate"
@@ -177,7 +177,7 @@ export default function AboutPage() {
           className="mb-16"
         >
           <h2 className="text-3xl font-bold text-white mb-8">Built For</h2>
-          <div className="grid md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <UseCaseCard
               title="Tokenized Real Estate Platforms"
               description="Manage multiple transactions simultaneously with consistent compliance workflows across all deals."
@@ -209,15 +209,15 @@ export default function AboutPage() {
           className="text-center py-16"
         >
           <h2 className="text-3xl font-bold text-white mb-6">Ready to Transform Your Transactions?</h2>
-          <p className="text-gray-400 text-lg mb-8 max-w-2xl mx-auto">
+          <p className="text-gray-400 text-base sm:text-lg mb-8 max-w-2xl mx-auto">
             Experience DeedFlow in action with our interactive demo, or get started with your first real transaction.
           </p>
-          <div className="flex items-center justify-center gap-4">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3 sm:gap-4">
             <Link href="/login?demo=true">
               <motion.button
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                className="px-8 py-4 text-base font-bold rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-700 text-white shadow-[0_8px_32px_rgba(16,185,129,0.25)] hover:shadow-[0_12px_40px_rgba(16,185,129,0.35)] transition-all"
+                className="w-full sm:w-auto px-6 sm:px-8 py-3.5 sm:py-4 text-sm sm:text-base font-bold rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-700 text-white shadow-[0_8px_32px_rgba(16,185,129,0.25)] hover:shadow-[0_12px_40px_rgba(16,185,129,0.35)] transition-all"
               >
                 Try Demo
               </motion.button>
@@ -226,7 +226,7 @@ export default function AboutPage() {
               <motion.button
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                className="px-8 py-4 text-base font-semibold rounded-xl bg-white/[0.04] text-gray-300 border border-white/[0.12] hover:bg-white/[0.08] transition-all"
+                className="w-full sm:w-auto px-6 sm:px-8 py-3.5 sm:py-4 text-sm sm:text-base font-semibold rounded-xl bg-white/[0.04] text-gray-300 border border-white/[0.12] hover:bg-white/[0.08] transition-all"
               >
                 Get Started
               </motion.button>
@@ -236,8 +236,8 @@ export default function AboutPage() {
       </main>
 
       {/* Footer */}
-      <footer className="relative z-10 border-t border-white/[0.06] mt-20">
-        <div className="max-w-5xl mx-auto px-6 py-8 text-center">
+      <footer className="relative z-10 border-t border-white/[0.06] mt-16 sm:mt-20">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8 text-center">
           <p className="text-xs text-gray-600">
             © 2025 DeedFlow. Built for transforming fractional real estate transactions.
           </p>
