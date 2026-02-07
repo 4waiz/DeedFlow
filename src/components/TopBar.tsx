@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { useStore } from "@/lib/store";
 import { t } from "@/lib/i18n";
 import { motion } from "framer-motion";
@@ -10,6 +11,9 @@ import {
   LayoutDashboard,
   Info,
   Gavel,
+  Moon,
+  Sun,
+  Settings,
 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
@@ -20,6 +24,7 @@ export default function TopBar() {
   const { lang, setLang, setDemoScriptOpen, user, logout } = useStore();
   const pathname = usePathname();
   const router = useRouter();
+  const [isDark, setIsDark] = useState(true);
 
   const navItems = [
     { href: "/app", label: t("nav.dashboard", lang), icon: LayoutDashboard },
@@ -174,6 +179,71 @@ export default function TopBar() {
             <Globe size={14} />
             {t("lang.toggle", lang)}
           </motion.button>
+
+          {/* Theme Toggle */}
+          <div className="relative group">
+            <motion.button
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
+              className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-lg transition-all duration-200"
+              style={{
+                background: "rgba(255, 255, 255, 0.04)",
+                color: "#d1d5db",
+                border: "1px solid rgba(255, 255, 255, 0.08)",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = "rgba(255, 255, 255, 0.08)";
+                e.currentTarget.style.color = "#f3f4f6";
+                e.currentTarget.style.boxShadow = "0 0 12px rgba(255, 255, 255, 0.05)";
+                e.currentTarget.style.borderColor = "rgba(255, 255, 255, 0.15)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = "rgba(255, 255, 255, 0.04)";
+                e.currentTarget.style.color = "#d1d5db";
+                e.currentTarget.style.boxShadow = "none";
+                e.currentTarget.style.borderColor = "rgba(255, 255, 255, 0.08)";
+              }}
+            >
+              <Settings size={14} />
+            </motion.button>
+
+            {/* Theme dropdown */}
+            <div
+              className="absolute right-0 top-full mt-1 w-32 rounded-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50"
+              style={{
+                background: "rgba(20, 24, 37, 0.95)",
+                backdropFilter: "blur(20px)",
+                WebkitBackdropFilter: "blur(20px)",
+                border: "1px solid rgba(255, 255, 255, 0.08)",
+                boxShadow: "0 20px 50px rgba(0, 0, 0, 0.6)",
+              }}
+            >
+              <div className="p-2 space-y-1">
+                <button
+                  onClick={() => setIsDark(true)}
+                  className={`w-full flex items-center gap-2 px-3 py-2 text-sm rounded-lg transition-all ${
+                    isDark
+                      ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30"
+                      : "text-gray-400 hover:bg-white/5"
+                  }`}
+                >
+                  <Moon size={14} />
+                  Dark Mode
+                </button>
+                <button
+                  onClick={() => setIsDark(false)}
+                  className={`w-full flex items-center gap-2 px-3 py-2 text-sm rounded-lg transition-all ${
+                    !isDark
+                      ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30"
+                      : "text-gray-400 hover:bg-white/5"
+                  }`}
+                >
+                  <Sun size={14} />
+                  Light Mode
+                </button>
+              </div>
+            </div>
+          </div>
 
           {/* User menu */}
           {user && (

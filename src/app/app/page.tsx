@@ -188,25 +188,6 @@ export default function Dashboard() {
 
                 {/* RIGHT MAIN CONTENT (9 cols) */}
                 <div className="col-span-9 space-y-4">
-                  {/* Status & Metrics */}
-                  <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.05 }}
-                    className="bg-[#141825] rounded-2xl border border-white/[0.06] shadow-[0_8px_32px_rgba(0,0,0,0.3)] p-6"
-                  >
-                    <h3 className="text-sm font-semibold text-gray-300 uppercase tracking-wide mb-4">Current Status</h3>
-                    <div className="grid grid-cols-3 gap-4">
-                      <ComplianceMeter score={deal.metrics.complianceScore} type="compliance" />
-                      <ComplianceMeter score={deal.metrics.riskScore} type="risk" />
-                      <div className="flex flex-col justify-center">
-                        <span className="text-xs text-gray-400 uppercase tracking-wide">Est. Close</span>
-                        <span className="text-2xl font-bold text-emerald-400">{deal.metrics.estTimeToCloseDays}</span>
-                        <span className="text-xs text-gray-400">days</span>
-                      </div>
-                    </div>
-                  </motion.div>
-
                   {/* Blockers & Required Documents */}
                   <div className="grid grid-cols-2 gap-4">
                     {/* AI Recommendations */}
