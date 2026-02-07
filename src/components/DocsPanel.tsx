@@ -26,14 +26,14 @@ export default function DocsPanel({ docs, steps, dealId }: Props) {
   const [expandedDoc, setExpandedDoc] = useState<string | null>(null);
   const [showUpload, setShowUpload] = useState(false);
 
-  const requiredDocTypes = [...new Set(steps.flatMap((s) => s.requiredDocs))];
+  const requiredDocTypes = Array.from(new Set(steps.flatMap((s) => s.requiredDocs)));
   const uploadedDocTypes = docs.map((d) => d.type);
-  const missingDocTypes = requiredDocTypes.filter((dt) => !uploadedDocTypes.includes(dt as any));
+  const missingDocTypes = requiredDocTypes.filter((dt) => !uploadedDocTypes.includes(dt as typeof uploadedDocTypes[number]));
 
   const handleMockUpload = (docType: string) => {
     const newDoc: DealDoc = {
       id: `doc-${Date.now()}`,
-      type: docType as any,
+      type: docType as DealDoc["type"],
       filename: `${docType}_${Date.now()}.pdf`,
       uploadedAt: new Date().toISOString(),
       extractedFields: {

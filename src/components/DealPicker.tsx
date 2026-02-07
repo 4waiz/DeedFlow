@@ -122,7 +122,7 @@ export default function DealPicker() {
 }
 
 function CreateDealForm({ onClose }: { onClose: () => void }) {
-  const { lang, initializeDeals, deals, setDeals, selectDeal, addToast } = useStore();
+  const { deals, setDeals, selectDeal, addToast } = useStore();
   const [name, setName] = useState("");
   const [city, setCity] = useState<"Dubai" | "Abu Dhabi">("Dubai");
   const [mode, setMode] = useState<TokenizationMode>("fractional");
@@ -188,7 +188,7 @@ function CreateDealForm({ onClose }: { onClose: () => void }) {
         <div className="flex gap-2">
           <select
             value={city}
-            onChange={(e) => setCity(e.target.value as any)}
+            onChange={(e) => setCity(e.target.value as "Dubai" | "Abu Dhabi")}
             className="flex-1 px-2 py-1.5 text-xs rounded-lg border border-gray-200 focus:border-emerald-300 outline-none"
           >
             <option value="Dubai">Dubai</option>

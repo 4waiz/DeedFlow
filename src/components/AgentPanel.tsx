@@ -13,7 +13,7 @@ interface Props {
 
 export default function AgentPanel({ deal }: Props) {
   const { lang, getCopilotInsight, addToast } = useStore();
-  const insight = getCopilotInsight(deal);
+  const insight: CopilotInsight = getCopilotInsight(deal);
 
   const recColors: Record<string, { bg: string; text: string; icon: typeof Shield; border: string }> = {
     PROCEED: { bg: "bg-emerald-50", text: "text-emerald-700", icon: Shield, border: "border-emerald-300" },
@@ -58,7 +58,7 @@ export default function AgentPanel({ deal }: Props) {
         </div>
         <div className="h-0.5 bg-white/50 rounded my-2" />
         <ul className="space-y-1.5">
-          {(lang === "ar" ? insight.rationaleAr : insight.rationale).map((r, i) => (
+          {(lang === "ar" ? insight.rationaleAr : insight.rationale).map((r: string, i: number) => (
             <motion.li
               key={i}
               initial={{ opacity: 0, x: -5 }}
@@ -75,7 +75,7 @@ export default function AgentPanel({ deal }: Props) {
 
       {/* Action Buttons */}
       <div className="space-y-1.5">
-        {insight.actions.map((action, i) => (
+        {insight.actions.map((action) => (
           <motion.button
             key={action.action}
             whileHover={{ scale: 1.01, x: 2 }}

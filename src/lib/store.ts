@@ -84,7 +84,7 @@ export const useStore = create<AppState>((set, get) => ({
     const uploadedDocTypes = deal.docs
       .filter((d) => d.verificationStatus === "verified")
       .map((d) => d.type);
-    const missingDocs = pendingDocs.filter((d) => !uploadedDocTypes.includes(d as any));
+    const missingDocs = pendingDocs.filter((d) => !uploadedDocTypes.includes(d as typeof uploadedDocTypes[number]));
     const hasMajority = deal.parties.some(
       (p) => p.role === "buyer" && (p.sharePercent || 0) >= deal.governanceRule.majorityThreshold
     );
@@ -207,7 +207,7 @@ export const useStore = create<AppState>((set, get) => ({
             if (buyers.length > 1) {
               const remaining = 100 - 55;
               const otherBuyers = buyers.slice(1);
-              otherBuyers.forEach((b, i) => {
+              otherBuyers.forEach((b) => {
                 b.sharePercent = Math.round(remaining / otherBuyers.length);
               });
             }

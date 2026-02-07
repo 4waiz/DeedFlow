@@ -15,7 +15,7 @@ interface Props {
   monthlyRent?: number;
 }
 
-export default function GovernanceCard({ parties, majorityThreshold, totalShares, sharePrice, monthlyRent = 8500 }: Props) {
+export default function GovernanceCard({ parties, majorityThreshold, monthlyRent = 8500 }: Props) {
   const { lang } = useStore();
   const buyers = parties.filter((p) => p.role === "buyer");
   const hasMajority = buyers.some((b) => (b.sharePercent || 0) >= majorityThreshold);
