@@ -4,7 +4,6 @@ import { useStore } from "@/lib/store";
 import { t } from "@/lib/i18n";
 import { motion } from "framer-motion";
 import {
-  Globe,
   Zap,
   BookOpen,
   LayoutDashboard,
@@ -145,34 +144,6 @@ export default function TopBar() {
 
           {/* Simulate Event */}
           <SimulateDropdown />
-
-          {/* Language Toggle */}
-          <motion.button
-            whileHover={{ scale: 1.03 }}
-            whileTap={{ scale: 0.97 }}
-            onClick={() => setLang(lang === "en" ? "ar" : "en")}
-            className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-lg transition-all duration-200"
-            style={{
-              background: "rgba(255, 255, 255, 0.04)",
-              color: "#d1d5db",
-              border: "1px solid rgba(255, 255, 255, 0.08)",
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = "rgba(255, 255, 255, 0.08)";
-              e.currentTarget.style.color = "#f3f4f6";
-              e.currentTarget.style.boxShadow = "0 0 12px rgba(255, 255, 255, 0.05)";
-              e.currentTarget.style.borderColor = "rgba(255, 255, 255, 0.15)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = "rgba(255, 255, 255, 0.04)";
-              e.currentTarget.style.color = "#d1d5db";
-              e.currentTarget.style.boxShadow = "none";
-              e.currentTarget.style.borderColor = "rgba(255, 255, 255, 0.08)";
-            }}
-          >
-            <Globe size={14} />
-            {t("lang.toggle", lang)}
-          </motion.button>
 
           {/* Settings Button */}
           <Link
