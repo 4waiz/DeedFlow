@@ -8,7 +8,8 @@
       "Bash(npx next build:*)",
       "Bash(powershell -Command:*)",
       "Bash(npx next dev:*)",
-      "WebFetch(domain:lingo.dev)"
+      "WebFetch(domain:lingo.dev)",
+      "Bash(npm run build:*)"
     ]
   }
 }
