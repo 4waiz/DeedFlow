@@ -6,10 +6,10 @@ import { X, CheckCircle, AlertTriangle, Info, AlertCircle } from "lucide-react";
 import { cn } from "@/lib/cn";
 
 const toastConfig = {
-  success: { icon: CheckCircle, bg: "bg-emerald-50 border-emerald-300", text: "text-emerald-800", iconColor: "text-emerald-600" },
-  warning: { icon: AlertTriangle, bg: "bg-gold-50 border-gold-300", text: "text-gold-800", iconColor: "text-gold-600" },
-  info: { icon: Info, bg: "bg-blue-50 border-blue-300", text: "text-blue-800", iconColor: "text-blue-600" },
-  error: { icon: AlertCircle, bg: "bg-red-50 border-red-300", text: "text-red-800", iconColor: "text-red-600" },
+  success: { icon: CheckCircle, bg: "bg-emerald-500/15 border-emerald-500/30", text: "text-emerald-300", iconColor: "text-emerald-400" },
+  warning: { icon: AlertTriangle, bg: "bg-amber-500/15 border-amber-500/30", text: "text-amber-300", iconColor: "text-amber-400" },
+  info: { icon: Info, bg: "bg-blue-500/15 border-blue-500/30", text: "text-blue-300", iconColor: "text-blue-400" },
+  error: { icon: AlertCircle, bg: "bg-red-500/15 border-red-500/30", text: "text-red-300", iconColor: "text-red-400" },
 };
 
 export default function ToastStack() {
@@ -29,6 +29,10 @@ export default function ToastStack() {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, x: 100, scale: 0.95 }}
               className={cn("flex items-start gap-2 p-3 rounded-xl border shadow-lg", config.bg)}
+              style={{
+                backdropFilter: "blur(12px)",
+                boxShadow: "0 8px 32px rgba(0, 0, 0, 0.4)",
+              }}
             >
               <Icon size={16} className={cn("flex-shrink-0 mt-0.5", config.iconColor)} />
               <p className={cn("text-xs font-medium flex-1", config.text)}>
@@ -36,7 +40,7 @@ export default function ToastStack() {
               </p>
               <button
                 onClick={() => removeToast(toast.id)}
-                className="p-0.5 hover:bg-black/5 rounded transition-colors flex-shrink-0"
+                className="p-0.5 hover:bg-white/[0.08] rounded transition-colors flex-shrink-0"
               >
                 <X size={12} className="text-gray-500" />
               </button>

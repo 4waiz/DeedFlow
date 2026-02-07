@@ -51,24 +51,30 @@ export default function Dashboard() {
 
   if (!initialized || deals.length === 0) {
     return (
-      <div className="h-screen flex items-center justify-center bg-sand-50">
+      <div className="h-screen flex items-center justify-center bg-[#0c0f1a]">
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           className="text-center"
         >
-          <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-emerald-600 to-emerald-800 flex items-center justify-center mx-auto mb-4 shadow-lg">
+          <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-emerald-500 to-emerald-700 flex items-center justify-center mx-auto mb-4 shadow-[0_8px_32px_rgba(16,185,129,0.25)]">
             <span className="text-white text-2xl font-bold">D</span>
           </div>
-          <h1 className="text-xl font-bold text-gradient mb-2">DeedFlow</h1>
+          <h1 className="text-xl font-bold text-white mb-2">DeedFlow</h1>
           <p className="text-sm text-gray-500">Loading deals...</p>
+          <div className="mt-4 flex justify-center gap-1">
+            <span className="w-2 h-2 rounded-full bg-emerald-500/60 animate-pulse" />
+            <span className="w-2 h-2 rounded-full bg-emerald-500/40 animate-pulse [animation-delay:0.2s]" />
+            <span className="w-2 h-2 rounded-full bg-emerald-500/20 animate-pulse [animation-delay:0.4s]" />
+          </div>
         </motion.div>
       </div>
     );
   }
 
   return (
-    <div dir={dir} className="h-screen flex flex-col bg-sand-50">
+    <div dir={dir} className="h-screen flex flex-col bg-[#0c0f1a]">
+      <div className="bg-particles" />
       <TopBar />
 
       <div className="flex-1 flex overflow-hidden">
@@ -76,13 +82,13 @@ export default function Dashboard() {
         <motion.aside
           initial={{ x: -20, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
-          className="w-72 border-r border-gray-100 bg-white flex-shrink-0 overflow-hidden flex flex-col"
+          className="w-72 border-r border-white/[0.06] bg-[#0e1119] flex-shrink-0 overflow-hidden flex flex-col"
         >
           <DealPicker />
         </motion.aside>
 
         {/* Main Content */}
-        <main className="flex-1 overflow-y-auto p-4">
+        <main className="flex-1 overflow-y-auto p-4 bg-[#0c0f1a]">
           {deal ? (
             <div className="max-w-5xl mx-auto space-y-4">
               {/* Deal Header Card */}
@@ -90,11 +96,14 @@ export default function Dashboard() {
                 key={deal.id}
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="bg-white rounded-2xl border border-gray-100 shadow-soft p-4"
+                className="relative bg-[#141825] rounded-2xl border border-white/[0.06] shadow-[0_8px_32px_rgba(0,0,0,0.3)] p-4 overflow-hidden"
               >
+                {/* Subtle gradient top border */}
+                <div className="absolute inset-x-0 top-0 h-[1px] bg-gradient-to-r from-transparent via-emerald-500/40 to-transparent" />
+
                 <div className="flex items-start justify-between mb-3">
                   <div>
-                    <h2 className="text-xl font-bold text-gray-900">
+                    <h2 className="text-xl font-bold text-white">
                       {lang === "ar" ? deal.nameAr : deal.name}
                     </h2>
                     <div className="flex items-center gap-3 mt-1 text-xs text-gray-500 flex-wrap">
@@ -139,7 +148,7 @@ export default function Dashboard() {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.1 }}
-                    className="bg-white rounded-2xl border border-gray-100 shadow-soft p-4"
+                    className="bg-[#141825] rounded-2xl border border-white/[0.06] shadow-[0_8px_32px_rgba(0,0,0,0.3)] p-4"
                   >
                     <DealTimeline
                       steps={deal.steps}
@@ -153,7 +162,7 @@ export default function Dashboard() {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.15 }}
-                    className="bg-white rounded-2xl border border-gray-100 shadow-soft p-4"
+                    className="bg-[#141825] rounded-2xl border border-white/[0.06] shadow-[0_8px_32px_rgba(0,0,0,0.3)] p-4"
                   >
                     <DocsPanel docs={deal.docs} steps={deal.steps} dealId={deal.id} />
                   </motion.div>
@@ -163,7 +172,7 @@ export default function Dashboard() {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.2 }}
-                    className="bg-white rounded-2xl border border-gray-100 shadow-soft p-4"
+                    className="bg-[#141825] rounded-2xl border border-white/[0.06] shadow-[0_8px_32px_rgba(0,0,0,0.3)] p-4"
                   >
                     <ForecastChart
                       complianceScore={deal.metrics.complianceScore}
@@ -180,7 +189,7 @@ export default function Dashboard() {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.1 }}
-                    className="bg-white rounded-2xl border border-gray-100 shadow-soft p-4"
+                    className="bg-[#141825] rounded-2xl border border-white/[0.06] shadow-[0_8px_32px_rgba(0,0,0,0.3)] p-4"
                   >
                     <AgentPanel deal={deal} />
                   </motion.div>
@@ -190,7 +199,7 @@ export default function Dashboard() {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.15 }}
-                    className="bg-white rounded-2xl border border-gray-100 shadow-soft p-4"
+                    className="bg-[#141825] rounded-2xl border border-white/[0.06] shadow-[0_8px_32px_rgba(0,0,0,0.3)] p-4"
                   >
                     <GovernanceCard
                       parties={deal.parties}
@@ -204,7 +213,7 @@ export default function Dashboard() {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.25 }}
-                className="bg-white rounded-2xl border border-gray-100 shadow-soft p-4"
+                className="bg-[#141825] rounded-2xl border border-white/[0.06] shadow-[0_8px_32px_rgba(0,0,0,0.3)] p-4"
               >
                 <AuditFeed entries={deal.audit} />
               </motion.div>
@@ -227,10 +236,10 @@ export default function Dashboard() {
 
 function DealStatusBadge({ status, lang }: { status: string; lang: "en" | "ar" }) {
   const colors: Record<string, string> = {
-    draft: "bg-gray-100 text-gray-600 border-gray-300",
-    active: "bg-emerald-100 text-emerald-700 border-emerald-300 pulse-glow",
-    completed: "bg-gold-100 text-gold-700 border-gold-300",
-    on_hold: "bg-red-100 text-red-600 border-red-300",
+    draft: "bg-gray-500/10 text-gray-400 border-gray-500/20",
+    active: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20 pulse-glow",
+    completed: "bg-gold-500/10 text-gold-400 border-gold-500/20",
+    on_hold: "bg-red-500/10 text-red-400 border-red-500/20",
   };
 
   return (

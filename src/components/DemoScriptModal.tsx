@@ -102,20 +102,25 @@ export default function DemoScriptModal() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/40 backdrop-blur-sm"
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm"
           onClick={() => setDemoScriptOpen(false)}
         >
           <motion.div
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.9, opacity: 0 }}
-            className="bg-white rounded-2xl shadow-2xl w-[500px] max-h-[80vh] overflow-hidden"
+            className="rounded-2xl shadow-2xl w-[500px] max-h-[80vh] overflow-hidden border border-white/[0.08]"
+            style={{
+              background: "rgba(20, 24, 37, 0.95)",
+              backdropFilter: "blur(20px)",
+              boxShadow: "0 25px 60px rgba(0, 0, 0, 0.5), 0 0 1px rgba(255, 255, 255, 0.1)",
+            }}
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header */}
-            <div className="flex items-center justify-between p-4 border-b border-gray-100 bg-gradient-to-r from-emerald-50 to-gold-50">
+            <div className="flex items-center justify-between p-4 border-b border-white/[0.06]">
               <div>
-                <h2 className="text-base font-bold text-gray-900">
+                <h2 className="text-base font-bold text-white">
                   {t("demo.script", lang)}
                 </h2>
                 <p className="text-xs text-gray-500">90-second guided walkthrough</p>
@@ -128,14 +133,14 @@ export default function DemoScriptModal() {
                     setIsPlaying(!isPlaying);
                     if (!isPlaying) setCurrentStep(0);
                   }}
-                  className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold bg-emerald-600 text-white rounded-lg hover:bg-emerald-700"
+                  className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold bg-emerald-500/20 text-emerald-400 rounded-lg hover:bg-emerald-500/30 border border-emerald-500/20 transition-colors"
                 >
                   <Play size={12} />
                   {isPlaying ? "Playing..." : "Auto-Play"}
                 </motion.button>
                 <button
                   onClick={() => setDemoScriptOpen(false)}
-                  className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors"
+                  className="p-1.5 rounded-lg hover:bg-white/[0.06] transition-colors"
                 >
                   <X size={16} className="text-gray-500" />
                 </button>
@@ -152,10 +157,10 @@ export default function DemoScriptModal() {
                   transition={{ delay: i * 0.03 }}
                   className={`p-3 rounded-xl border transition-all cursor-pointer ${
                     i === currentStep
-                      ? "bg-emerald-50 border-emerald-300 shadow-sm"
+                      ? "bg-emerald-500/[0.08] border-emerald-500/30 shadow-[0_0_12px_rgba(16,185,129,0.1)]"
                       : i < currentStep
-                      ? "bg-gray-50 border-gray-200 opacity-60"
-                      : "bg-white border-gray-100 hover:border-gray-200"
+                      ? "bg-white/[0.02] border-white/[0.04] opacity-60"
+                      : "bg-white/[0.03] border-white/[0.06] hover:border-white/[0.12]"
                   }`}
                   onClick={() => {
                     setCurrentStep(i);
@@ -163,20 +168,20 @@ export default function DemoScriptModal() {
                   }}
                 >
                   <div className="flex items-center gap-2 mb-1">
-                    <span className="flex items-center gap-1 text-[10px] text-gray-400">
+                    <span className="flex items-center gap-1 text-[10px] text-gray-500">
                       <Clock size={10} />
                       {step.time}
                     </span>
-                    {i < currentStep && <CheckCircle size={12} className="text-emerald-500" />}
-                    <span className="text-xs font-bold text-gray-900">
+                    {i < currentStep && <CheckCircle size={12} className="text-emerald-400" />}
+                    <span className="text-xs font-bold text-gray-200">
                       {lang === "ar" ? step.titleAr : step.title}
                     </span>
                   </div>
-                  <p className="text-[11px] text-gray-600 leading-relaxed">
+                  <p className="text-[11px] text-gray-400 leading-relaxed">
                     {lang === "ar" ? step.descriptionAr : step.description}
                   </p>
                   {step.action && (
-                    <span className="inline-block mt-1.5 text-[9px] font-medium px-1.5 py-0.5 bg-gold-100 text-gold-700 rounded-full">
+                    <span className="inline-block mt-1.5 text-[9px] font-medium px-1.5 py-0.5 bg-amber-500/15 text-amber-400 rounded-full">
                       ⚡ Triggers action
                     </span>
                   )}

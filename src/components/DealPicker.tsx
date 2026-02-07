@@ -16,24 +16,24 @@ export default function DealPicker() {
   const filtered = filter === "all" ? deals : deals.filter((d) => d.tokenizationMode === filter);
 
   const statusColors: Record<string, string> = {
-    draft: "bg-gray-100 text-gray-600",
-    active: "bg-emerald-100 text-emerald-700",
-    completed: "bg-gold-100 text-gold-700",
-    on_hold: "bg-red-100 text-red-600",
+    draft: "bg-gray-500/10 text-gray-400",
+    active: "bg-emerald-500/10 text-emerald-400",
+    completed: "bg-yellow-500/10 text-yellow-400",
+    on_hold: "bg-red-500/10 text-red-400",
   };
 
   return (
-    <div className="flex flex-col h-full">
-      <div className="p-3 border-b border-gray-100">
+    <div className="flex flex-col h-full bg-[#0e1119]">
+      <div className="p-3 border-b border-white/[0.06]">
         <div className="flex items-center justify-between mb-3">
-          <h2 className="text-sm font-bold text-gray-900">
+          <h2 className="text-sm font-bold text-white">
             {t("deals.title", lang)}
           </h2>
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => setShowCreate(!showCreate)}
-            className="flex items-center gap-1 px-2.5 py-1 text-xs font-semibold bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors"
+            className="flex items-center gap-1 px-2.5 py-1 text-xs font-semibold bg-emerald-500/20 text-emerald-400 rounded-lg hover:bg-emerald-500/30 transition-colors border border-emerald-500/20"
           >
             <Plus size={12} />
             {t("deals.create", lang)}
@@ -49,8 +49,8 @@ export default function DealPicker() {
               className={cn(
                 "px-2.5 py-1 text-xs font-medium rounded-md transition-colors",
                 filter === f
-                  ? "bg-emerald-100 text-emerald-700"
-                  : "text-gray-500 hover:bg-gray-100"
+                  ? "bg-emerald-500/15 text-emerald-400 border border-emerald-500/20"
+                  : "text-gray-500 hover:bg-white/[0.04] hover:text-gray-400 border border-transparent"
               )}
             >
               {f === "all" ? t("deals.filter.all", lang) : f === "fractional" ? t("deals.filter.fractional", lang) : t("deals.filter.tokenized", lang)}
@@ -75,14 +75,14 @@ export default function DealPicker() {
               transition={{ delay: i * 0.05 }}
               onClick={() => selectDeal(deal.id)}
               className={cn(
-                "w-full text-left p-3 rounded-xl transition-all border",
+                "w-full text-left p-3 rounded-xl transition-all border backdrop-blur-sm",
                 isSelected
-                  ? "bg-emerald-50 border-emerald-300 shadow-sm"
-                  : "bg-white border-gray-100 hover:border-gray-200 hover:shadow-sm"
+                  ? "bg-emerald-500/[0.08] border-emerald-500/40 shadow-[0_0_15px_rgba(16,185,129,0.10)]"
+                  : "bg-white/[0.03] border-white/[0.06] hover:border-white/[0.12] hover:bg-white/[0.05]"
               )}
             >
               <div className="flex items-start justify-between mb-1.5">
-                <h3 className="text-sm font-semibold text-gray-900 leading-tight pr-2">
+                <h3 className="text-sm font-semibold text-white leading-tight pr-2">
                   {lang === "ar" ? deal.nameAr : deal.name}
                 </h3>
                 <span className={cn("text-[10px] font-medium px-1.5 py-0.5 rounded-full whitespace-nowrap", statusColors[deal.status])}>
@@ -101,7 +101,7 @@ export default function DealPicker() {
               </div>
               {/* Progress bar */}
               <div className="flex items-center gap-2">
-                <div className="flex-1 h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                <div className="flex-1 h-1.5 bg-white/[0.06] rounded-full overflow-hidden">
                   <motion.div
                     initial={{ width: 0 }}
                     animate={{ width: `${(completedSteps / deal.steps.length) * 100}%` }}
@@ -109,7 +109,7 @@ export default function DealPicker() {
                     className="h-full bg-emerald-500 rounded-full"
                   />
                 </div>
-                <span className="text-[10px] font-medium text-gray-400">
+                <span className="text-[10px] font-medium text-gray-500">
                   {completedSteps}/{deal.steps.length}
                 </span>
               </div>
@@ -175,20 +175,20 @@ function CreateDealForm({ onClose }: { onClose: () => void }) {
       initial={{ height: 0, opacity: 0 }}
       animate={{ height: "auto", opacity: 1 }}
       exit={{ height: 0, opacity: 0 }}
-      className="border-b border-gray-100 overflow-hidden"
+      className="border-b border-white/[0.06] overflow-hidden"
     >
       <div className="p-3 space-y-2">
         <input
           value={name}
           onChange={(e) => setName(e.target.value)}
           placeholder="Deal name..."
-          className="w-full px-3 py-1.5 text-sm rounded-lg border border-gray-200 focus:border-emerald-300 focus:ring-1 focus:ring-emerald-200 outline-none"
+          className="w-full px-3 py-1.5 text-sm rounded-lg border border-white/[0.08] bg-white/[0.04] text-white placeholder-gray-500 focus:border-emerald-500/40 focus:ring-1 focus:ring-emerald-500/20 outline-none transition-colors"
         />
         <div className="flex gap-2">
           <select
             value={city}
             onChange={(e) => setCity(e.target.value as "Dubai" | "Abu Dhabi")}
-            className="flex-1 px-2 py-1.5 text-xs rounded-lg border border-gray-200 focus:border-emerald-300 outline-none"
+            className="flex-1 px-2 py-1.5 text-xs rounded-lg border border-white/[0.08] bg-white/[0.04] text-gray-400 focus:border-emerald-500/40 outline-none transition-colors"
           >
             <option value="Dubai">Dubai</option>
             <option value="Abu Dhabi">Abu Dhabi</option>
@@ -196,17 +196,17 @@ function CreateDealForm({ onClose }: { onClose: () => void }) {
           <select
             value={mode}
             onChange={(e) => setMode(e.target.value as TokenizationMode)}
-            className="flex-1 px-2 py-1.5 text-xs rounded-lg border border-gray-200 focus:border-emerald-300 outline-none"
+            className="flex-1 px-2 py-1.5 text-xs rounded-lg border border-white/[0.08] bg-white/[0.04] text-gray-400 focus:border-emerald-500/40 outline-none transition-colors"
           >
             <option value="fractional">Fractional</option>
             <option value="tokenized">Tokenized</option>
           </select>
         </div>
         <div className="flex gap-2">
-          <button onClick={handleCreate} className="flex-1 px-3 py-1.5 text-xs font-semibold bg-emerald-600 text-white rounded-lg hover:bg-emerald-700">
+          <button onClick={handleCreate} className="flex-1 px-3 py-1.5 text-xs font-semibold bg-emerald-500/20 text-emerald-400 rounded-lg hover:bg-emerald-500/30 border border-emerald-500/20 transition-colors">
             Create
           </button>
-          <button onClick={onClose} className="px-3 py-1.5 text-xs text-gray-500 hover:text-gray-700">
+          <button onClick={onClose} className="px-3 py-1.5 text-xs text-gray-500 hover:text-gray-400 transition-colors">
             Cancel
           </button>
         </div>

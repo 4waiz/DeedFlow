@@ -30,24 +30,24 @@ export default function ComplianceMeter({ score, type }: Props) {
 
   const getBgColor = () => {
     if (isCompliance) {
-      if (score >= 80) return "bg-emerald-50 border-emerald-200";
-      if (score >= 50) return "bg-gold-50 border-gold-200";
-      return "bg-red-50 border-red-200";
+      if (score >= 80) return "bg-emerald-500/[0.08] border-emerald-500/20";
+      if (score >= 50) return "bg-amber-500/[0.08] border-amber-500/20";
+      return "bg-red-500/[0.08] border-red-500/20";
     }
-    if (score >= 60) return "bg-red-50 border-red-200";
-    if (score >= 30) return "bg-gold-50 border-gold-200";
-    return "bg-emerald-50 border-emerald-200";
+    if (score >= 60) return "bg-red-500/[0.08] border-red-500/20";
+    if (score >= 30) return "bg-amber-500/[0.08] border-amber-500/20";
+    return "bg-emerald-500/[0.08] border-emerald-500/20";
   };
 
   return (
     <div className={cn("p-3 rounded-xl border", getBgColor())}>
       <div className="flex items-center justify-between mb-2">
-        <span className="text-xs font-semibold text-gray-700">{label}</span>
-        <span className="text-lg font-bold">
+        <span className="text-xs font-semibold text-gray-400">{label}</span>
+        <span className="text-lg font-bold text-white">
           {emoji} {score}
         </span>
       </div>
-      <div className="h-2 bg-white/60 rounded-full overflow-hidden">
+      <div className="h-2 bg-white/[0.06] rounded-full overflow-hidden">
         <motion.div
           initial={{ width: 0 }}
           animate={{ width: `${score}%` }}

@@ -9,35 +9,26 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Missing required fields: text, targetLang" }, { status: 400 });
   }
 
-  // Try Lingo.dev if API key is available
-  const lingoApiKey = process.env.LINGO_API_KEY;
+  // Try Lingo.dev SDK if API key is available
+  const lingoApiKey = process.env.LINGODOTDEV_API_KEY;
 
   if (lingoApiKey) {
     try {
-      // Attempt Lingo.dev translation
-      const response = await fetch("https://api.lingo.dev/v1/translate", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${lingoApiKey}`,
-        },
-        body: JSON.stringify({
-          text,
-          source_language: targetLang === "ar" ? "en" : "ar",
-          target_language: targetLang,
-        }),
+      const { LingoDotDevEngine } = await import("lingo.dev/sdk");
+      const lingoDotDev = new LingoDotDevEngine({ apiKey: lingoApiKey });
+
+      const result = await lingoDotDev.localizeText(text, {
+        sourceLocale: targetLang === "ar" ? "en" : "ar",
+        targetLocale: targetLang,
       });
 
-      if (response.ok) {
-        const data = await response.json();
-        return NextResponse.json({
-          translated: data.translated_text || data.translation || data.text,
-          source: "lingo.dev",
-          original: text,
-        });
-      }
-    } catch {
-      // Fallback to mock translator
+      return NextResponse.json({
+        translated: result,
+        source: "lingo.dev",
+        original: text,
+      });
+    } catch (err) {
+      console.error("Lingo.dev translation failed, falling back to mock:", err);
     }
   }
 
