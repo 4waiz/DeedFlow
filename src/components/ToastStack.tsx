@@ -16,7 +16,7 @@ export default function ToastStack() {
   const { toasts, removeToast } = useStore();
 
   return (
-    <div className="fixed bottom-4 right-4 z-[200] space-y-2 max-w-sm">
+    <div className="fixed bottom-24 right-4 z-[200] space-y-2 max-w-sm">
       <AnimatePresence>
         {toasts.map((toast) => {
           const config = toastConfig[toast.type];

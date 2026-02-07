@@ -187,6 +187,7 @@ export default function Dashboard() {
 
                   {/* Workflow Timeline */}
                   <motion.div
+                    id="deal-timeline"
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.1 }}
@@ -209,6 +210,7 @@ export default function Dashboard() {
                   <div className="grid grid-cols-2 gap-4">
                     {/* AI Recommendations */}
                     <motion.div
+                      id="compliance-panel"
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.1 }}
@@ -219,6 +221,7 @@ export default function Dashboard() {
 
                     {/* Governance */}
                     <motion.div
+                      id="governance-panel"
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.15 }}
@@ -241,6 +244,7 @@ export default function Dashboard() {
 
                   {/* Activity Feed */}
                   <motion.div
+                    id="activity-feed"
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.25 }}

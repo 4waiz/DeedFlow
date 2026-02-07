@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
+import { useRouter } from "next/navigation";
 import { useStore } from "@/lib/store";
 import { t } from "@/lib/i18n";
 import { motion, AnimatePresence } from "framer-motion";
@@ -12,8 +13,42 @@ import {
   Bot,
   User,
   Sparkles,
+  Mic,
+  MicOff,
+  Volume2,
+  VolumeX,
 } from "lucide-react";
 import { cn } from "@/lib/cn";
+
+// Web Speech API type declarations
+interface SpeechRecognitionEvent extends Event {
+  results: SpeechRecognitionResultList;
+}
+interface SpeechRecognitionResultList {
+  readonly length: number;
+  [index: number]: SpeechRecognitionResult;
+}
+interface SpeechRecognitionResult {
+  readonly length: number;
+  [index: number]: SpeechRecognitionAlternative;
+}
+interface SpeechRecognitionAlternative {
+  transcript: string;
+  confidence: number;
+}
+interface SpeechRecognitionInstance extends EventTarget {
+  lang: string;
+  interimResults: boolean;
+  maxAlternatives: number;
+  continuous: boolean;
+  onstart: ((ev: Event) => void) | null;
+  onresult: ((ev: SpeechRecognitionEvent) => void) | null;
+  onerror: ((ev: Event) => void) | null;
+  onend: ((ev: Event) => void) | null;
+  start: () => void;
+  stop: () => void;
+  abort: () => void;
+}
 
 interface Message {
   role: "user" | "assistant";
@@ -21,14 +56,47 @@ interface Message {
   ts: number;
 }
 
+// Navigation command map — maps AI tags to scroll targets or router actions
+const NAV_ACTIONS: Record<string, { type: "scroll" | "route" | "action"; target: string; docType?: string }> = {
+  upload_doc: { type: "action", target: "docs-panel", docType: undefined },
+  upload_title_deed: { type: "action", target: "docs-panel", docType: "title_deed" },
+  upload_noc: { type: "action", target: "docs-panel", docType: "noc" },
+  upload_kyc: { type: "action", target: "docs-panel", docType: "kyc_doc" },
+  upload_valuation: { type: "action", target: "docs-panel", docType: "valuation_report" },
+  upload_passport: { type: "action", target: "docs-panel", docType: "passport" },
+  upload_emirates_id: { type: "action", target: "docs-panel", docType: "emirates_id" },
+  upload_escrow: { type: "action", target: "docs-panel", docType: "escrow_agreement" },
+  upload_spa: { type: "action", target: "docs-panel", docType: "spa" },
+  timeline: { type: "scroll", target: "deal-timeline" },
+  compliance: { type: "scroll", target: "compliance-panel" },
+  governance: { type: "scroll", target: "governance-panel" },
+  documents: { type: "scroll", target: "docs-panel" },
+  activity: { type: "scroll", target: "activity-feed" },
+  property: { type: "route", target: "/app/property" },
+  settings: { type: "route", target: "/app/settings" },
+};
+
 export default function ChatBot() {
-  const { lang, getSelectedDeal } = useStore();
+  const { lang, getSelectedDeal, openDocsPanel, addToast } = useStore();
+  const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isListening, setIsListening] = useState(false);
+  const [voiceEnabled, setVoiceEnabled] = useState(true);
+  const [isSpeaking, setIsSpeaking] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const recognitionRef = useRef<SpeechRecognitionInstance | null>(null);
+  const synthRef = useRef<SpeechSynthesis | null>(null);
+
+  // Initialize speech APIs
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      synthRef.current = window.speechSynthesis;
+    }
+  }, []);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -43,6 +111,100 @@ export default function ChatBot() {
       inputRef.current.focus();
     }
   }, [isOpen]);
+
+  // Stop speech when chat closes
+  useEffect(() => {
+    if (!isOpen && synthRef.current) {
+      synthRef.current.cancel();
+      setIsSpeaking(false);
+    }
+  }, [isOpen]);
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      if (recognitionRef.current) {
+        recognitionRef.current.abort();
+      }
+      if (synthRef.current) {
+        synthRef.current.cancel();
+      }
+    };
+  }, []);
+
+  const speakText = useCallback((text: string) => {
+    if (!synthRef.current || !voiceEnabled) return;
+
+    // Cancel any current speech
+    synthRef.current.cancel();
+
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = lang === "ar" ? "ar-AE" : "en-US";
+    utterance.rate = 1;
+    utterance.pitch = 1;
+
+    utterance.onstart = () => setIsSpeaking(true);
+    utterance.onend = () => setIsSpeaking(false);
+    utterance.onerror = () => setIsSpeaking(false);
+
+    synthRef.current.speak(utterance);
+  }, [lang, voiceEnabled]);
+
+  const stopSpeaking = useCallback(() => {
+    if (synthRef.current) {
+      synthRef.current.cancel();
+      setIsSpeaking(false);
+    }
+  }, []);
+
+  // Parse navigation tags from AI response
+  const parseNavigation = useCallback((text: string): { cleanText: string; navAction: string | null } => {
+    const navMatch = text.match(/\[NAV:(\w+)\]/);
+    if (navMatch) {
+      const cleanText = text.replace(/\[NAV:\w+\]/, "").trim();
+      return { cleanText, navAction: navMatch[1] };
+    }
+    return { cleanText: text, navAction: null };
+  }, []);
+
+  // Execute navigation
+  const executeNavigation = useCallback((navAction: string) => {
+    const action = NAV_ACTIONS[navAction];
+    if (!action) return;
+
+    // Small delay so user sees the message first
+    setTimeout(() => {
+      if (action.type === "route") {
+        router.push(action.target);
+        setIsOpen(false);
+      } else if (action.type === "scroll") {
+        const el = document.getElementById(action.target);
+        if (el) {
+          el.scrollIntoView({ behavior: "smooth", block: "center" });
+          // Flash highlight effect
+          el.classList.add("ring-2", "ring-violet-500/50", "transition-all");
+          setTimeout(() => {
+            el.classList.remove("ring-2", "ring-violet-500/50", "transition-all");
+          }, 2000);
+        }
+      } else if (action.type === "action") {
+        // Open docs panel with optional doc type preselection
+        if (action.docType) {
+          openDocsPanel(action.docType);
+        }
+        const el = document.getElementById(action.target);
+        if (el) {
+          el.scrollIntoView({ behavior: "smooth", block: "center" });
+          el.classList.add("ring-2", "ring-violet-500/50", "transition-all");
+          setTimeout(() => {
+            el.classList.remove("ring-2", "ring-violet-500/50", "transition-all");
+          }, 2000);
+        }
+      }
+
+      addToast(t("voice.navigating", lang), "info");
+    }, 600);
+  }, [router, openDocsPanel, addToast, lang]);
 
   const getDealContext = () => {
     const deal = getSelectedDeal();
@@ -59,8 +221,8 @@ Documents uploaded: ${deal.docs.length}
 Missing docs: ${deal.steps.filter((s) => s.status !== "done").flatMap((s) => s.requiredDocs).filter((d) => !deal.docs.some((doc) => doc.type === d && doc.verificationStatus === "verified")).join(", ") || "None"}`;
   };
 
-  const handleSend = async () => {
-    const trimmed = input.trim();
+  const handleSendMessage = useCallback(async (text: string) => {
+    const trimmed = text.trim();
     if (!trimmed || isLoading) return;
 
     const userMessage: Message = {
@@ -88,32 +250,43 @@ Missing docs: ${deal.steps.filter((s) => s.status !== "done").flatMap((s) => s.r
       const data = await response.json();
 
       if (data.reply) {
+        const { cleanText, navAction } = parseNavigation(data.reply);
+
         setMessages((prev) => [
           ...prev,
-          { role: "assistant", content: data.reply, ts: Date.now() },
+          { role: "assistant", content: cleanText, ts: Date.now() },
         ]);
+
+        // Speak the response
+        if (voiceEnabled) {
+          speakText(cleanText);
+        }
+
+        // Execute navigation if present
+        if (navAction) {
+          executeNavigation(navAction);
+        }
       } else {
+        const errMsg = "Sorry, something went wrong. Please try again.";
         setMessages((prev) => [
           ...prev,
-          {
-            role: "assistant",
-            content: "Sorry, something went wrong. Please try again.",
-            ts: Date.now(),
-          },
+          { role: "assistant", content: errMsg, ts: Date.now() },
         ]);
       }
     } catch {
+      const errMsg = "Connection error. Please check your internet and try again.";
       setMessages((prev) => [
         ...prev,
-        {
-          role: "assistant",
-          content: "Connection error. Please check your internet and try again.",
-          ts: Date.now(),
-        },
+        { role: "assistant", content: errMsg, ts: Date.now() },
       ]);
     } finally {
       setIsLoading(false);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [messages, isLoading, voiceEnabled, speakText, parseNavigation, executeNavigation]);
+
+  const handleSend = () => {
+    handleSendMessage(input);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -122,6 +295,56 @@ Missing docs: ${deal.steps.filter((s) => s.status !== "done").flatMap((s) => s.r
       handleSend();
     }
   };
+
+  // Voice input — start listening
+  const startListening = useCallback(() => {
+    const SpeechRecognitionAPI = (window as unknown as Record<string, unknown>).SpeechRecognition ||
+      (window as unknown as Record<string, unknown>).webkitSpeechRecognition;
+
+    if (!SpeechRecognitionAPI) {
+      addToast(t("voice.unsupported", lang), "warning");
+      return;
+    }
+
+    // Stop any current speech so it doesn't interfere
+    stopSpeaking();
+
+    const recognition = new (SpeechRecognitionAPI as new () => SpeechRecognitionInstance)();
+    recognition.lang = lang === "ar" ? "ar-AE" : "en-US";
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+    recognition.continuous = false;
+
+    recognition.onstart = () => {
+      setIsListening(true);
+    };
+
+    recognition.onresult = (event: SpeechRecognitionEvent) => {
+      const transcript = event.results[0][0].transcript;
+      if (transcript.trim()) {
+        handleSendMessage(transcript.trim());
+      }
+      setIsListening(false);
+    };
+
+    recognition.onerror = () => {
+      setIsListening(false);
+    };
+
+    recognition.onend = () => {
+      setIsListening(false);
+    };
+
+    recognitionRef.current = recognition;
+    recognition.start();
+  }, [lang, addToast, stopSpeaking, handleSendMessage]);
+
+  const stopListening = useCallback(() => {
+    if (recognitionRef.current) {
+      recognitionRef.current.stop();
+      setIsListening(false);
+    }
+  }, []);
 
   return (
     <>
@@ -187,12 +410,31 @@ Missing docs: ${deal.steps.filter((s) => s.status !== "done").flatMap((s) => s.r
                   </p>
                 </div>
               </div>
-              <button
-                onClick={() => setIsOpen(false)}
-                className="w-7 h-7 rounded-lg bg-white/[0.06] hover:bg-white/[0.12] flex items-center justify-center transition-colors"
-              >
-                <X size={14} className="text-gray-400" />
-              </button>
+              <div className="flex items-center gap-1">
+                {/* Voice toggle */}
+                <button
+                  onClick={() => {
+                    if (isSpeaking) stopSpeaking();
+                    setVoiceEnabled((v) => !v);
+                  }}
+                  className={cn(
+                    "w-7 h-7 rounded-lg flex items-center justify-center transition-colors",
+                    voiceEnabled
+                      ? "bg-violet-500/20 text-violet-300 hover:bg-violet-500/30"
+                      : "bg-white/[0.06] text-gray-500 hover:bg-white/[0.12]"
+                  )}
+                  title={voiceEnabled ? t("voice.stop", lang) : t("voice.speak", lang)}
+                >
+                  {voiceEnabled ? <Volume2 size={13} /> : <VolumeX size={13} />}
+                </button>
+                {/* Close */}
+                <button
+                  onClick={() => setIsOpen(false)}
+                  className="w-7 h-7 rounded-lg bg-white/[0.06] hover:bg-white/[0.12] flex items-center justify-center transition-colors"
+                >
+                  <X size={14} className="text-gray-400" />
+                </button>
+              </div>
             </div>
 
             {/* Messages */}
@@ -214,15 +456,13 @@ Missing docs: ${deal.steps.filter((s) => s.status !== "done").flatMap((s) => s.r
                       { en: "What docs do I need?", ar: "ما المستندات المطلوبة؟" },
                       { en: "Check compliance status", ar: "حالة الامتثال" },
                       { en: "Next steps?", ar: "الخطوات التالية؟" },
+                      { en: "Upload a document", ar: "رفع مستند" },
                     ].map((q) => (
                       <button
                         key={q.en}
                         onClick={() => {
-                          setInput(lang === "ar" ? q.ar : q.en);
-                          setTimeout(() => {
-                            setInput(lang === "ar" ? q.ar : q.en);
-                            handleSend();
-                          }, 50);
+                          const text = lang === "ar" ? q.ar : q.en;
+                          handleSendMessage(text);
                         }}
                         className="px-2.5 py-1.5 text-[10px] rounded-lg bg-violet-500/10 text-violet-300 border border-violet-500/20 hover:bg-violet-500/20 transition-colors"
                       >
@@ -266,6 +506,22 @@ Missing docs: ${deal.steps.filter((s) => s.status !== "done").flatMap((s) => s.r
                     )}
                   >
                     {msg.content}
+                    {/* Speak button for assistant messages */}
+                    {msg.role === "assistant" && (
+                      <button
+                        onClick={() => {
+                          if (isSpeaking) {
+                            stopSpeaking();
+                          } else {
+                            speakText(msg.content);
+                          }
+                        }}
+                        className="inline-flex items-center gap-1 ml-2 text-[10px] text-violet-400/60 hover:text-violet-400 transition-colors"
+                        title={t("voice.speak", lang)}
+                      >
+                        {isSpeaking ? <VolumeX size={10} /> : <Volume2 size={10} />}
+                      </button>
+                    )}
                   </div>
                 </motion.div>
               ))}
@@ -289,6 +545,22 @@ Missing docs: ${deal.steps.filter((s) => s.status !== "done").flatMap((s) => s.r
                 </motion.div>
               )}
 
+              {/* Listening indicator */}
+              {isListening && (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  className="flex items-center justify-center gap-2 py-2"
+                >
+                  <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-red-500/10 border border-red-500/20">
+                    <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
+                    <span className="text-[11px] text-red-400 font-medium">
+                      {t("voice.listening", lang)}
+                    </span>
+                  </div>
+                </motion.div>
+              )}
+
               <div ref={messagesEndRef} />
             </div>
 
@@ -307,15 +579,30 @@ Missing docs: ${deal.steps.filter((s) => s.status !== "done").flatMap((s) => s.r
                   border: "1px solid rgba(139, 92, 246, 0.15)",
                 }}
               >
+                {/* Mic button */}
+                <button
+                  onClick={isListening ? stopListening : startListening}
+                  disabled={isLoading}
+                  className={cn(
+                    "w-8 h-8 rounded-lg flex items-center justify-center transition-all flex-shrink-0",
+                    isListening
+                      ? "bg-red-500/30 text-red-300 animate-pulse"
+                      : "bg-white/[0.04] text-gray-400 hover:bg-violet-500/20 hover:text-violet-300"
+                  )}
+                  title={t("voice.mic", lang)}
+                >
+                  {isListening ? <MicOff size={14} /> : <Mic size={14} />}
+                </button>
+
                 <input
                   ref={inputRef}
                   type="text"
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   onKeyDown={handleKeyDown}
-                  placeholder={t("chat.placeholder", lang)}
+                  placeholder={isListening ? t("voice.listening", lang) : t("chat.placeholder", lang)}
                   className="flex-1 bg-transparent text-sm text-white placeholder-gray-500 outline-none"
-                  disabled={isLoading}
+                  disabled={isLoading || isListening}
                 />
                 <button
                   onClick={handleSend}

@@ -107,6 +107,14 @@ const translations: Record<string, Record<Lang, string>> = {
   "chat.placeholder": { en: "Ask about compliance...", ar: "اسأل عن الامتثال..." },
   "chat.powered_by": { en: "Powered by Groq AI", ar: "مدعوم بـ Groq AI" },
 
+  // Voice
+  "voice.listening": { en: "Listening...", ar: "جاري الاستماع..." },
+  "voice.speak": { en: "Read aloud", ar: "قراءة بصوت عالٍ" },
+  "voice.stop": { en: "Stop", ar: "إيقاف" },
+  "voice.mic": { en: "Voice input", ar: "إدخال صوتي" },
+  "voice.unsupported": { en: "Voice not supported in this browser", ar: "الصوت غير مدعوم في هذا المتصفح" },
+  "voice.navigating": { en: "Navigating...", ar: "جاري التنقل..." },
+
   // Misc
   "upload.doc": { en: "Upload Document", ar: "رفع مستند" },
   "field.reports": { en: "Field Reports", ar: "تقارير ميدانية" },

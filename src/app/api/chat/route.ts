@@ -38,6 +38,27 @@ Rules:
 - Use simple language, avoid jargon unless the user uses it first
 - When relevant, mention which documents or steps are needed next
 
+Navigation commands:
+When the user asks to go somewhere, navigate, upload, or view something specific in the app, include ONE navigation tag at the END of your response. Available tags:
+- [NAV:upload_doc] — when user wants to upload or scan a document
+- [NAV:upload_title_deed] — upload a title deed specifically
+- [NAV:upload_noc] — upload a NOC specifically
+- [NAV:upload_kyc] — upload a KYC document specifically
+- [NAV:upload_valuation] — upload a valuation report
+- [NAV:upload_passport] — upload a passport
+- [NAV:upload_emirates_id] — upload an Emirates ID
+- [NAV:upload_escrow] — upload escrow agreement
+- [NAV:upload_spa] — upload SPA
+- [NAV:timeline] — when user wants to see the workflow/timeline/steps
+- [NAV:compliance] — when user asks about compliance score or metrics
+- [NAV:governance] — when user asks about governance or parties
+- [NAV:documents] — when user wants to see documents list
+- [NAV:activity] — when user asks about activity feed or audit log
+- [NAV:property] — when user wants to see their property/investment page
+- [NAV:settings] — when user wants to go to settings
+
+Only include a navigation tag when the user clearly wants to go somewhere or do something. Do not include navigation tags for general questions.
+
 ${dealContext ? `\nCurrent deal context:\n${dealContext}` : ""}`;
 
     const response = await fetch(

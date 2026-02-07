@@ -16,7 +16,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/cn";
 
 export default function TopBar() {
-  const { lang, setLang, setDemoScriptOpen, user, logout } = useStore();
+  const { lang, setDemoScriptOpen, user, logout } = useStore();
   const pathname = usePathname();
   const router = useRouter();
 
