@@ -9,12 +9,10 @@ import TopBar from "@/components/TopBar";
 import DealPicker from "@/components/DealPicker";
 import DealTimeline from "@/components/DealTimeline";
 import DocsPanel from "@/components/DocsPanel";
-import DealFlowHeader from "@/components/DealFlowHeader";
 import ComplianceMeter from "@/components/ComplianceMeter";
 import GovernanceCard from "@/components/GovernanceCard";
 import AgentPanel from "@/components/AgentPanel";
 import AuditFeed from "@/components/AuditFeed";
-import ForecastChart from "@/components/ForecastChart";
 import DemoScriptModal from "@/components/DemoScriptModal";
 import ToastStack from "@/components/ToastStack";
 import ConfettiEffect from "@/components/ConfettiEffect";
@@ -163,14 +161,25 @@ export default function Dashboard() {
                 </div>
               </motion.div>
 
-              {/* Deal Flow Header */}
-              <DealFlowHeader deal={deal} />
-
-              {/* Main Grid */}
+              {/* Main Layout: Left Timeline + Upload, Right Main Content */}
               <div className="grid grid-cols-12 gap-4">
-                {/* Timeline + Docs (left 7 cols) */}
-                <div className="col-span-7 space-y-4">
-                  {/* Timeline */}
+                {/* LEFT SIDEBAR — Timeline (3 cols) */}
+                <div className="col-span-3 space-y-4">
+                  {/* Upload Document Button */}
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.05 }}
+                  >
+                    <button
+                      onClick={() => document.getElementById("docs-panel")?.scrollIntoView({ behavior: "smooth" })}
+                      className="w-full px-4 py-3 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg font-semibold transition-all shadow-lg hover:shadow-emerald-500/20"
+                    >
+                      ↑ Upload Document
+                    </button>
+                  </motion.div>
+
+                  {/* Workflow Timeline */}
                   <motion.div
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -186,68 +195,74 @@ export default function Dashboard() {
                       selectedStepId={selectedStepId || undefined}
                     />
                   </motion.div>
+                </div>
 
-                  {/* Documents */}
+                {/* RIGHT MAIN CONTENT (9 cols) */}
+                <div className="col-span-9 space-y-4">
+                  {/* Status & Metrics */}
                   <motion.div
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.15 }}
+                    transition={{ delay: 0.05 }}
+                    className="bg-[#141825] rounded-2xl border border-white/[0.06] shadow-[0_8px_32px_rgba(0,0,0,0.3)] p-6"
+                  >
+                    <h3 className="text-sm font-semibold text-gray-300 uppercase tracking-wide mb-4">Current Status</h3>
+                    <div className="grid grid-cols-3 gap-4">
+                      <ComplianceMeter score={deal.metrics.complianceScore} type="compliance" />
+                      <ComplianceMeter score={deal.metrics.riskScore} type="risk" />
+                      <div className="flex flex-col justify-center">
+                        <span className="text-xs text-gray-400 uppercase tracking-wide">Est. Close</span>
+                        <span className="text-2xl font-bold text-emerald-400">{deal.metrics.estTimeToCloseDays}</span>
+                        <span className="text-xs text-gray-400">days</span>
+                      </div>
+                    </div>
+                  </motion.div>
+
+                  {/* Blockers & Required Documents */}
+                  <div className="grid grid-cols-2 gap-4">
+                    {/* AI Recommendations */}
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.1 }}
+                      className="bg-[#141825] rounded-2xl border border-white/[0.06] shadow-[0_8px_32px_rgba(0,0,0,0.3)] p-4"
+                    >
+                      <AgentPanel deal={deal} />
+                    </motion.div>
+
+                    {/* Governance */}
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.15 }}
+                      className="bg-[#141825] rounded-2xl border border-white/[0.06] shadow-[0_8px_32px_rgba(0,0,0,0.3)] p-4"
+                    >
+                      <GovernanceCard parties={deal.parties} />
+                    </motion.div>
+                  </div>
+
+                  {/* Documents Panel */}
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.2 }}
                     className="bg-[#141825] rounded-2xl border border-white/[0.06] shadow-[0_8px_32px_rgba(0,0,0,0.3)] p-4"
                     id="docs-panel"
                   >
                     <DocsPanel docs={deal.docs} steps={deal.steps} dealId={deal.id} />
                   </motion.div>
 
-                  {/* Forecast Chart */}
+                  {/* Activity Feed */}
                   <motion.div
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.2 }}
+                    transition={{ delay: 0.25 }}
                     className="bg-[#141825] rounded-2xl border border-white/[0.06] shadow-[0_8px_32px_rgba(0,0,0,0.3)] p-4"
                   >
-                    <ForecastChart
-                      complianceScore={deal.metrics.complianceScore}
-                      riskScore={deal.metrics.riskScore}
-                      estDays={deal.metrics.estTimeToCloseDays}
-                    />
-                  </motion.div>
-                </div>
-
-                {/* Right side (5 cols) — Agent + Governance */}
-                <div className="col-span-5 space-y-4">
-                  {/* Agent Panel */}
-                  <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.1 }}
-                    className="bg-[#141825] rounded-2xl border border-white/[0.06] shadow-[0_8px_32px_rgba(0,0,0,0.3)] p-4"
-                  >
-                    <AgentPanel deal={deal} />
-                  </motion.div>
-
-                  {/* Governance */}
-                  <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.15 }}
-                    className="bg-[#141825] rounded-2xl border border-white/[0.06] shadow-[0_8px_32px_rgba(0,0,0,0.3)] p-4"
-                  >
-                    <GovernanceCard
-                      parties={deal.parties}
-                    />
+                    <AuditFeed entries={deal.audit} />
                   </motion.div>
                 </div>
               </div>
-
-              {/* Bottom — Audit Feed */}
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.25 }}
-                className="bg-[#141825] rounded-2xl border border-white/[0.06] shadow-[0_8px_32px_rgba(0,0,0,0.3)] p-4"
-              >
-                <AuditFeed entries={deal.audit} />
-              </motion.div>
             </div>
           ) : (
             <div className="flex items-center justify-center h-full text-gray-400">
