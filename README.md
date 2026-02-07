@@ -1,122 +1,164 @@
-# DeedFlow
+# DeedFlow 🏡⚖️
 
-**AI-Powered Property Compliance for UAE Fractional/Tokenized Real Estate**
+**AI-powered transaction orchestration for fractional & tokenized real estate (UAE-ready).**
+Think **TurboTax + DocuSign + compliance ops + settlement gating** - built for high-stakes property workflows like fractional ownership, tokenization pilots, and asset management.
 
-DeedFlow is an AI agent that turns fractional and tokenized property transactions into a guided, compliant workflow — purpose-built for the UAE real estate ecosystem.
+---
 
-Think: TurboTax + DocuSign + compliance ops + settlement gating for fractional real estate.
+## TL;DR (One-liner)
 
-## Quick Start
+**DeedFlow turns complex fractional/tokenized property deals into a guided, compliant, step-by-step workflow with an audit trail and post-sale automation (rent distribution, maintenance, governance).**
 
-```bash
-npm install && npm run dev
-```
+---
 
-Open [http://localhost:3000](http://localhost:3000)
+## Why this matters (Problem)
 
-## Features
+Fractional/tokenized real estate sounds simple, but the *real transaction* is messy and high-risk:
 
-- **Fractional Listing Creation** — Create deals with shares/tokens, parties, and governance rules
-- **8-Step Compliance Workflow** — KYC/AML, Title Deed, NOC, Valuation, Escrow, Settlement, Issuance, Post-Close
-- **AI Compliance Copilot** — Real-time recommendations: PROCEED / HOLD / ESCALATE
-- **Document Upload & Extraction** — Mock parsing with extracted fields and verification status
-- **51% Governance Engine** — Automatic majority control detection with management handover
-- **Post-Close Automation** — Pro-rata rent distribution and maintenance responsibility
-- **Live Activity Feed** — Audit trail with UAE-flavored microcopy
-- **Bilingual EN/AR** — Full Arabic localization with RTL support
-- **Demo Script** — 90-second guided walkthrough with auto-play
-- **Live Simulation** — Auto-updates every ~15 seconds + manual event triggers
+* Document collection + verification (IDs, title deed, KYC/AML)
+* Approvals / NOCs
+* Valuation refresh & pricing updates
+* Escrow + settlement steps
+* Post-sale ops: rent distribution, maintenance responsibility, management handover
+* Governance rules for decision-making and handover
 
-## Pages
+People drop off because it’s confusing, slow, and stressful.
 
-| Route | Description |
-|-------|-------------|
-| `/` | Dashboard — single-page cockpit with deal picker, timeline, docs, copilot, governance, and audit feed |
-| `/about` | Story page — Adaptive City relevance, principles, and roadmap |
-| `/judge` | Judge View — problem, solution, why UAE now, live metrics, and quick links |
+---
 
-## API Routes
+## What DeedFlow does (Solution)
 
-| Method | Route | Description |
-|--------|-------|-------------|
-| GET | `/api/deals` | List all deals (summary) |
-| GET | `/api/deals/[id]` | Get deal details |
-| POST | `/api/deals` | Create a new deal |
-| POST | `/api/docs/upload` | Upload mock document with extraction |
-| POST | `/api/steps/complete` | Mark step as completed (with gating) |
-| POST | `/api/simulate` | Trigger simulation events |
-| POST | `/api/translate` | EN/AR translation (Lingo.dev or mock) |
+DeedFlow is a **workflow agent** that orchestrates the deal end-to-end:
 
-## Simulation Events
+✅ Creates a fractional listing (splits into shares / tokens)
+✅ Generates a compliance checklist with “why it matters” explanations
+✅ Collects & validates docs (mocked for demo)
+✅ Enforces settlement gates (can’t close until required steps are green)
+✅ Produces an audit trail for compliance review
+✅ Automates post-close logic (rent + maintenance + governance)
 
-Use the "Simulate Event" dropdown in the top bar:
-- **Complete Step** — Advances the workflow timeline
-- **Verify Document** — Marks a pending doc as verified
-- **Missing Doc** — Blocks a step due to missing documentation
-- **NOC Delay** — Developer NOC processing delay
-- **51% Flip** — Buyer crosses majority threshold
-- **Risk Surge** — Spike in risk score
-- **Approval Delay** — Regulatory approval delay
+---
 
-## Lingo.dev Integration (Optional)
+## Core Features
 
-For full translation support, add a Lingo.dev API key:
+### 1) “Deal Cockpit” workflow timeline
 
-```bash
-LINGO_API_KEY=your_key_here
-```
+A guided checklist like:
 
-Without the key, the app uses a mock translator that works perfectly for the demo.
+1. Identity + KYC/AML
+2. Title deed verification
+3. Required NOCs / approvals
+4. Valuation refresh
+5. Escrow + settlement
+6. Share/token issuance + cap table
+7. Post-close: rent + maintenance + governance
 
-The integration is used in three ways:
-1. **Static UI localization** — All main UI strings switch EN/AR
-2. **Dynamic content translation** — User notes get translated with original + translated display
-3. **Multilingual agent** — Compliance Copilot recommendations show in selected language
+### 2) Document vault + extraction (demo)
 
-## Tech Stack
+Upload a mock document → system extracts key fields and flags missing items.
 
-- Next.js 14 (App Router) + TypeScript
-- TailwindCSS with custom UAE theme (emerald + gold + desert)
-- shadcn/ui patterns + Lucide React icons
-- Framer Motion for micro-animations
-- Recharts for forecast charts
-- Zustand for state management
-- canvas-confetti for celebrations
-- No auth, no DB — all in-memory mock data
+### 3) Settlement gating (compliance-first)
 
-## Project Structure
+A deal can only move to “Ready to settle” when required steps are satisfied.
 
-```
-src/
-├── app/
-│   ├── api/
-│   │   ├── deals/          # Deal CRUD endpoints
-│   │   ├── docs/upload/    # Document upload + extraction
-│   │   ├── simulate/       # Event simulation
-│   │   ├── steps/complete/ # Step completion with gating
-│   │   └── translate/      # EN/AR translation
-│   ├── about/              # About/Story page
-│   ├── judge/              # Judge view page
-│   ├── globals.css         # Global styles + UAE theme
-│   ├── layout.tsx          # Root layout
-│   └── page.tsx            # Dashboard (main page)
-├── components/
-│   ├── AgentPanel.tsx      # Compliance Copilot
-│   ├── AuditFeed.tsx       # Live activity feed + leaderboard
-│   ├── ComplianceMeter.tsx # Score/risk meter
-│   ├── ConfettiEffect.tsx  # Celebration confetti
-│   ├── DealPicker.tsx      # Deal list + create form
-│   ├── DealTimeline.tsx    # 8-step workflow timeline
-│   ├── DemoScriptModal.tsx # 90-second demo walkthrough
-│   ├── DocsPanel.tsx       # Document list + upload
-│   ├── ForecastChart.tsx   # Time-to-close forecast chart
-│   ├── GovernanceCard.tsx  # 51% majority + rent distribution
-│   ├── ToastStack.tsx      # Toast notifications
-│   └── TopBar.tsx          # Navigation + controls
-└── lib/
-    ├── cn.ts               # Tailwind class merge utility
-    ├── i18n.ts             # EN/AR translations + mock translator
-    ├── mock-data.ts        # Seed deals + leaderboard
-    ├── store.ts            # Zustand store + simulation engine
-    └── types.ts            # TypeScript data model
-```
+### 4) Governance logic (configurable)
+
+Configurable governance/management rules for:
+
+* Decision-making and approvals
+* Management handover routing
+* Investor voting / delegation (demo)
+
+### 5) Post-close automation
+
+* Rent distribution (pro-rata)
+* Maintenance responsibility logic
+* Decision workflow & audit logging
+
+---
+
+## Target Users
+
+* Developers launching fractional units
+* Tokenization platforms
+* Asset managers & family offices
+* Government / pilot partners
+
+---
+
+## Demo Walkthrough (2–3 mins)
+
+Use this exact flow in your Loom:
+
+1. **Create a fractional listing**
+
+   * Set splits (e.g. 100 shares)
+   * Configure governance / management rules
+
+2. **Show the workflow cockpit**
+
+   * Explain “missing items” + why they matter
+
+3. **Upload a mock doc**
+
+   * Show extracted fields + compliance flags
+
+4. **Settlement gate**
+
+   * Show “can’t close until compliant”
+
+5. **Post-close panel**
+
+   * Rent distribution + maintenance + governance
+
+---
+
+## Hackathon Mode Notes
+
+* Demo uses **synthetic data** (mock docs, simulated steps).
+* Built to be “API-ready” for real integrations next:
+
+  * Identity/KYC providers
+  * Government approvals / NOC systems
+  * Payment rails / escrow providers
+  * Tokenization issuance + custody platforms
+
+---
+
+## Architecture (Simple)
+
+* **Frontend:** Deal dashboard + workflow timeline + document vault
+* **Orchestration layer:** Rules engine + agent prompts to guide steps
+* **Audit log:** Every action + decision recorded for compliance review
+* **(Demo) Mock connectors:** Simulated verification & approvals
+
+---
+
+## Future Roadmap
+
+* Real KYC/AML + document verification integrations
+* e-signature + regulator-ready compliance reports
+* Live settlement rails + escrow provider integration
+* On-chain/off-chain cap table sync + custody integrations
+* Multi-language (EN/AR) for UAE workflows
+
+---
+
+## Team
+
+* Awaiz Ahmed
+* Nikhil Mundarh
+* Bilal Khan
+* Mohammad Umar
+
+---
+
+## Links
+
+* GitHub repo: [https://github.com/4waiz/DeedFlow](https://github.com/4waiz/DeedFlow)
+
+---
+
+## License
+
+MIT (or specify)
