@@ -6,7 +6,6 @@ import { useStore } from "@/lib/store";
 import { t } from "@/lib/i18n";
 import { motion } from "framer-motion";
 import TopBar from "@/components/TopBar";
-import DealPicker from "@/components/DealPicker";
 import DealTimeline from "@/components/DealTimeline";
 import DocsPanel from "@/components/DocsPanel";
 import ComplianceMeter from "@/components/ComplianceMeter";
@@ -15,7 +14,6 @@ import AgentPanel from "@/components/AgentPanel";
 import AuditFeed from "@/components/AuditFeed";
 import DemoScriptModal from "@/components/DemoScriptModal";
 import ToastStack from "@/components/ToastStack";
-import ConfettiEffect from "@/components/ConfettiEffect";
 import { cn } from "@/lib/cn";
 import { MapPin, Building2, Coins, DollarSign, Hash, Calendar } from "lucide-react";
 
@@ -100,15 +98,6 @@ export default function Dashboard() {
       <TopBar />
 
       <div className="flex-1 flex overflow-hidden">
-        {/* Left Panel — Deal Picker */}
-        <motion.aside
-          initial={{ x: -20, opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
-          className="w-72 border-r border-white/[0.06] bg-[#0e1119] flex-shrink-0 overflow-hidden flex flex-col"
-        >
-          <DealPicker />
-        </motion.aside>
-
         {/* Main Content */}
         <main className="flex-1 overflow-y-auto p-4 bg-[#0c0f1a]">
           {deal ? (
@@ -275,7 +264,6 @@ export default function Dashboard() {
       {/* Overlays */}
       <DemoScriptModal />
       <ToastStack />
-      <ConfettiEffect />
     </div>
   );
 }

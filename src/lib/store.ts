@@ -29,7 +29,6 @@ interface AppState {
   preselectDocType: string | null;
   lang: Lang;
   toasts: { id: string; message: string; type: "success" | "warning" | "info" | "error"; ts: number }[];
-  showConfetti: boolean;
   demoScriptOpen: boolean;
 
   // Actions
@@ -41,7 +40,6 @@ interface AppState {
   setLang: (lang: Lang) => void;
   addToast: (message: string, type: "success" | "warning" | "info" | "error") => void;
   removeToast: (id: string) => void;
-  triggerConfetti: () => void;
   setDemoScriptOpen: (open: boolean) => void;
   updateDeal: (id: string, updater: (deal: Deal) => Deal) => void;
   addAuditEntry: (dealId: string, entry: AuditEntry) => void;
@@ -80,7 +78,6 @@ export const useStore = create<AppState>()(
       preselectDocType: null,
       lang: "en",
       toasts: [],
-      showConfetti: false,
       demoScriptOpen: false,
 
       initializeDeals: () => {
@@ -120,11 +117,6 @@ export const useStore = create<AppState>()(
   },
 
   removeToast: (id) => set((s) => ({ toasts: s.toasts.filter((t) => t.id !== id) })),
-
-  triggerConfetti: () => {
-    set({ showConfetti: true });
-    setTimeout(() => set({ showConfetti: false }), 3000);
-  },
 
   setDemoScriptOpen: (open) => set({ demoScriptOpen: open }),
 
@@ -235,7 +227,7 @@ export const useStore = create<AppState>()(
   },
 
   simulateEvent: (event) => {
-    const { updateDeal, addAuditEntry, addToast, triggerConfetti } = get();
+    const { updateDeal, addAuditEntry, addToast } = get();
     const now = new Date().toISOString();
 
     switch (event.type) {
@@ -304,7 +296,6 @@ export const useStore = create<AppState>()(
         });
         addAuditEntry(event.dealId, { ts: now, actor: "DeedFlow AI", action: "Step Completed", detail: "Workflow step completed — yalla, next! 🎯", emoji: "✅" });
         addToast("Step completed! Moving forward.", "success");
-        triggerConfetti();
         break;
       }
       case "approval_delay": {
