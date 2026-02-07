@@ -38,6 +38,7 @@ export default function DealTimeline({ steps, onStepClick, selectedStepId }: Pro
           return (
             <motion.div
               key={step.id}
+              id={`step-${step.id}`}
               initial={{ opacity: 0, x: -10 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: i * 0.05 }}

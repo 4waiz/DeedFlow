@@ -9,6 +9,7 @@ import TopBar from "@/components/TopBar";
 import DealPicker from "@/components/DealPicker";
 import DealTimeline from "@/components/DealTimeline";
 import DocsPanel from "@/components/DocsPanel";
+import DealFlowHeader from "@/components/DealFlowHeader";
 import ComplianceMeter from "@/components/ComplianceMeter";
 import GovernanceCard from "@/components/GovernanceCard";
 import AgentPanel from "@/components/AgentPanel";
@@ -22,8 +23,17 @@ import { MapPin, Building2, Coins, DollarSign, Hash, Calendar } from "lucide-rea
 
 export default function Dashboard() {
   const router = useRouter();
-  const { deals, lang, user, initializeDeals, simulateEvent, getSelectedDeal } = useStore();
-  const [selectedStep, setSelectedStep] = useState<string | null>(null);
+  const {
+    deals,
+    lang,
+    user,
+    initializeDeals,
+    simulateEvent,
+    getSelectedDeal,
+    selectedStepId,
+    setSelectedStepId,
+    setDocsFilterRequired,
+  } = useStore();
   const [initialized, setInitialized] = useState(false);
 
   // Route guard: redirect to login if not authenticated
@@ -153,6 +163,9 @@ export default function Dashboard() {
                 </div>
               </motion.div>
 
+              {/* Deal Flow Header */}
+              <DealFlowHeader deal={deal} />
+
               {/* Main Grid */}
               <div className="grid grid-cols-12 gap-4">
                 {/* Timeline + Docs (left 7 cols) */}
@@ -166,8 +179,11 @@ export default function Dashboard() {
                   >
                     <DealTimeline
                       steps={deal.steps}
-                      onStepClick={(step) => setSelectedStep(step.id)}
-                      selectedStepId={selectedStep || undefined}
+                      onStepClick={(step) => {
+                        setSelectedStepId(step.id);
+                        setDocsFilterRequired(step.requiredDocs.length > 0 ? [...step.requiredDocs] : []);
+                      }}
+                      selectedStepId={selectedStepId || undefined}
                     />
                   </motion.div>
 
@@ -177,6 +193,7 @@ export default function Dashboard() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.15 }}
                     className="bg-[#141825] rounded-2xl border border-white/[0.06] shadow-[0_8px_32px_rgba(0,0,0,0.3)] p-4"
+                    id="docs-panel"
                   >
                     <DocsPanel docs={deal.docs} steps={deal.steps} dealId={deal.id} />
                   </motion.div>

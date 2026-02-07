@@ -23,6 +23,10 @@ interface AppState {
 
   deals: Deal[];
   selectedDealId: string | null;
+  selectedStepId: string | null;
+  docsFilterRequired: string[] | null;
+  docsPanelOpen: boolean;
+  preselectDocType: string | null;
   lang: Lang;
   toasts: { id: string; message: string; type: "success" | "warning" | "info" | "error"; ts: number }[];
   showConfetti: boolean;
@@ -31,6 +35,9 @@ interface AppState {
   // Actions
   setDeals: (deals: Deal[]) => void;
   selectDeal: (id: string) => void;
+  setSelectedStepId: (id: string | null) => void;
+  setDocsFilterRequired: (required: string[] | null) => void;
+  openDocsPanel: (preselectDocType?: string) => void;
   setLang: (lang: Lang) => void;
   addToast: (message: string, type: "success" | "warning" | "info" | "error") => void;
   removeToast: (id: string) => void;
@@ -50,7 +57,16 @@ export const useStore = create<AppState>()(
       // Auth state
       user: null,
       setUser: (user) => set({ user }),
-      logout: () => set({ user: null, deals: [], selectedDealId: null }),
+      logout: () =>
+        set({
+          user: null,
+          deals: [],
+          selectedDealId: null,
+          selectedStepId: null,
+          docsFilterRequired: null,
+          docsPanelOpen: false,
+          preselectDocType: null,
+        }),
 
       // Demo dataset
       demoDataset: "fractional",
@@ -58,6 +74,10 @@ export const useStore = create<AppState>()(
 
       deals: [],
       selectedDealId: null,
+      selectedStepId: null,
+      docsFilterRequired: null,
+      docsPanelOpen: false,
+      preselectDocType: null,
       lang: "en",
       toasts: [],
       showConfetti: false,
@@ -65,11 +85,32 @@ export const useStore = create<AppState>()(
 
       initializeDeals: () => {
         const deals = createMockDeals();
-        set({ deals, selectedDealId: deals[0]?.id || null });
+        set({
+          deals,
+          selectedDealId: deals[0]?.id || null,
+          selectedStepId: null,
+          docsFilterRequired: null,
+          docsPanelOpen: false,
+          preselectDocType: null,
+        });
       },
 
   setDeals: (deals) => set({ deals }),
-  selectDeal: (id) => set({ selectedDealId: id }),
+  selectDeal: (id) =>
+    set({
+      selectedDealId: id,
+      selectedStepId: null,
+      docsFilterRequired: null,
+      docsPanelOpen: false,
+      preselectDocType: null,
+    }),
+  setSelectedStepId: (id) => set({ selectedStepId: id }),
+  setDocsFilterRequired: (required) => set({ docsFilterRequired: required }),
+  openDocsPanel: (preselectDocType) =>
+    set({
+      docsPanelOpen: true,
+      preselectDocType: preselectDocType ?? null,
+    }),
   setLang: (lang) => set({ lang }),
 
   addToast: (message, type) => {

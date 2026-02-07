@@ -1,12 +1,12 @@
 "use client";
 
+import { useEffect, useMemo, useState } from "react";
 import { DealDoc, DealStep, DocVerificationStatus } from "@/lib/types";
 import { useStore } from "@/lib/store";
 import { t } from "@/lib/i18n";
 import { motion, AnimatePresence } from "framer-motion";
-import { FileText, Upload, Check, Clock, X, ChevronDown } from "lucide-react";
+import { FileText, Upload, Check, Clock, X, ChevronDown, FilterX } from "lucide-react";
 import { cn } from "@/lib/cn";
-import { useState } from "react";
 
 const verifyColors: Record<DocVerificationStatus, { color: string; icon: typeof Check }> = {
   verified: { color: "text-emerald-400 bg-emerald-500/10", icon: Check },
@@ -22,13 +22,82 @@ interface Props {
 }
 
 export default function DocsPanel({ docs, steps, dealId }: Props) {
-  const { lang, updateDeal, addAuditEntry, addToast } = useStore();
+  const {
+    lang,
+    updateDeal,
+    addAuditEntry,
+    addToast,
+    docsFilterRequired,
+    docsPanelOpen,
+    preselectDocType,
+    setDocsFilterRequired,
+  } = useStore();
+
   const [expandedDoc, setExpandedDoc] = useState<string | null>(null);
   const [showUpload, setShowUpload] = useState(false);
+  const [uploadDocType, setUploadDocType] = useState<string | null>(null);
 
-  const requiredDocTypes = Array.from(new Set(steps.flatMap((s) => s.requiredDocs)));
-  const uploadedDocTypes = docs.map((d) => d.type);
-  const missingDocTypes = requiredDocTypes.filter((dt) => !uploadedDocTypes.includes(dt as typeof uploadedDocTypes[number]));
+  const requiredDocTypes = useMemo(
+    () => Array.from(new Set(steps.flatMap((step) => step.requiredDocs))),
+    [steps]
+  );
+
+  const visibleRequiredDocTypes = useMemo(
+    () => docsFilterRequired ?? requiredDocTypes,
+    [docsFilterRequired, requiredDocTypes]
+  );
+
+  const verifiedDocTypes = useMemo(
+    () =>
+      new Set(
+        docs
+          .filter((doc) => doc.verificationStatus === "verified")
+          .map((doc) => doc.type as string)
+      ),
+    [docs]
+  );
+
+  const missingDocTypes = useMemo(
+    () => visibleRequiredDocTypes.filter((docType) => !verifiedDocTypes.has(docType)),
+    [visibleRequiredDocTypes, verifiedDocTypes]
+  );
+
+  const docsToShow = useMemo(
+    () =>
+      docsFilterRequired === null
+        ? docs
+        : docs.filter((doc) => docsFilterRequired.includes(doc.type)),
+    [docs, docsFilterRequired]
+  );
+
+  const uploadOptions = missingDocTypes.length > 0 ? missingDocTypes : visibleRequiredDocTypes;
+
+  useEffect(() => {
+    if (!docsPanelOpen && !preselectDocType) {
+      return;
+    }
+
+    setShowUpload(true);
+    if (preselectDocType) {
+      setUploadDocType(preselectDocType);
+    }
+    useStore.setState({ docsPanelOpen: false, preselectDocType: null });
+  }, [docsPanelOpen, preselectDocType]);
+
+  useEffect(() => {
+    if (!showUpload) {
+      return;
+    }
+
+    if (uploadOptions.length === 0) {
+      setUploadDocType(null);
+      return;
+    }
+
+    if (!uploadDocType || !uploadOptions.includes(uploadDocType)) {
+      setUploadDocType(uploadOptions[0]);
+    }
+  }, [showUpload, uploadOptions, uploadDocType]);
 
   const handleMockUpload = (docType: string) => {
     const newDoc: DealDoc = {
@@ -44,33 +113,44 @@ export default function DocsPanel({ docs, steps, dealId }: Props) {
       uploadedBy: "Demo User",
     };
 
-    updateDeal(dealId, (d) => ({
-      ...d,
-      docs: [...d.docs, newDoc],
+    updateDeal(dealId, (deal) => ({
+      ...deal,
+      docs: [...deal.docs, newDoc],
     }));
 
     addAuditEntry(dealId, {
       ts: new Date().toISOString(),
       actor: "Demo User",
       action: "Doc Uploaded",
-      detail: `${docType} uploaded — AI extraction in progress...`,
-      emoji: "📜",
+      detail: `${docType} uploaded - AI extraction in progress...`,
+      emoji: "DOC",
     });
 
-    addToast(`Document "${docType}" uploaded successfully!`, "success");
+    addToast(`Document \"${docType}\" uploaded successfully!`, "success");
     setShowUpload(false);
+    setUploadDocType(null);
+  };
+
+  const handleUploadSelected = () => {
+    if (!uploadDocType) {
+      return;
+    }
+    handleMockUpload(uploadDocType);
   };
 
   return (
     <div>
       <div className="flex items-center justify-between mb-3">
-        <h3 className="text-sm font-bold text-white">
-          {t("deal.docs", lang)}
-        </h3>
+        <h3 className="text-sm font-bold text-white">{t("deal.docs", lang)}</h3>
         <motion.button
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
-          onClick={() => setShowUpload(!showUpload)}
+          onClick={() => {
+            setShowUpload((current) => !current);
+            if (!showUpload && uploadOptions.length > 0 && !uploadDocType) {
+              setUploadDocType(uploadOptions[0]);
+            }
+          }}
           className="flex items-center gap-1 px-2 py-1 text-[10px] font-semibold bg-emerald-500/20 text-emerald-400 rounded-md hover:bg-emerald-500/30 border border-emerald-500/20 transition-colors"
         >
           <Upload size={10} />
@@ -78,7 +158,23 @@ export default function DocsPanel({ docs, steps, dealId }: Props) {
         </motion.button>
       </div>
 
-      {/* Upload Panel */}
+      {docsFilterRequired !== null && (
+        <div className="mb-2 p-2 bg-sky-500/[0.08] rounded-lg border border-sky-500/20 flex items-center justify-between gap-2">
+          <p className="text-[10px] text-sky-300">
+            {docsFilterRequired.length > 0
+              ? `Filtered to ${docsFilterRequired.length} required doc type(s) for selected step`
+              : "Selected step has no required documents"}
+          </p>
+          <button
+            onClick={() => setDocsFilterRequired(null)}
+            className="inline-flex items-center gap-1 text-[10px] text-sky-200 hover:text-white"
+          >
+            <FilterX size={10} />
+            Show all
+          </button>
+        </div>
+      )}
+
       <AnimatePresence>
         {showUpload && (
           <motion.div
@@ -89,38 +185,50 @@ export default function DocsPanel({ docs, steps, dealId }: Props) {
           >
             <div className="p-2 bg-emerald-500/[0.08] rounded-lg border border-emerald-500/20">
               <p className="text-[10px] text-emerald-400 font-medium mb-2">Select document type to upload (mock):</p>
-              <div className="flex flex-wrap gap-1">
-                {missingDocTypes.length > 0 ? (
-                  missingDocTypes.map((dt) => (
-                    <button
-                      key={dt}
-                      onClick={() => handleMockUpload(dt)}
-                      className="px-2 py-1 text-[10px] bg-white/[0.06] border border-white/[0.1] rounded-md hover:bg-white/[0.1] text-gray-300 transition-colors"
-                    >
-                      📄 {t(`doc.${dt}`, lang)}
-                    </button>
-                  ))
-                ) : (
-                  <span className="text-[10px] text-emerald-400">All required documents uploaded! ✅</span>
-                )}
-              </div>
+              {uploadOptions.length > 0 ? (
+                <>
+                  <div className="flex flex-wrap gap-1 mb-2">
+                    {uploadOptions.map((docType) => (
+                      <button
+                        key={docType}
+                        onClick={() => setUploadDocType(docType)}
+                        className={cn(
+                          "px-2 py-1 text-[10px] border rounded-md transition-colors",
+                          uploadDocType === docType
+                            ? "bg-emerald-500/20 border-emerald-400/40 text-emerald-200"
+                            : "bg-white/[0.06] border-white/[0.1] hover:bg-white/[0.1] text-gray-300"
+                        )}
+                      >
+                        {t(`doc.${docType}`, lang)}
+                      </button>
+                    ))}
+                  </div>
+                  <button
+                    onClick={handleUploadSelected}
+                    disabled={!uploadDocType}
+                    className="px-2.5 py-1 text-[10px] font-semibold rounded-md bg-emerald-500/20 border border-emerald-500/30 text-emerald-300 hover:bg-emerald-500/30 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    Upload selected
+                  </button>
+                </>
+              ) : (
+                <span className="text-[10px] text-emerald-300">No available document types for upload.</span>
+              )}
             </div>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* Missing docs indicator */}
       {missingDocTypes.length > 0 && (
         <div className="mb-2 p-2 bg-amber-500/[0.08] rounded-lg border border-amber-500/20">
           <p className="text-[10px] font-medium text-amber-400">
-            ⚠️ {missingDocTypes.length} missing: {missingDocTypes.map((dt) => t(`doc.${dt}`, lang)).join(", ")}
+            {missingDocTypes.length} missing: {missingDocTypes.map((docType) => t(`doc.${docType}`, lang)).join(", ")}
           </p>
         </div>
       )}
 
-      {/* Document list */}
       <div className="space-y-1.5">
-        {docs.map((doc, i) => {
+        {docsToShow.map((doc, i) => {
           const verifyConf = verifyColors[doc.verificationStatus];
           const VerifyIcon = verifyConf.icon;
           const isExpanded = expandedDoc === doc.id;
@@ -160,14 +268,14 @@ export default function DocsPanel({ docs, steps, dealId }: Props) {
                     <div className="px-2 pb-2 pt-0">
                       <div className="p-2 bg-white/[0.03] rounded-md border border-white/[0.06]">
                         <p className="text-[10px] font-semibold text-gray-500 mb-1">Extracted Fields:</p>
-                        {Object.entries(doc.extractedFields).map(([key, val]) => (
+                        {Object.entries(doc.extractedFields).map(([key, value]) => (
                           <div key={key} className="flex justify-between text-[10px] py-0.5">
                             <span className="text-gray-500">{key.replace(/_/g, " ")}:</span>
-                            <span className="text-gray-200 font-medium">{val}</span>
+                            <span className="text-gray-200 font-medium">{value}</span>
                           </div>
                         ))}
                         <p className="text-[10px] text-gray-600 mt-1">
-                          Uploaded by {doc.uploadedBy} • {new Date(doc.uploadedAt).toLocaleDateString()}
+                          Uploaded by {doc.uploadedBy} - {new Date(doc.uploadedAt).toLocaleDateString()}
                         </p>
                       </div>
                     </div>
@@ -177,6 +285,12 @@ export default function DocsPanel({ docs, steps, dealId }: Props) {
             </motion.div>
           );
         })}
+
+        {docsToShow.length === 0 && (
+          <div className="p-2 rounded-lg border border-white/[0.08] bg-white/[0.03]">
+            <p className="text-[10px] text-gray-500">No documents match the current filter.</p>
+          </div>
+        )}
       </div>
     </div>
   );
