@@ -1,138 +1,36 @@
-# DeedFlow 🏡⚖️  
-**AI-powered transaction orchestration for fractional & tokenized real estate (UAE-ready).**  
-Think **TurboTax + DocuSign + compliance ops + settlement gating** — built for high-stakes property workflows like fractional ownership, tokenization pilots, and asset management.
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
----
+## Getting Started
 
-## TL;DR (One-liner)
-**DeedFlow turns complex fractional/tokenized property deals into a guided, compliant, step-by-step workflow with an audit trail and post-sale automation (51% control rule, rent distribution, maintenance).**
+First, run the development server:
 
----
+```bash
+npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+# or
+bun dev
+```
 
-## Why this matters (Problem)
-Fractional/tokenized real estate sounds simple, but the *real transaction* is messy and high-risk:
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-- Document collection + verification (IDs, title deed, KYC/AML)
-- Approvals / NOCs
-- Valuation refresh & pricing updates
-- Escrow + settlement steps
-- Post-sale ops: rent distribution, maintenance responsibility, management handover
-- Governance rules: e.g. **51% majority buyer controls management decisions**
+You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-People drop off because it’s confusing, slow, and stressful.
+This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
----
+## Learn More
 
-## What DeedFlow does (Solution)
-DeedFlow is a **workflow agent** that orchestrates the deal end-to-end:
+To learn more about Next.js, take a look at the following resources:
 
-✅ Creates a fractional listing (splits into shares / tokens)  
-✅ Generates a compliance checklist with “why it matters” explanations  
-✅ Collects & validates docs (mocked for demo)  
-✅ Enforces settlement gates (can’t close until required steps are green)  
-✅ Produces an audit trail for compliance review  
-✅ Automates post-close logic (rent + maintenance + governance)
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
----
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
-## Core Features
-### 1) “Deal Cockpit” workflow timeline
-A guided checklist like:
+## Deploy on Vercel
 
-1. Identity + KYC/AML  
-2. Title deed verification  
-3. Required NOCs / approvals  
-4. Valuation refresh  
-5. Escrow + settlement  
-6. Share/token issuance + cap table  
-7. Post-close: rent + maintenance + governance
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
-### 2) Document vault + extraction (demo)
-Upload a mock document → system extracts key fields and flags missing items.
-
-### 3) Settlement gating (compliance-first)
-A deal can only move to “Ready to settle” when required steps are satisfied.
-
-### 4) Governance logic (51% rule)
-If a buyer (or coalition) crosses **51%**, the system routes control/management decisions accordingly.
-
-### 5) Post-close automation
-- Rent distribution (pro-rata)
-- Maintenance responsibility logic
-- Decision workflow & audit logging
-
----
-
-## Target Users
-- Developers launching fractional units
-- Tokenization platforms
-- Asset managers & family offices
-- Government / pilot partners
-
----
-
-## Demo Walkthrough (2–3 mins)
-Use this exact flow in your Loom:
-
-1. **Create a fractional listing**  
-   - Set splits (e.g. 100 shares)  
-   - Enable **51% majority control rule**
-
-2. **Show the workflow cockpit**  
-   - Explain “missing items” + why they matter
-
-3. **Upload a mock doc**  
-   - Show extracted fields + compliance flags
-
-4. **Settlement gate**  
-   - Show “can’t close until compliant”
-
-5. **Post-close panel**  
-   - Rent distribution + maintenance + governance
-
----
-
-## Hackathon Mode Notes
-- Demo uses **synthetic data** (mock docs, simulated steps).  
-- Built to be “API-ready” for real integrations next:
-  - Identity/KYC providers
-  - Government approvals / NOC systems
-  - Payment rails / escrow providers
-  - Tokenization issuance + custody platforms
-
----
-
-## Architecture (Simple)
-- **Frontend:** Deal dashboard + workflow timeline + document vault  
-- **Orchestration layer:** Rules engine + agent prompts to guide steps  
-- **Audit log:** Every action + decision recorded for compliance review  
-- **(Demo) Mock connectors:** Simulated verification & approvals
-
----
-
-## Future Roadmap
-- Real KYC/AML + document verification integrations
-- e-signature + regulator-ready compliance reports
-- Live settlement rails + escrow provider integration
-- On-chain/off-chain cap table sync + custody integrations
-- Multi-language (EN/AR) for UAE workflows
-
----
-
-## Team
-Add team members here:
-- Name 1
-- Name 2
-- Name 3
-
----
-
-## Links
-- Loom demo: (paste link)
-- GitHub repo: (paste link)
-- Live demo: (optional)
-
----
-
-## License
-MIT (or specify)
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
