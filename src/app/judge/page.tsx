@@ -19,6 +19,7 @@ import {
   CheckCircle,
 } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 
 export default function JudgePage() {
   const { lang, initializeDeals, deals } = useStore();
@@ -55,11 +56,19 @@ export default function JudgePage() {
       <div className="max-w-5xl mx-auto px-6 py-10">
         {/* Header */}
         <motion.div {...fadeUp} className="text-center mb-12">
+          <Image
+            src="/logo.png"
+            alt="DeedFlow"
+            width={200}
+            height={50}
+            className="h-12 w-auto mx-auto mb-4 brightness-0 invert opacity-90"
+            priority
+          />
           <span className="inline-block px-3 py-1 text-xs font-bold bg-amber-500/15 text-amber-400 rounded-full mb-4 border border-amber-500/25">
             Judge View
           </span>
           <h1 className="text-3xl font-black text-white mb-3">
-            DeedFlow: AI-Powered Property Compliance
+            AI-Powered Property Compliance
           </h1>
           <p className="text-base text-gray-400 max-w-2xl mx-auto">
             TurboTax + DocuSign + compliance ops for fractional/tokenized real estate in the UAE
@@ -230,6 +239,13 @@ export default function JudgePage() {
           transition={{ delay: 0.55 }}
           className="text-center py-8 border-t border-white/[0.06]"
         >
+          <Image
+            src="/logo.png"
+            alt="DeedFlow"
+            width={120}
+            height={30}
+            className="h-8 w-auto mx-auto mb-3 brightness-0 invert opacity-60"
+          />
           <p className="text-sm text-gray-500">
             Built with Next.js 14, Tailwind, shadcn/ui, Framer Motion, Recharts & Zustand
           </p>

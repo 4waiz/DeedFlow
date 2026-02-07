@@ -20,6 +20,7 @@ import {
   ArrowRight,
 } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 
 export default function AboutPage() {
   const { lang, initializeDeals, deals } = useStore();
@@ -45,15 +46,14 @@ export default function AboutPage() {
       <div className="max-w-4xl mx-auto px-6 py-12">
         {/* Hero */}
         <motion.div {...fadeUp} className="text-center mb-16">
-          <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-emerald-500 to-emerald-700 flex items-center justify-center mx-auto mb-6 shadow-[0_8px_32px_rgba(16,185,129,0.3)]">
-            <span className="text-white text-3xl font-bold">D</span>
-          </div>
-          <h1 className="text-4xl font-black mb-4" style={{
-            background: "linear-gradient(135deg, #6ee7b7, #34d399, #a7f3d0)",
-            WebkitBackgroundClip: "text",
-            WebkitTextFillColor: "transparent",
-            backgroundClip: "text",
-          }}>DeedFlow</h1>
+          <Image
+            src="/logo.png"
+            alt="DeedFlow"
+            width={240}
+            height={60}
+            className="h-16 w-auto mx-auto mb-6 brightness-0 invert opacity-90"
+            priority
+          />
           <p className="text-lg text-gray-400 max-w-2xl mx-auto leading-relaxed">
             An AI agent that turns fractional and tokenized property transactions
             into a guided, compliant workflow — purpose-built for the UAE real estate
@@ -217,6 +217,13 @@ export default function AboutPage() {
             background: "linear-gradient(135deg, rgba(16,185,129,0.1), rgba(5,150,105,0.15))",
           }}
         >
+          <Image
+            src="/logo.png"
+            alt="DeedFlow"
+            width={120}
+            height={30}
+            className="h-8 w-auto mx-auto mb-3 brightness-0 invert opacity-80"
+          />
           <h2 className="text-xl font-bold text-white mb-2">Ready to see it in action?</h2>
           <p className="text-sm text-emerald-300/70 mb-4">
             Head to the dashboard to explore live deals and simulate compliance workflows.

@@ -12,6 +12,7 @@ import {
   Gavel,
 } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/cn";
 
@@ -42,50 +43,14 @@ export default function TopBar() {
         {/* Logo + Badge */}
         <div className="flex items-center gap-3">
           <Link href="/" className="flex items-center gap-2 group">
-            <motion.div
-              className="relative w-9 h-9 rounded-xl flex items-center justify-center shadow-lg"
-              style={{
-                background: "linear-gradient(135deg, #34d399, #059669, #047857)",
-                boxShadow: "0 0 20px rgba(52, 211, 153, 0.3)",
-              }}
-              whileHover={{
-                boxShadow: "0 0 30px rgba(52, 211, 153, 0.5)",
-              }}
-            >
-              <span className="text-white text-lg font-bold drop-shadow-md">D</span>
-              {/* Animated glow ring */}
-              <motion.div
-                className="absolute inset-0 rounded-xl"
-                style={{
-                  background: "linear-gradient(135deg, rgba(52,211,153,0.4), rgba(16,185,129,0.1), rgba(52,211,153,0.4))",
-                  filter: "blur(4px)",
-                }}
-                animate={{
-                  opacity: [0.5, 0.8, 0.5],
-                }}
-                transition={{
-                  duration: 3,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                }}
-              />
-            </motion.div>
-            <div>
-              <h1
-                className="text-lg font-bold leading-tight"
-                style={{
-                  background: "linear-gradient(135deg, #6ee7b7, #34d399, #a7f3d0)",
-                  WebkitBackgroundClip: "text",
-                  WebkitTextFillColor: "transparent",
-                  backgroundClip: "text",
-                }}
-              >
-                {t("app.title", lang)}
-              </h1>
-              <p className="text-[10px] leading-tight" style={{ color: "rgba(52, 211, 153, 0.5)" }}>
-                {t("app.subtitle", lang)}
-              </p>
-            </div>
+            <Image
+              src="/logo.png"
+              alt="DeedFlow"
+              width={140}
+              height={36}
+              className="h-9 w-auto brightness-0 invert opacity-90 group-hover:opacity-100 transition-opacity"
+              priority
+            />
           </Link>
           {/* Demo Mode badge with gold glow */}
           <motion.span
