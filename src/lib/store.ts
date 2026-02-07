@@ -1,9 +1,26 @@
 import { create } from "zustand";
+import { persist } from "zustand/middleware";
 import { Deal, AuditEntry, CopilotInsight, SimulateEvent } from "./types";
 import { createMockDeals } from "./mock-data";
 import { Lang } from "./i18n";
 
+interface User {
+  name: string;
+  email: string;
+  role: "developer" | "platform" | "asset_manager" | "compliance" | "regulator" | "demo";
+  org?: string;
+}
+
 interface AppState {
+  // Auth state
+  user: User | null;
+  setUser: (user: User | null) => void;
+  logout: () => void;
+
+  // Demo dataset selection
+  demoDataset: "fractional" | "tokenized" | "completed";
+  setDemoDataset: (dataset: "fractional" | "tokenized" | "completed") => void;
+
   deals: Deal[];
   selectedDealId: string | null;
   lang: Lang;
@@ -27,18 +44,29 @@ interface AppState {
   initializeDeals: () => void;
 }
 
-export const useStore = create<AppState>((set, get) => ({
-  deals: [],
-  selectedDealId: null,
-  lang: "en",
-  toasts: [],
-  showConfetti: false,
-  demoScriptOpen: false,
+export const useStore = create<AppState>()(
+  persist(
+    (set, get) => ({
+      // Auth state
+      user: null,
+      setUser: (user) => set({ user }),
+      logout: () => set({ user: null, deals: [], selectedDealId: null }),
 
-  initializeDeals: () => {
-    const deals = createMockDeals();
-    set({ deals, selectedDealId: deals[0]?.id || null });
-  },
+      // Demo dataset
+      demoDataset: "fractional",
+      setDemoDataset: (dataset) => set({ demoDataset: dataset }),
+
+      deals: [],
+      selectedDealId: null,
+      lang: "en",
+      toasts: [],
+      showConfetti: false,
+      demoScriptOpen: false,
+
+      initializeDeals: () => {
+        const deals = createMockDeals();
+        set({ deals, selectedDealId: deals[0]?.id || null });
+      },
 
   setDeals: (deals) => set({ deals }),
   selectDeal: (id) => set({ selectedDealId: id }),
@@ -248,5 +276,10 @@ export const useStore = create<AppState>((set, get) => ({
         break;
       }
     }
-  },
-}));
+  }
+}),
+{
+    name: "deedflow-store"
+  }
+)
+);

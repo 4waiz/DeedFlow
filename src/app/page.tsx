@@ -1,254 +1,179 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useStore } from "@/lib/store";
-import { t } from "@/lib/i18n";
 import { motion } from "framer-motion";
-import TopBar from "@/components/TopBar";
-import DealPicker from "@/components/DealPicker";
-import DealTimeline from "@/components/DealTimeline";
-import DocsPanel from "@/components/DocsPanel";
-import ComplianceMeter from "@/components/ComplianceMeter";
-import GovernanceCard from "@/components/GovernanceCard";
-import AgentPanel from "@/components/AgentPanel";
-import AuditFeed from "@/components/AuditFeed";
-import ForecastChart from "@/components/ForecastChart";
-import DemoScriptModal from "@/components/DemoScriptModal";
-import ToastStack from "@/components/ToastStack";
-import ConfettiEffect from "@/components/ConfettiEffect";
-import { cn } from "@/lib/cn";
-import { MapPin, Building2, Coins, DollarSign, Hash, Calendar } from "lucide-react";
+import Link from "next/link";
+import Image from "next/image";
+import { ArrowRight, Shield, FileCheck, Activity, Sparkles } from "lucide-react";
 
-export default function Dashboard() {
-  const { deals, lang, initializeDeals, simulateEvent, getSelectedDeal } = useStore();
-  const [selectedStep, setSelectedStep] = useState<string | null>(null);
-  const [initialized, setInitialized] = useState(false);
+export default function LandingPage() {
+  return (
+    <div className="min-h-screen bg-[#0c0f1a] relative overflow-hidden">
+      {/* Background particles */}
+      <div className="bg-particles" />
 
-  // Initialize deals on mount
-  useEffect(() => {
-    if (!initialized) {
-      initializeDeals();
-      setInitialized(true);
-    }
-  }, [initialized, initializeDeals]);
-
-  // Auto-simulation every ~15 seconds
-  useEffect(() => {
-    if (deals.length === 0) return;
-    const timer = setInterval(() => {
-      const activeDeal = deals.find((d) => d.status === "active");
-      if (activeDeal) {
-        const events = ["doc_verified", "step_completed", "approval_delay"] as const;
-        const randomEvent = events[Math.floor(Math.random() * events.length)];
-        simulateEvent({ type: randomEvent, dealId: activeDeal.id });
-      }
-    }, 15000);
-    return () => clearInterval(timer);
-  }, [deals, simulateEvent]);
-
-  const deal = getSelectedDeal();
-  const dir = lang === "ar" ? "rtl" : "ltr";
-
-  if (!initialized || deals.length === 0) {
-    return (
-      <div className="h-screen flex items-center justify-center bg-[#0c0f1a]">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="text-center"
-        >
-          <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-emerald-500 to-emerald-700 flex items-center justify-center mx-auto mb-4 shadow-[0_8px_32px_rgba(16,185,129,0.25)]">
-            <span className="text-white text-2xl font-bold">D</span>
+      {/* Simple header */}
+      <header className="relative z-10 border-b border-white/[0.06]">
+        <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Image
+              src="/logo.png"
+              alt="DeedFlow"
+              width={140}
+              height={36}
+              className="h-9 w-auto brightness-0 invert opacity-90"
+              priority
+            />
           </div>
-          <h1 className="text-xl font-bold text-white mb-2">DeedFlow</h1>
-          <p className="text-sm text-gray-500">Loading deals...</p>
-          <div className="mt-4 flex justify-center gap-1">
-            <span className="w-2 h-2 rounded-full bg-emerald-500/60 animate-pulse" />
-            <span className="w-2 h-2 rounded-full bg-emerald-500/40 animate-pulse [animation-delay:0.2s]" />
-            <span className="w-2 h-2 rounded-full bg-emerald-500/20 animate-pulse [animation-delay:0.4s]" />
+          <div className="flex items-center gap-3">
+            <Link
+              href="/login"
+              className="px-4 py-2 text-sm font-medium text-gray-300 hover:text-white transition-colors"
+            >
+              Log In
+            </Link>
+            <Link
+              href="/signup"
+              className="px-4 py-2 text-sm font-semibold rounded-lg bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 hover:bg-emerald-500/30 transition-colors"
+            >
+              Get Started
+            </Link>
+          </div>
+        </div>
+      </header>
+
+      {/* Hero section */}
+      <section className="relative z-10 max-w-5xl mx-auto px-6 pt-20 pb-16 text-center">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+        >
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-semibold mb-6">
+            <Sparkles size={14} />
+            AI-Powered Compliance Engine
+          </div>
+
+          <h1 className="text-5xl md:text-6xl font-black text-white mb-6 leading-tight">
+            AI-powered transaction orchestration for{" "}
+            <span className="text-gradient-hero">fractional & tokenized</span> real estate
+          </h1>
+
+          <p className="text-xl text-gray-400 mb-10 max-w-3xl mx-auto leading-relaxed">
+            Guided compliance checklist, settlement gating, audit trail, and post-close automation.
+            Turn complex property transactions into a streamlined, compliant workflow.
+          </p>
+
+          <div className="flex items-center justify-center gap-4">
+            <Link href="/login?demo=true">
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className="px-8 py-4 text-base font-bold rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-700 text-white shadow-[0_8px_32px_rgba(16,185,129,0.25)] hover:shadow-[0_12px_40px_rgba(16,185,129,0.35)] transition-all flex items-center gap-2"
+              >
+                Start Demo
+                <ArrowRight size={18} />
+              </motion.button>
+            </Link>
+            <Link href="/judge">
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className="px-8 py-4 text-base font-semibold rounded-xl bg-white/[0.04] text-gray-300 border border-white/[0.12] hover:bg-white/[0.08] hover:border-white/[0.18] transition-all"
+              >
+                Judge View
+              </motion.button>
+            </Link>
           </div>
         </motion.div>
-      </div>
-    );
-  }
+      </section>
 
-  return (
-    <div dir={dir} className="h-screen flex flex-col bg-[#0c0f1a]">
-      <div className="bg-particles" />
-      <TopBar />
+      {/* Feature cards */}
+      <section className="relative z-10 max-w-5xl mx-auto px-6 py-16">
+        <div className="grid md:grid-cols-3 gap-6">
+          <FeatureCard
+            icon={Shield}
+            title="Orchestrate"
+            description="Multi-step workflow engine that guides parties through KYC, title verification, NOC collection, and settlement—with real-time status tracking."
+            delay={0}
+          />
+          <FeatureCard
+            icon={FileCheck}
+            title="Gate"
+            description="AI copilot analyzes compliance scores, risk signals, and blockers—recommending PROCEED, HOLD, or ESCALATE before settlement."
+            delay={0.1}
+          />
+          <FeatureCard
+            icon={Activity}
+            title="Audit"
+            description="Immutable audit trail captures every action, document upload, and status change—ensuring transparency and regulatory compliance."
+            delay={0.2}
+          />
+        </div>
+      </section>
 
-      <div className="flex-1 flex overflow-hidden">
-        {/* Left Panel — Deal Picker */}
-        <motion.aside
-          initial={{ x: -20, opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
-          className="w-72 border-r border-white/[0.06] bg-[#0e1119] flex-shrink-0 overflow-hidden flex flex-col"
+      {/* Screenshot placeholder */}
+      <section className="relative z-10 max-w-5xl mx-auto px-6 py-16">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.4 }}
+          className="relative rounded-2xl border border-white/[0.08] bg-gradient-to-br from-[#141825] to-[#0e1119] p-8 overflow-hidden shadow-[0_20px_80px_rgba(0,0,0,0.5)]"
         >
-          <DealPicker />
-        </motion.aside>
+          {/* Decorative gradient border */}
+          <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-emerald-500/20 via-transparent to-gold-500/20 opacity-50 blur-2xl" />
 
-        {/* Main Content */}
-        <main className="flex-1 overflow-y-auto p-4 bg-[#0c0f1a]">
-          {deal ? (
-            <div className="max-w-5xl mx-auto space-y-4">
-              {/* Deal Header Card */}
-              <motion.div
-                key={deal.id}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="relative bg-[#141825] rounded-2xl border border-white/[0.06] shadow-[0_8px_32px_rgba(0,0,0,0.3)] p-4 overflow-hidden"
-              >
-                {/* Subtle gradient top border */}
-                <div className="absolute inset-x-0 top-0 h-[1px] bg-gradient-to-r from-transparent via-emerald-500/40 to-transparent" />
-
-                <div className="flex items-start justify-between mb-3">
-                  <div>
-                    <h2 className="text-xl font-bold text-white">
-                      {lang === "ar" ? deal.nameAr : deal.name}
-                    </h2>
-                    <div className="flex items-center gap-3 mt-1 text-xs text-gray-500 flex-wrap">
-                      <span className="flex items-center gap-1">
-                        <MapPin size={12} />
-                        {deal.city}
-                      </span>
-                      <span className="flex items-center gap-1">
-                        {deal.tokenizationMode === "fractional" ? <Building2 size={12} /> : <Coins size={12} />}
-                        {deal.tokenizationMode}
-                      </span>
-                      <span className="flex items-center gap-1">
-                        <DollarSign size={12} />
-                        AED {deal.totalValue.toLocaleString()}
-                      </span>
-                      <span className="flex items-center gap-1">
-                        <Hash size={12} />
-                        {deal.totalShares} shares @ AED {deal.sharePrice.toLocaleString()}
-                      </span>
-                      <span className="flex items-center gap-1">
-                        <Calendar size={12} />
-                        {new Date(deal.createdAt).toLocaleDateString()}
-                      </span>
-                    </div>
-                  </div>
-                  <DealStatusBadge status={deal.status} lang={lang} />
-                </div>
-
-                {/* Metrics Row */}
-                <div className="grid grid-cols-2 gap-3">
-                  <ComplianceMeter score={deal.metrics.complianceScore} type="compliance" />
-                  <ComplianceMeter score={deal.metrics.riskScore} type="risk" />
-                </div>
-              </motion.div>
-
-              {/* Main Grid */}
-              <div className="grid grid-cols-12 gap-4">
-                {/* Timeline + Docs (left 7 cols) */}
-                <div className="col-span-7 space-y-4">
-                  {/* Timeline */}
-                  <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.1 }}
-                    className="bg-[#141825] rounded-2xl border border-white/[0.06] shadow-[0_8px_32px_rgba(0,0,0,0.3)] p-4"
-                  >
-                    <DealTimeline
-                      steps={deal.steps}
-                      onStepClick={(step) => setSelectedStep(step.id)}
-                      selectedStepId={selectedStep || undefined}
-                    />
-                  </motion.div>
-
-                  {/* Documents */}
-                  <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.15 }}
-                    className="bg-[#141825] rounded-2xl border border-white/[0.06] shadow-[0_8px_32px_rgba(0,0,0,0.3)] p-4"
-                  >
-                    <DocsPanel docs={deal.docs} steps={deal.steps} dealId={deal.id} />
-                  </motion.div>
-
-                  {/* Forecast Chart */}
-                  <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.2 }}
-                    className="bg-[#141825] rounded-2xl border border-white/[0.06] shadow-[0_8px_32px_rgba(0,0,0,0.3)] p-4"
-                  >
-                    <ForecastChart
-                      complianceScore={deal.metrics.complianceScore}
-                      riskScore={deal.metrics.riskScore}
-                      estDays={deal.metrics.estTimeToCloseDays}
-                    />
-                  </motion.div>
-                </div>
-
-                {/* Right side (5 cols) — Agent + Governance */}
-                <div className="col-span-5 space-y-4">
-                  {/* Agent Panel */}
-                  <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.1 }}
-                    className="bg-[#141825] rounded-2xl border border-white/[0.06] shadow-[0_8px_32px_rgba(0,0,0,0.3)] p-4"
-                  >
-                    <AgentPanel deal={deal} />
-                  </motion.div>
-
-                  {/* Governance */}
-                  <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.15 }}
-                    className="bg-[#141825] rounded-2xl border border-white/[0.06] shadow-[0_8px_32px_rgba(0,0,0,0.3)] p-4"
-                  >
-                    <GovernanceCard
-                      parties={deal.parties}
-                    />
-                  </motion.div>
-                </div>
+          <div className="relative aspect-video rounded-xl bg-[#0c0f1a] border border-white/[0.06] flex items-center justify-center">
+            <div className="text-center">
+              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-emerald-500 to-emerald-700 flex items-center justify-center mx-auto mb-4 shadow-[0_8px_32px_rgba(16,185,129,0.25)]">
+                <Shield size={32} className="text-white" />
               </div>
-
-              {/* Bottom — Audit Feed */}
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.25 }}
-                className="bg-[#141825] rounded-2xl border border-white/[0.06] shadow-[0_8px_32px_rgba(0,0,0,0.3)] p-4"
-              >
-                <AuditFeed entries={deal.audit} />
-              </motion.div>
+              <p className="text-sm font-semibold text-gray-400">
+                Live Dashboard Preview
+              </p>
+              <p className="text-xs text-gray-600 mt-1">
+                Real-time compliance tracking & AI recommendations
+              </p>
             </div>
-          ) : (
-            <div className="flex items-center justify-center h-full text-gray-400">
-              <p className="text-sm">Select a deal to view details</p>
-            </div>
-          )}
-        </main>
-      </div>
+          </div>
+        </motion.div>
+      </section>
 
-      {/* Overlays */}
-      <DemoScriptModal />
-      <ToastStack />
-      <ConfettiEffect />
+      {/* Footer disclaimer */}
+      <footer className="relative z-10 border-t border-white/[0.06] mt-20">
+        <div className="max-w-5xl mx-auto px-6 py-8 text-center">
+          <p className="text-xs text-gray-600">
+            Demo uses synthetic data for illustration purposes only. Not legal or financial advice.
+            Designed for UAE property compliance workflows.
+          </p>
+          <p className="text-xs text-gray-700 mt-2">
+            © 2025 DeedFlow. Built for transforming fractional real estate transactions.
+          </p>
+        </div>
+      </footer>
     </div>
   );
 }
 
-function DealStatusBadge({ status, lang }: { status: string; lang: "en" | "ar" }) {
-  const colors: Record<string, string> = {
-    draft: "bg-gray-500/10 text-gray-400 border-gray-500/20",
-    active: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20 pulse-glow",
-    completed: "bg-gold-500/10 text-gold-400 border-gold-500/20",
-    on_hold: "bg-red-500/10 text-red-400 border-red-500/20",
-  };
+interface FeatureCardProps {
+  icon: typeof Shield;
+  title: string;
+  description: string;
+  delay: number;
+}
 
+function FeatureCard({ icon: Icon, title, description, delay }: FeatureCardProps) {
   return (
-    <motion.span
-      initial={{ scale: 0.9 }}
-      animate={{ scale: 1 }}
-      className={cn("px-3 py-1 text-xs font-bold rounded-full border", colors[status])}
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, delay }}
+      className="p-6 rounded-2xl border border-white/[0.06] bg-[#141825] hover:border-white/[0.12] hover:bg-[#1a1f30] transition-all group"
     >
-      {t(`status.${status}`, lang)}
-    </motion.span>
+      <div className="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mb-4 group-hover:bg-emerald-500/15 transition-colors">
+        <Icon size={24} className="text-emerald-400" />
+      </div>
+      <h3 className="text-lg font-bold text-white mb-2">{title}</h3>
+      <p className="text-sm text-gray-400 leading-relaxed">{description}</p>
+    </motion.div>
   );
 }

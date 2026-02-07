@@ -13,15 +13,16 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/cn";
 
 export default function TopBar() {
-  const { lang, setLang, setDemoScriptOpen } = useStore();
+  const { lang, setLang, setDemoScriptOpen, user, logout } = useStore();
   const pathname = usePathname();
+  const router = useRouter();
 
   const navItems = [
-    { href: "/", label: t("nav.dashboard", lang), icon: LayoutDashboard },
+    { href: "/app", label: t("nav.dashboard", lang), icon: LayoutDashboard },
     { href: "/about", label: t("nav.about", lang), icon: Info },
     { href: "/judge", label: t("nav.judge", lang), icon: Gavel },
   ];
@@ -173,6 +174,58 @@ export default function TopBar() {
             <Globe size={14} />
             {t("lang.toggle", lang)}
           </motion.button>
+
+          {/* User menu */}
+          {user && (
+            <div className="relative group">
+              <motion.button
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.97 }}
+                className="flex items-center gap-2 px-3 py-1.5 text-sm font-medium rounded-lg transition-all duration-200"
+                style={{
+                  background: "rgba(255, 255, 255, 0.04)",
+                  color: "#d1d5db",
+                  border: "1px solid rgba(255, 255, 255, 0.08)",
+                }}
+              >
+                <div className="w-6 h-6 rounded-full bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center">
+                  <span className="text-[10px] font-bold text-emerald-400">
+                    {user.name.charAt(0).toUpperCase()}
+                  </span>
+                </div>
+                <span className="text-xs">{user.name}</span>
+              </motion.button>
+
+              {/* Dropdown */}
+              <div
+                className="absolute right-0 top-full mt-1 w-48 rounded-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50"
+                style={{
+                  background: "rgba(20, 24, 37, 0.95)",
+                  backdropFilter: "blur(20px)",
+                  WebkitBackdropFilter: "blur(20px)",
+                  border: "1px solid rgba(255, 255, 255, 0.08)",
+                  boxShadow: "0 20px 50px rgba(0, 0, 0, 0.6)",
+                }}
+              >
+                <div className="p-3 border-b border-white/[0.06]">
+                  <p className="text-xs font-semibold text-white">{user.name}</p>
+                  <p className="text-[10px] text-gray-500 truncate">{user.email}</p>
+                  <p className="text-[10px] text-emerald-400 mt-0.5 capitalize">{user.role}</p>
+                </div>
+                <div className="p-1">
+                  <button
+                    onClick={() => {
+                      logout();
+                      router.push("/");
+                    }}
+                    className="w-full text-left px-3 py-2 text-sm rounded-lg text-red-400 hover:bg-red-500/10 transition-all"
+                  >
+                    Log out
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </motion.header>
