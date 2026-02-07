@@ -143,7 +143,6 @@ function CreateDealForm({ onClose }: { onClose: () => void }) {
       totalShares: 100,
       sharePrice: 10000,
       currency: "AED" as const,
-      governanceRule: { majorityThreshold: 51 },
       totalValue: 1000000,
       propertyAddress: `${city}, UAE`,
       propertyAddressAr: city === "Dubai" ? "دبي، الإمارات" : "أبوظبي، الإمارات",

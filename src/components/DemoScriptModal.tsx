@@ -49,14 +49,6 @@ const demoSteps = [
   },
   {
     time: "0:55",
-    title: "51% Governance Flip",
-    titleAr: "انقلاب حوكمة 51%",
-    description: "Trigger '51% Flip' — show how governance card changes to 'Majority Control Activated' with management rights.",
-    descriptionAr: "فعّل 'انقلاب 51%' — أظهر كيف تتغير بطاقة الحوكمة إلى 'سيطرة الأغلبية مفعّلة'.",
-    action: "majority_flip",
-  },
-  {
-    time: "1:05",
     title: "Language Switch",
     titleAr: "تبديل اللغة",
     description: "Toggle to Arabic — entire UI switches to RTL Arabic. Show the Compliance Copilot in Arabic too.",
@@ -84,8 +76,6 @@ export default function DemoScriptModal() {
       setLang(lang === "en" ? "ar" : "en");
     } else if (action === "step_completed") {
       simulateEvent({ type: "step_completed", dealId: selectedDealId });
-    } else if (action === "majority_flip") {
-      simulateEvent({ type: "majority_flip", dealId: selectedDealId });
     }
   }, [selectedDealId, simulateEvent, setLang, lang]);
 

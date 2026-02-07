@@ -194,9 +194,6 @@ export default function Dashboard() {
                   >
                     <GovernanceCard
                       parties={deal.parties}
-                      majorityThreshold={deal.governanceRule.majorityThreshold}
-                      totalShares={deal.totalShares}
-                      sharePrice={deal.sharePrice}
                     />
                   </motion.div>
                 </div>

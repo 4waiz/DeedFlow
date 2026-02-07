@@ -106,7 +106,7 @@ export default function AboutPage() {
               {
                 icon: Shield,
                 title: "Fairness",
-                body: "Every party gets transparent access to deal status, documents, and governance rules. 51% majority rules are enforced, not hidden.",
+                body: "Every party gets transparent access to deal status, documents, and compliance rules. Full visibility into ownership and workflow progress.",
                 color: "text-emerald-600",
               },
               {
@@ -151,7 +151,7 @@ export default function AboutPage() {
                 items: [
                   "AI-guided compliance workflow with 8-step gating",
                   "Document upload, extraction & verification (mock OCR)",
-                  "Governance engine with 51% majority detection",
+                  "Post-close automation: rent distribution & maintenance",
                 ],
               },
               {

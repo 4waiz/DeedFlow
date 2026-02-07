@@ -7,7 +7,6 @@ export async function POST(req: NextRequest) {
   const validEvents = [
     "missing_doc",
     "noc_delay",
-    "majority_flip",
     "risk_surge",
     "doc_verified",
     "step_completed",

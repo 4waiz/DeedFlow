@@ -4,54 +4,20 @@ import { Party } from "@/lib/types";
 import { useStore } from "@/lib/store";
 import { t } from "@/lib/i18n";
 import { motion } from "framer-motion";
-import { Shield, AlertTriangle, Users } from "lucide-react";
+import { Users } from "lucide-react";
 import { cn } from "@/lib/cn";
 
 interface Props {
   parties: Party[];
-  majorityThreshold: number;
-  totalShares: number;
-  sharePrice: number;
   monthlyRent?: number;
 }
 
-export default function GovernanceCard({ parties, majorityThreshold, monthlyRent = 8500 }: Props) {
+export default function GovernanceCard({ parties, monthlyRent = 8500 }: Props) {
   const { lang } = useStore();
   const buyers = parties.filter((p) => p.role === "buyer");
-  const hasMajority = buyers.some((b) => (b.sharePercent || 0) >= majorityThreshold);
-  const majorityHolder = buyers.find((b) => (b.sharePercent || 0) >= majorityThreshold);
 
   return (
     <div className="space-y-3">
-      {/* Governance Status */}
-      <div className={cn(
-        "p-3 rounded-xl border",
-        hasMajority ? "bg-gold-50 border-gold-300" : "bg-emerald-50 border-emerald-200"
-      )}>
-        <div className="flex items-center gap-2 mb-2">
-          {hasMajority ? (
-            <AlertTriangle size={16} className="text-gold-600" />
-          ) : (
-            <Shield size={16} className="text-emerald-600" />
-          )}
-          <span className="text-xs font-bold">
-            {hasMajority ? t("governance.majority", lang) : t("governance.normal", lang)}
-          </span>
-        </div>
-        <p className="text-[10px] text-gray-600">
-          {t("governance.threshold", lang)}: {majorityThreshold}%
-        </p>
-        {hasMajority && majorityHolder && (
-          <motion.p
-            initial={{ opacity: 0, y: 5 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-[10px] font-medium text-gold-700 mt-1"
-          >
-            🦅 {majorityHolder.name} holds {majorityHolder.sharePercent}% — management control & veto rights activated
-          </motion.p>
-        )}
-      </div>
-
       {/* Ownership breakdown */}
       <div className="p-3 rounded-xl border border-gray-100 bg-white">
         <div className="flex items-center gap-2 mb-2">
@@ -64,10 +30,7 @@ export default function GovernanceCard({ parties, majorityThreshold, monthlyRent
               <div className="flex-1">
                 <div className="flex items-center justify-between text-xs">
                   <span className="font-medium text-gray-900">{party.name}</span>
-                  <span className={cn(
-                    "font-bold",
-                    (party.sharePercent || 0) >= majorityThreshold ? "text-gold-600" : "text-emerald-600"
-                  )}>
+                  <span className="font-bold text-emerald-600">
                     {party.sharePercent}%
                   </span>
                 </div>
@@ -76,10 +39,7 @@ export default function GovernanceCard({ parties, majorityThreshold, monthlyRent
                     initial={{ width: 0 }}
                     animate={{ width: `${party.sharePercent || 0}%` }}
                     transition={{ duration: 0.5 }}
-                    className={cn(
-                      "h-full rounded-full",
-                      (party.sharePercent || 0) >= majorityThreshold ? "bg-gold-400" : "bg-emerald-400"
-                    )}
+                    className="h-full rounded-full bg-emerald-400"
                   />
                 </div>
               </div>

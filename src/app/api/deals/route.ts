@@ -43,7 +43,6 @@ export async function POST(req: NextRequest) {
     totalShares: body.totalShares || 100,
     sharePrice: body.sharePrice || 10000,
     currency: "AED",
-    governanceRule: { majorityThreshold: 51 },
     totalValue: (body.totalShares || 100) * (body.sharePrice || 10000),
     propertyAddress: body.propertyAddress || "Dubai, UAE",
     propertyAddressAr: body.propertyAddressAr || "دبي، الإمارات",

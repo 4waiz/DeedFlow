@@ -76,7 +76,7 @@ export default function JudgePage() {
               bg: "bg-red-50 border-red-200",
               points: [
                 "UAE property transactions involve 8+ compliance steps across multiple regulators",
-                "Fractional ownership adds governance complexity (51% rules, multi-party KYC)",
+                "Fractional ownership adds complexity — multi-party KYC, shared governance, rent splits",
                 "Manual workflows lead to 45+ day closings and frequent compliance failures",
               ],
             },
@@ -171,7 +171,7 @@ export default function JudgePage() {
               { icon: "📋", title: "8-Step Compliance Workflow", desc: "KYC → Title → NOC → Valuation → Escrow → Settlement → Issuance → Post-Close" },
               { icon: "🤖", title: "AI Compliance Copilot", desc: "Real-time recommendations: PROCEED / HOLD / ESCALATE with rationale" },
               { icon: "📜", title: "Smart Document Processing", desc: "Upload docs, auto-extract fields, verify — no manual data entry" },
-              { icon: "🦅", title: "51% Governance Engine", desc: "Automatic majority control detection with management handover rules" },
+              { icon: "👥", title: "Ownership & Parties", desc: "Track buyer shares, KYC status, and ownership breakdown in real-time" },
               { icon: "💰", title: "Post-Close Automation", desc: "Pro-rata rent distribution, maintenance splits, management assignment" },
               { icon: "📊", title: "Risk & Compliance Scoring", desc: "Dynamic scores update as docs are verified and steps completed" },
               { icon: "🌐", title: "Bilingual EN/AR", desc: "Full Arabic localization with RTL support — powered by Lingo.dev" },
@@ -205,12 +205,12 @@ export default function JudgePage() {
                 <p className="text-xs text-gray-500">View active deals, timeline, and compliance copilot</p>
               </div>
             </Link>
-            <Link href="/?simulate=majority_flip" className="group">
+            <Link href="/?simulate=step_completed" className="group">
               <div className="bg-white rounded-xl border border-gray-100 p-4 hover:border-gold-300 hover:shadow-md transition-all">
                 <h4 className="text-sm font-bold text-gray-900 mb-1 flex items-center gap-2">
-                  51% Governance Demo <ArrowRight size={14} className="text-gold-600 group-hover:translate-x-1 transition-transform" />
+                  Live Simulation <ArrowRight size={14} className="text-gold-600 group-hover:translate-x-1 transition-transform" />
                 </h4>
-                <p className="text-xs text-gray-500">See majority control activation in real-time</p>
+                <p className="text-xs text-gray-500">Watch compliance steps complete in real-time</p>
               </div>
             </Link>
             <Link href="/about" className="group">
