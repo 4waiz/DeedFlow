@@ -128,17 +128,24 @@ export default function LandingPage() {
           {/* Decorative gradient border */}
           <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-emerald-500/20 via-transparent to-gold-500/20 opacity-50 blur-2xl" />
 
-          <div className="relative aspect-video rounded-xl bg-[#0c0f1a] border border-white/[0.06] flex items-center justify-center">
-            <div className="text-center">
-              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-emerald-500 to-emerald-700 flex items-center justify-center mx-auto mb-4 shadow-[0_8px_32px_rgba(16,185,129,0.25)]">
-                <Shield size={32} className="text-white" />
-              </div>
-              <p className="text-sm font-semibold text-gray-400">
-                Live Dashboard Preview
-              </p>
-              <p className="text-xs text-gray-600 mt-1">
-                Real-time compliance tracking & AI recommendations
-              </p>
+          <div className="relative z-10 text-center px-4 mb-5">
+            <p className="text-sm font-semibold text-gray-100">
+              Live Dashboard Preview
+            </p>
+            <p className="text-xs text-gray-200/80 mt-1">
+              Real-time compliance tracking & AI recommendations
+            </p>
+          </div>
+          <div className="relative rounded-xl bg-[#0c0f1a] border border-white/[0.06] overflow-hidden">
+            <div className="relative aspect-video w-full">
+              <iframe
+                className="absolute inset-0 w-full h-full"
+                src="https://www.youtube.com/embed/lK8chxgKTOI"
+                title="DeedFlow Live Dashboard Preview"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                referrerPolicy="strict-origin-when-cross-origin"
+                allowFullScreen
+              />
             </div>
           </div>
         </motion.div>
