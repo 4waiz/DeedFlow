@@ -36,6 +36,20 @@ export default function SettingsPage() {
     }
   }, [user, router]);
 
+  // Initialize theme from saved preference or system setting
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    try {
+      const stored = window.localStorage.getItem("deedflow-theme");
+      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      const theme = stored || (prefersDark ? "dark" : "light");
+      document.documentElement.dataset.theme = theme;
+      setIsDark(theme === "dark");
+    } catch {
+      // graceful fallback - keep default
+    }
+  }, []);
+
   const handleLogout = async () => {
     setIsLoggingOut(true);
     try {
@@ -61,10 +75,17 @@ export default function SettingsPage() {
 
   const handleThemeChange = (theme: "dark" | "light") => {
     setIsDark(theme === "dark");
-    addToast(
-      `${theme === "dark" ? "Dark" : "Light"} mode activated`,
-      "success"
-    );
+
+    if (typeof window !== "undefined") {
+      try {
+        document.documentElement.dataset.theme = theme;
+        window.localStorage.setItem("deedflow-theme", theme);
+      } catch {
+        // ignore persistence errors
+      }
+    }
+
+    addToast(`${theme === "dark" ? "Dark" : "Light"} mode activated`, "success");
   };
 
   if (!user || !initialized) {
@@ -72,7 +93,7 @@ export default function SettingsPage() {
   }
 
   return (
-    <div dir={dir} className="min-h-[100dvh] flex flex-col bg-[#0c0f1a]">
+    <div dir={dir} className="min-h-[100dvh] flex flex-col bg-[var(--background)]">
       <div className="bg-particles" />
       <TopBar />
 
@@ -86,12 +107,12 @@ export default function SettingsPage() {
           >
             <Link
               href="/app"
-              className="flex items-center gap-2 px-3 py-2 text-sm text-gray-400 hover:text-white hover:bg-white/5 rounded-lg transition-all"
+              className="flex items-center gap-2 px-3 py-2 text-sm text-gray-400 hover:text-foreground hover:bg-white/5 rounded-lg transition-all"
             >
               <ArrowLeft size={16} />
               Back
             </Link>
-            <h1 className="text-2xl font-bold text-white">Settings</h1>
+            <h1 className="text-2xl font-bold text-foreground">Settings</h1>
           </motion.div>
 
           {/* Account Section */}
@@ -99,11 +120,11 @@ export default function SettingsPage() {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.05 }}
-            className="bg-[#141825] rounded-2xl border border-white/[0.06] shadow-[0_8px_32px_rgba(0,0,0,0.3)] p-4 sm:p-6 mb-6"
+            className="bg-[var(--card)] rounded-2xl border border-[var(--border)] shadow-soft p-4 sm:p-6 mb-6"
           >
             <div className="flex items-center gap-3 mb-6">
               <User size={20} className="text-emerald-400" />
-              <h2 className="text-lg font-bold text-white">Account</h2>
+              <h2 className="text-lg font-bold text-foreground">Account</h2>
             </div>
 
             {/* User Info */}
@@ -115,8 +136,8 @@ export default function SettingsPage() {
                   </span>
                 </div>
                 <div>
-                  <p className="text-sm font-semibold text-white">{user.name}</p>
-                  <p className="text-xs text-gray-400">{user.email}</p>
+                  <p className="text-sm font-semibold text-foreground">{user.name}</p>
+                  <p className="text-xs text-muted">{user.email}</p>
                   <p className="text-xs text-emerald-400 mt-1 capitalize">
                     {user.role}
                   </p>
@@ -142,18 +163,18 @@ export default function SettingsPage() {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="bg-[#141825] rounded-2xl border border-white/[0.06] shadow-[0_8px_32px_rgba(0,0,0,0.3)] p-4 sm:p-6 mb-6"
+            className="bg-[var(--card)] rounded-2xl border border-[var(--border)] shadow-soft p-4 sm:p-6 mb-6"
           >
             <div className="flex items-center gap-3 mb-6">
               <Bell size={20} className="text-blue-400" />
-              <h2 className="text-lg font-bold text-white">Preferences</h2>
+              <h2 className="text-lg font-bold text-foreground">Preferences</h2>
             </div>
 
             {/* Language Selection */}
             <div className="mb-8">
               <div className="flex items-center gap-2 mb-4">
-                <Globe size={16} className="text-gray-400" />
-                <label className="text-sm font-semibold text-gray-300 uppercase tracking-wide">
+                <Globe size={16} className="text-muted" />
+                <label className="text-sm font-semibold text-muted uppercase tracking-wide">
                   Language
                 </label>
               </div>
@@ -165,7 +186,7 @@ export default function SettingsPage() {
                   className={`px-4 py-3 rounded-lg font-medium transition-all border ${
                     lang === "en"
                       ? "bg-emerald-500/20 text-emerald-400 border-emerald-500/30"
-                      : "bg-white/5 text-gray-400 border-white/10 hover:bg-white/10"
+                      : "bg-white/5 text-muted border-white/10 hover:bg-white/10"
                   }`}
                 >
                   English
@@ -177,7 +198,7 @@ export default function SettingsPage() {
                   className={`px-4 py-3 rounded-lg font-medium transition-all border ${
                     lang === "ar"
                       ? "bg-emerald-500/20 text-emerald-400 border-emerald-500/30"
-                      : "bg-white/5 text-gray-400 border-white/10 hover:bg-white/10"
+                      : "bg-white/5 text-muted border-white/10 hover:bg-white/10"
                   }`}
                 >
                   العربية
@@ -189,11 +210,11 @@ export default function SettingsPage() {
             <div>
               <div className="flex items-center gap-2 mb-4">
                 {isDark ? (
-                  <Moon size={16} className="text-gray-400" />
+                  <Moon size={16} className="text-muted" />
                 ) : (
-                  <Sun size={16} className="text-gray-400" />
+                  <Sun size={16} className="text-muted" />
                 )}
-                <label className="text-sm font-semibold text-gray-300 uppercase tracking-wide">
+                <label className="text-sm font-semibold text-muted uppercase tracking-wide">
                   Appearance
                 </label>
               </div>
@@ -205,7 +226,7 @@ export default function SettingsPage() {
                   className={`px-4 py-3 rounded-lg font-medium transition-all border flex items-center justify-center gap-2 ${
                     isDark
                       ? "bg-emerald-500/20 text-emerald-400 border-emerald-500/30"
-                      : "bg-white/5 text-gray-400 border-white/10 hover:bg-white/10"
+                      : "bg-white/5 text-muted border-white/10 hover:bg-white/10"
                   }`}
                 >
                   <Moon size={16} />
@@ -218,7 +239,7 @@ export default function SettingsPage() {
                   className={`px-4 py-3 rounded-lg font-medium transition-all border flex items-center justify-center gap-2 ${
                     !isDark
                       ? "bg-emerald-500/20 text-emerald-400 border-emerald-500/30"
-                      : "bg-white/5 text-gray-400 border-white/10 hover:bg-white/10"
+                      : "bg-white/5 text-muted border-white/10 hover:bg-white/10"
                   }`}
                 >
                   <Sun size={16} />
@@ -233,20 +254,20 @@ export default function SettingsPage() {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.15 }}
-            className="bg-[#141825] rounded-2xl border border-white/[0.06] shadow-[0_8px_32px_rgba(0,0,0,0.3)] p-4 sm:p-6"
+            className="bg-[var(--card)] rounded-2xl border border-[var(--border)] shadow-soft p-4 sm:p-6"
           >
             <div className="flex items-center gap-3 mb-6">
               <Lock size={20} className="text-amber-400" />
-              <h2 className="text-lg font-bold text-white">Security</h2>
+              <h2 className="text-lg font-bold text-foreground">Security</h2>
             </div>
 
             <div className="space-y-3">
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-4 bg-white/[0.02] rounded-lg border border-white/[0.04]">
                 <div>
-                  <p className="text-sm font-medium text-white">
+                  <p className="text-sm font-medium text-foreground">
                     Two-Factor Authentication
                   </p>
-                  <p className="text-xs text-gray-400 mt-1">
+                  <p className="text-xs text-muted mt-1">
                     Add an extra layer of security
                   </p>
                 </div>
@@ -257,10 +278,10 @@ export default function SettingsPage() {
 
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-4 bg-white/[0.02] rounded-lg border border-white/[0.04]">
                 <div>
-                  <p className="text-sm font-medium text-white">
+                  <p className="text-sm font-medium text-foreground">
                     Login Notifications
                   </p>
-                  <p className="text-xs text-gray-400 mt-1">
+                  <p className="text-xs text-muted mt-1">
                     Get alerts for new logins
                   </p>
                 </div>

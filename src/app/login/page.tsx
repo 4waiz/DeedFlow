@@ -51,7 +51,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0c0f1a] relative overflow-hidden flex items-center justify-center">
+    <div className="min-h-screen bg-[var(--background)] relative overflow-hidden flex items-center justify-center">
       <div className="bg-particles" />
 
       {/* Simple header */}
@@ -69,7 +69,7 @@ export default function LoginPage() {
           </Link>
           <Link
             href="/signup"
-            className="text-xs sm:text-sm text-gray-400 hover:text-gray-300 transition-colors"
+            className="text-xs sm:text-sm text-muted hover:text-foreground transition-colors"
           >
             Need an account? <span className="text-emerald-400 font-semibold">Sign up</span>
           </Link>
@@ -82,11 +82,11 @@ export default function LoginPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="bg-[#141825] rounded-2xl border border-white/[0.08] p-6 sm:p-8 shadow-[0_20px_80px_rgba(0,0,0,0.5)]"
+          className="bg-[var(--card)] rounded-2xl border border-[var(--border)] p-6 sm:p-8 shadow-soft"
         >
           <div className="text-center mb-8">
-            <h1 className="text-2xl font-bold text-white mb-2">Welcome back</h1>
-            <p className="text-sm text-gray-400">
+            <h1 className="text-2xl font-bold text-foreground mb-2">Welcome back</h1>
+            <p className="text-sm text-muted">
               {isDemoMode ? "Starting in demo mode — no authentication required" : "Sign in to continue to DeedFlow"}
             </p>
           </div>
@@ -94,7 +94,7 @@ export default function LoginPage() {
           {/* Login form */}
           <div className="space-y-4 mb-6">
             <div>
-              <label className="block text-xs font-semibold text-gray-400 mb-2">Email</label>
+              <label className="block text-xs font-semibold text-muted mb-2">Email</label>
               <div className="relative">
                 <Mail size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" />
                 <input
@@ -102,15 +102,15 @@ export default function LoginPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="you@company.ae"
-                  className="w-full pl-10 pr-4 py-3 rounded-xl border border-white/[0.08] bg-white/[0.04] text-white placeholder-gray-600 focus:border-emerald-500/40 focus:ring-2 focus:ring-emerald-500/20 outline-none transition-all text-sm"
+                  className="w-full pl-10 pr-4 py-3 rounded-xl border border-white/[0.08] bg-transparent text-foreground placeholder-gray-600 focus:border-emerald-500/40 focus:ring-2 focus:ring-emerald-500/20 outline-none transition-all text-sm"
                   onKeyDown={(e) => e.key === "Enter" && handleLogin()}
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-gray-400 mb-2">
-                Password {isDemoMode && <span className="text-gray-600">(optional in demo)</span>}
+              <label className="block text-xs font-semibold text-muted mb-2">
+                Password {isDemoMode && <span className="text-muted">(optional in demo)</span>}
               </label>
               <div className="relative">
                 <Lock size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" />
@@ -119,7 +119,7 @@ export default function LoginPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full pl-10 pr-4 py-3 rounded-xl border border-white/[0.08] bg-white/[0.04] text-white placeholder-gray-600 focus:border-emerald-500/40 focus:ring-2 focus:ring-emerald-500/20 outline-none transition-all text-sm"
+                  className="w-full pl-10 pr-4 py-3 rounded-xl border border-white/[0.08] bg-transparent text-foreground placeholder-gray-600 focus:border-emerald-500/40 focus:ring-2 focus:ring-emerald-500/20 outline-none transition-all text-sm"
                   onKeyDown={(e) => e.key === "Enter" && handleLogin()}
                 />
               </div>
@@ -153,7 +153,7 @@ export default function LoginPage() {
               <div className="w-full border-t border-white/[0.06]" />
             </div>
             <div className="relative flex justify-center">
-              <span className="px-4 bg-[#141825] text-xs text-gray-600">Quick login as...</span>
+              <span className="px-4 bg-[var(--card)] text-xs text-gray-600">Quick login as...</span>
             </div>
           </div>
 

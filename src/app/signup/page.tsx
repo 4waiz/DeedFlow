@@ -61,7 +61,7 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0c0f1a] relative overflow-hidden flex items-center justify-center">
+    <div className="min-h-screen bg-[var(--background)] relative overflow-hidden flex items-center justify-center">
       <div className="bg-particles" />
 
       {/* Simple header */}
@@ -79,7 +79,7 @@ export default function SignupPage() {
           </Link>
           <Link
             href="/login"
-            className="text-xs sm:text-sm text-gray-400 hover:text-gray-300 transition-colors"
+            className="text-xs sm:text-sm text-muted hover:text-foreground transition-colors"
           >
             Already have an account? <span className="text-emerald-400 font-semibold">Log in</span>
           </Link>
@@ -92,13 +92,13 @@ export default function SignupPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="bg-[#141825] rounded-2xl border border-white/[0.08] p-6 sm:p-8 shadow-[0_20px_80px_rgba(0,0,0,0.5)]"
+          className="bg-[var(--card)] rounded-2xl border border-[var(--border)] p-6 sm:p-8 shadow-soft"
         >
           {step === "signup" ? (
             <>
               <div className="text-center mb-8">
-                <h1 className="text-2xl font-bold text-white mb-2">Get started with DeedFlow</h1>
-                <p className="text-sm text-gray-400">
+                <h1 className="text-2xl font-bold text-foreground mb-2">Get started with DeedFlow</h1>
+                <p className="text-sm text-muted">
                   Create your account to access the compliance platform
                 </p>
               </div>
@@ -106,7 +106,7 @@ export default function SignupPage() {
               {/* Signup form */}
               <div className="space-y-4 mb-6">
                 <div>
-                  <label className="block text-xs font-semibold text-gray-400 mb-2">Full Name</label>
+                  <label className="block text-xs font-semibold text-muted mb-2">Full Name</label>
                   <div className="relative">
                     <User size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" />
                     <input
@@ -120,7 +120,7 @@ export default function SignupPage() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-gray-400 mb-2">Work Email</label>
+                  <label className="block text-xs font-semibold text-muted mb-2">Work Email</label>
                   <div className="relative">
                     <Mail size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" />
                     <input
@@ -134,8 +134,8 @@ export default function SignupPage() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-gray-400 mb-2">
-                    Company <span className="text-gray-600">(optional)</span>
+                  <label className="block text-xs font-semibold text-muted mb-2">
+                    Company <span className="text-muted">(optional)</span>
                   </label>
                   <div className="relative">
                     <Building2 size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" />
@@ -150,7 +150,7 @@ export default function SignupPage() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-gray-400 mb-2">Role</label>
+                  <label className="block text-xs font-semibold text-muted mb-2">Role</label>
                   <select
                     value={role}
                     onChange={(e) => setRole(e.target.value as typeof role)}
@@ -176,7 +176,7 @@ export default function SignupPage() {
                 Create Account
               </motion.button>
 
-              <p className="text-center text-xs text-gray-600 mt-6">
+              <p className="text-center text-xs text-muted mt-6">
                 By signing up, you agree to our demo terms. This is a hackathon prototype.
               </p>
             </>

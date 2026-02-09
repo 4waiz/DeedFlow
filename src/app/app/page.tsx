@@ -73,7 +73,7 @@ export default function Dashboard() {
 
   if (!initialized || deals.length === 0) {
     return (
-      <div className="h-screen flex items-center justify-center bg-[#0c0f1a]">
+      <div className="h-screen flex items-center justify-center bg-[var(--background)]">
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -82,7 +82,7 @@ export default function Dashboard() {
           <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-emerald-500 to-emerald-700 flex items-center justify-center mx-auto mb-4 shadow-[0_8px_32px_rgba(16,185,129,0.25)]">
             <span className="text-white text-2xl font-bold">D</span>
           </div>
-          <h1 className="text-xl font-bold text-white mb-2">DeedFlow</h1>
+          <h1 className="text-xl font-bold text-foreground mb-2">DeedFlow</h1>
           <p className="text-sm text-gray-500">Loading deals...</p>
           <div className="mt-4 flex justify-center gap-1">
             <span className="w-2 h-2 rounded-full bg-emerald-500/60 animate-pulse" />
@@ -95,13 +95,13 @@ export default function Dashboard() {
   }
 
   return (
-    <div dir={dir} className="min-h-[100dvh] flex flex-col bg-[#0c0f1a]">
+    <div dir={dir} className="min-h-[100dvh] flex flex-col bg-[var(--background)]">
       <div className="bg-particles" />
       <TopBar />
 
       <div className="flex-1 flex min-h-0 overflow-hidden">
         {/* Main Content */}
-        <main className="flex-1 overflow-y-auto overflow-x-hidden p-3 sm:p-4 bg-[#0c0f1a]">
+        <main className="flex-1 overflow-y-auto overflow-x-hidden p-3 sm:p-4 bg-[var(--background)]">
           {deal ? (
             <div className="max-w-5xl mx-auto space-y-3 sm:space-y-4">
               {/* Deal Header Card */}
@@ -109,14 +109,14 @@ export default function Dashboard() {
                 key={deal.id}
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="relative bg-[#141825] rounded-2xl border border-white/[0.06] shadow-[0_8px_32px_rgba(0,0,0,0.3)] p-4 overflow-hidden"
+                className="relative bg-[var(--card)] rounded-2xl border border-[var(--border)] shadow-soft p-4 overflow-hidden"
               >
                 {/* Subtle gradient top border */}
                 <div className="absolute inset-x-0 top-0 h-[1px] bg-gradient-to-r from-transparent via-emerald-500/40 to-transparent" />
 
                 <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-3">
                   <div>
-                    <h2 className="text-xl font-bold text-white">
+                    <h2 className="text-xl font-bold text-foreground">
                       {lang === "ar" ? deal.nameAr : deal.name}
                     </h2>
                     <div className="flex items-center gap-3 mt-1 text-xs text-gray-500 flex-wrap">
@@ -191,7 +191,7 @@ export default function Dashboard() {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.1 }}
-                    className="bg-[#141825] rounded-2xl border border-white/[0.06] shadow-[0_8px_32px_rgba(0,0,0,0.3)] p-4"
+                    className="bg-[var(--card)] rounded-2xl border border-[var(--border)] shadow-soft p-4"
                   >
                     <DealTimeline
                       steps={deal.steps}
@@ -214,7 +214,7 @@ export default function Dashboard() {
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.1 }}
-                      className="bg-[#141825] rounded-2xl border border-white/[0.06] shadow-[0_8px_32px_rgba(0,0,0,0.3)] p-4"
+                      className="bg-[var(--card)] rounded-2xl border border-[var(--border)] shadow-soft p-4"
                     >
                       <AgentPanel deal={deal} />
                     </motion.div>
@@ -225,7 +225,7 @@ export default function Dashboard() {
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.15 }}
-                      className="bg-[#141825] rounded-2xl border border-white/[0.06] shadow-[0_8px_32px_rgba(0,0,0,0.3)] p-4"
+                      className="bg-[var(--card)] rounded-2xl border border-[var(--border)] shadow-soft p-4"
                     >
                       <GovernanceCard parties={deal.parties} />
                     </motion.div>
@@ -236,7 +236,7 @@ export default function Dashboard() {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.2 }}
-                    className="bg-[#141825] rounded-2xl border border-white/[0.06] shadow-[0_8px_32px_rgba(0,0,0,0.3)] p-4"
+                    className="bg-[var(--card)] rounded-2xl border border-[var(--border)] shadow-soft p-4"
                     id="docs-panel"
                   >
                     <DocsPanel docs={deal.docs} steps={deal.steps} dealId={deal.id} />
@@ -248,7 +248,7 @@ export default function Dashboard() {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.25 }}
-                    className="bg-[#141825] rounded-2xl border border-white/[0.06] shadow-[0_8px_32px_rgba(0,0,0,0.3)] p-4"
+                    className="bg-[var(--card)] rounded-2xl border border-[var(--border)] shadow-soft p-4"
                   >
                     <AuditFeed entries={deal.audit} />
                   </motion.div>
@@ -256,7 +256,7 @@ export default function Dashboard() {
               </div>
             </div>
           ) : (
-            <div className="flex items-center justify-center h-full text-gray-400">
+            <div className="flex items-center justify-center h-full text-muted">
               <p className="text-sm">Select a deal to view details</p>
             </div>
           )}

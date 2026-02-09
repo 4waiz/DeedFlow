@@ -7,7 +7,7 @@ import { ArrowLeft, CheckCircle, Zap, Shield, Users } from "lucide-react";
 
 export default function AboutPage() {
   return (
-    <div className="min-h-screen bg-[#0c0f1a] relative overflow-hidden">
+    <div className="min-h-screen bg-[var(--background)] relative overflow-hidden">
       {/* Background particles */}
       <div className="bg-particles" />
 
@@ -65,10 +65,10 @@ export default function AboutPage() {
           transition={{ duration: 0.6 }}
           className="mb-16"
         >
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-white mb-5 sm:mb-6">
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-foreground mb-5 sm:mb-6">
             About DeedFlow
           </h1>
-          <p className="text-base sm:text-lg text-gray-400 leading-relaxed max-w-3xl">
+          <p className="text-base sm:text-lg text-muted leading-relaxed max-w-3xl">
             Transforming how fractional and tokenized real estate transactions work by combining AI-powered compliance orchestration with human oversight.
           </p>
         </motion.div>
@@ -80,12 +80,12 @@ export default function AboutPage() {
           transition={{ duration: 0.6, delay: 0.1 }}
           className="mb-16"
         >
-          <div className="bg-[#141825] rounded-2xl border border-white/[0.06] p-5 sm:p-8">
-            <h2 className="text-2xl font-bold text-white mb-4">Our Mission</h2>
-            <p className="text-gray-400 text-base sm:text-lg leading-relaxed mb-4">
+          <div className="bg-[var(--card)] rounded-2xl border border-[var(--border)] p-5 sm:p-8">
+            <h2 className="text-2xl font-bold text-foreground mb-4">Our Mission</h2>
+            <p className="text-muted text-base sm:text-lg leading-relaxed mb-4">
               Property transactions in emerging markets are complex, fragmented, and risky. Parties struggle with compliance, verification, and settlement across multiple jurisdictions.
             </p>
-            <p className="text-gray-400 text-base sm:text-lg leading-relaxed">
+            <p className="text-muted text-base sm:text-lg leading-relaxed">
               DeedFlow solves this by providing a single orchestration platform where compliance workflows are guided by AI, every step is gated, and complete auditability is guaranteed.
             </p>
           </div>
@@ -98,7 +98,7 @@ export default function AboutPage() {
           transition={{ duration: 0.6, delay: 0.2 }}
           className="mb-16"
         >
-          <h2 className="text-3xl font-bold text-white mb-8">Core Pillars</h2>
+          <h2 className="text-3xl font-bold text-foreground mb-8">Core Pillars</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             <PillarCard
               icon={Zap}
@@ -128,7 +128,7 @@ export default function AboutPage() {
           transition={{ duration: 0.6, delay: 0.3 }}
           className="mb-16"
         >
-          <h2 className="text-3xl font-bold text-white mb-8">Why DeedFlow?</h2>
+          <h2 className="text-3xl font-bold text-foreground mb-8">Why DeedFlow?</h2>
           <div className="space-y-4">
             <BenefitRow
               icon={CheckCircle}
@@ -176,7 +176,7 @@ export default function AboutPage() {
           transition={{ duration: 0.6, delay: 0.4 }}
           className="mb-16"
         >
-          <h2 className="text-3xl font-bold text-white mb-8">Built For</h2>
+          <h2 className="text-3xl font-bold text-foreground mb-8">Built For</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <UseCaseCard
               title="Tokenized Real Estate Platforms"
@@ -208,8 +208,8 @@ export default function AboutPage() {
           transition={{ duration: 0.6, delay: 0.5 }}
           className="text-center py-16"
         >
-          <h2 className="text-3xl font-bold text-white mb-6">Ready to Transform Your Transactions?</h2>
-          <p className="text-gray-400 text-base sm:text-lg mb-8 max-w-2xl mx-auto">
+          <h2 className="text-3xl font-bold text-foreground mb-6">Ready to Transform Your Transactions?</h2>
+          <p className="text-muted text-base sm:text-lg mb-8 max-w-2xl mx-auto">
             Experience DeedFlow in action with our interactive demo, or get started with your first real transaction.
           </p>
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3 sm:gap-4">
@@ -260,12 +260,12 @@ function PillarCard({ icon: Icon, title, description, delay }: PillarCardProps) 
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay }}
-      className="p-6 rounded-2xl border border-white/[0.06] bg-[#141825] hover:border-white/[0.12] hover:bg-[#1a1f30] transition-all group"
+      className="p-6 rounded-2xl border border-[var(--border)] bg-[var(--card)] hover:border-[var(--border-bright)] hover:bg-[var(--card-hover)] transition-all group"
     >
       <div className="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mb-4 group-hover:bg-emerald-500/15 transition-colors">
         <Icon size={24} className="text-emerald-400" />
       </div>
-      <h3 className="text-lg font-bold text-white mb-2">{title}</h3>
+      <h3 className="text-lg font-bold text-foreground mb-2">{title}</h3>
       <p className="text-sm text-gray-400 leading-relaxed">{description}</p>
     </motion.div>
   );
@@ -288,7 +288,7 @@ function BenefitRow({ icon: Icon, title, description, delay }: BenefitRowProps) 
     >
       <Icon size={24} className="text-emerald-400 flex-shrink-0 mt-1" />
       <div>
-        <h3 className="text-base font-semibold text-white mb-1">{title}</h3>
+        <h3 className="text-base font-semibold text-foreground mb-1">{title}</h3>
         <p className="text-sm text-gray-400">{description}</p>
       </div>
     </motion.div>
@@ -307,9 +307,9 @@ function UseCaseCard({ title, description, delay }: UseCaseCardProps) {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay }}
-      className="p-6 rounded-2xl border border-white/[0.06] bg-[#141825] hover:border-white/[0.12] hover:bg-[#1a1f30] transition-all"
+      className="p-6 rounded-2xl border border-[var(--border)] bg-[var(--card)] hover:border-[var(--border-bright)] hover:bg-[var(--card-hover)] transition-all"
     >
-      <h3 className="text-lg font-bold text-white mb-3">{title}</h3>
+      <h3 className="text-lg font-bold text-foreground mb-3">{title}</h3>
       <p className="text-sm text-gray-400 leading-relaxed">{description}</p>
     </motion.div>
   );

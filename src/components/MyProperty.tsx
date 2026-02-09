@@ -49,13 +49,13 @@ export default function MyProperty({ deal }: MyPropertyProps) {
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-[#141825] rounded-2xl border border-white/[0.06] p-4"
+          className="bg-[var(--card)] rounded-2xl border border-[var(--border)] p-4"
         >
           <div className="flex items-center justify-between mb-2">
-            <span className="text-xs text-gray-400 uppercase tracking-wide">Property Value</span>
+            <span className="text-xs text-muted uppercase tracking-wide">Property Value</span>
             <Home size={16} className="text-emerald-400" />
           </div>
-          <p className="text-lg font-bold text-white">
+          <p className="text-lg font-bold text-foreground">
             AED {deal.totalValue.toLocaleString()}
           </p>
           <p className="text-xs text-emerald-400 mt-1">+{propertyAppreciation}% YTD</p>
@@ -65,42 +65,42 @@ export default function MyProperty({ deal }: MyPropertyProps) {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.05 }}
-          className="bg-[#141825] rounded-2xl border border-white/[0.06] p-4"
+          className="bg-[var(--card)] rounded-2xl border border-[var(--border)] p-4"
         >
           <div className="flex items-center justify-between mb-2">
-            <span className="text-xs text-gray-400 uppercase tracking-wide">Price/SqFt</span>
+            <span className="text-xs text-muted uppercase tracking-wide">Price/SqFt</span>
             <TrendingUp size={16} className="text-emerald-400" />
           </div>
-          <p className="text-lg font-bold text-white">AED 3,000</p>
-          <p className="text-xs text-gray-400 mt-1">+5.3% vs market</p>
+          <p className="text-lg font-bold text-foreground">AED 3,000</p>
+          <p className="text-xs text-muted mt-1">+5.3% vs market</p>
         </motion.div>
 
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="bg-[#141825] rounded-2xl border border-white/[0.06] p-4"
+          className="bg-[var(--card)] rounded-2xl border border-[var(--border)] p-4"
         >
           <div className="flex items-center justify-between mb-2">
-            <span className="text-xs text-gray-400 uppercase tracking-wide">Total Shares</span>
+            <span className="text-xs text-muted uppercase tracking-wide">Total Shares</span>
             <DollarSign size={16} className="text-amber-400" />
           </div>
-          <p className="text-lg font-bold text-white">{deal.totalShares}</p>
-          <p className="text-xs text-gray-400 mt-1">@ AED {deal.sharePrice}/share</p>
+          <p className="text-lg font-bold text-foreground">{deal.totalShares}</p>
+          <p className="text-xs text-muted mt-1">@ AED {deal.sharePrice}/share</p>
         </motion.div>
 
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.15 }}
-          className="bg-[#141825] rounded-2xl border border-white/[0.06] p-4"
+          className="bg-[var(--card)] rounded-2xl border border-[var(--border)] p-4"
         >
           <div className="flex items-center justify-between mb-2">
-            <span className="text-xs text-gray-400 uppercase tracking-wide">Investors</span>
+            <span className="text-xs text-muted uppercase tracking-wide">Investors</span>
             <Users size={16} className="text-blue-400" />
           </div>
-          <p className="text-lg font-bold text-white">{deal.parties.length}</p>
-          <p className="text-xs text-gray-400 mt-1">Active stakeholders</p>
+          <p className="text-lg font-bold text-foreground">{deal.parties.length}</p>
+          <p className="text-xs text-muted mt-1">Active stakeholders</p>
         </motion.div>
       </div>
 
@@ -109,7 +109,7 @@ export default function MyProperty({ deal }: MyPropertyProps) {
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
-        className="bg-[#141825] rounded-2xl border border-white/[0.06] p-4 sm:p-6"
+        className="bg-[var(--card)] rounded-2xl border border-[var(--border)] p-4 sm:p-6"
       >
         <h3 className="text-sm font-semibold text-gray-300 uppercase tracking-wide mb-6">
           Market Value Comparison
@@ -166,7 +166,7 @@ export default function MyProperty({ deal }: MyPropertyProps) {
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.25 }}
-        className="bg-[#141825] rounded-2xl border border-white/[0.06] p-4 sm:p-6"
+        className="bg-[var(--card)] rounded-2xl border border-[var(--border)] p-4 sm:p-6"
       >
         <h3 className="text-sm font-semibold text-gray-300 uppercase tracking-wide mb-6">
           Price Per Square Foot Comparison
@@ -180,8 +180,8 @@ export default function MyProperty({ deal }: MyPropertyProps) {
               transition={{ delay: 0.3 + index * 0.05 }}
             >
               <div className="flex items-center justify-between mb-2">
-                <span className="text-sm text-gray-400">{item.category}</span>
-                <span className="text-sm font-semibold text-white">AED {item.value}</span>
+                <span className="text-sm text-muted">{item.category}</span>
+                <span className="text-sm font-semibold text-foreground">AED {item.value}</span>
               </div>
               <div className="h-2 bg-white/[0.05] rounded-full overflow-hidden">
                 <motion.div
@@ -204,42 +204,42 @@ export default function MyProperty({ deal }: MyPropertyProps) {
         transition={{ delay: 0.3 }}
         className="grid grid-cols-1 md:grid-cols-2 gap-4"
       >
-        <div className="bg-[#141825] rounded-2xl border border-white/[0.06] p-6">
+        <div className="bg-[var(--card)] rounded-2xl border border-[var(--border)] p-6">
           <h3 className="text-sm font-semibold text-gray-300 uppercase tracking-wide mb-4">
             Your Advantage
           </h3>
           <ul className="space-y-2">
             <li className="flex items-start gap-2">
               <span className="text-emerald-400 mt-1">✓</span>
-              <span className="text-sm text-gray-400">Property outperforming market by 5.3%</span>
+              <span className="text-sm text-muted">Property outperforming market by 5.3%</span>
             </li>
             <li className="flex items-start gap-2">
               <span className="text-emerald-400 mt-1">✓</span>
-              <span className="text-sm text-gray-400">Strong appreciation trajectory (14.3% YTD)</span>
+              <span className="text-sm text-muted">Strong appreciation trajectory (14.3% YTD)</span>
             </li>
             <li className="flex items-start gap-2">
               <span className="text-emerald-400 mt-1">✓</span>
-              <span className="text-sm text-gray-400">Premium location in high-demand area</span>
+              <span className="text-sm text-muted">Premium location in high-demand area</span>
             </li>
           </ul>
         </div>
 
-        <div className="bg-[#141825] rounded-2xl border border-white/[0.06] p-6">
+        <div className="bg-[var(--card)] rounded-2xl border border-[var(--border)] p-6">
           <h3 className="text-sm font-semibold text-gray-300 uppercase tracking-wide mb-4">
             Market Position
           </h3>
           <ul className="space-y-2">
             <li className="flex items-start gap-2">
               <span className="text-blue-400 mt-1">•</span>
-              <span className="text-sm text-gray-400">Top 15% of market in appreciation</span>
+              <span className="text-sm text-muted">Top 15% of market in appreciation</span>
             </li>
             <li className="flex items-start gap-2">
               <span className="text-blue-400 mt-1">•</span>
-              <span className="text-sm text-gray-400">Competitive pricing vs premium segment</span>
+              <span className="text-sm text-muted">Competitive pricing vs premium segment</span>
             </li>
             <li className="flex items-start gap-2">
               <span className="text-blue-400 mt-1">•</span>
-              <span className="text-sm text-gray-400">Strong investor interest (7 stakeholders)</span>
+              <span className="text-sm text-muted">Strong investor interest (7 stakeholders)</span>
             </li>
           </ul>
         </div>

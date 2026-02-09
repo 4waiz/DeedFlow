@@ -7,7 +7,7 @@ import { ArrowRight, Shield, FileCheck, Activity, Sparkles } from "lucide-react"
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen bg-[#0c0f1a] relative overflow-hidden">
+    <div className="min-h-screen bg-[var(--background)] relative overflow-hidden">
       {/* Background particles */}
       <div className="bg-particles" />
 
@@ -59,12 +59,12 @@ export default function LandingPage() {
             AI-Powered Compliance Engine
           </div>
 
-          <h1 className="text-3xl sm:text-4xl lg:text-6xl font-black text-white mb-5 sm:mb-6 leading-tight">
+          <h1 className="text-3xl sm:text-4xl lg:text-6xl font-black text-foreground mb-5 sm:mb-6 leading-tight">
             AI-powered transaction orchestration for{" "}
             <span className="text-gradient-hero">fractional & tokenized</span> real estate
           </h1>
 
-          <p className="text-base sm:text-lg lg:text-xl text-gray-400 mb-8 sm:mb-10 max-w-3xl mx-auto leading-relaxed">
+          <p className="text-base sm:text-lg lg:text-xl text-muted mb-8 sm:mb-10 max-w-3xl mx-auto leading-relaxed">
             Guided compliance checklist, settlement gating, audit trail, and post-close automation.
             Turn complex property transactions into a streamlined, compliant workflow.
           </p>
@@ -123,7 +123,7 @@ export default function LandingPage() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.4 }}
-          className="relative rounded-2xl border border-white/[0.08] bg-gradient-to-br from-[#141825] to-[#0e1119] p-4 sm:p-6 lg:p-8 overflow-hidden shadow-[0_20px_80px_rgba(0,0,0,0.5)]"
+          className="relative rounded-2xl border border-[var(--border)] bg-[var(--card)] p-4 sm:p-6 lg:p-8 overflow-hidden shadow-soft"
         >
           {/* Decorative gradient border */}
           <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-emerald-500/20 via-transparent to-gold-500/20 opacity-50 blur-2xl" />
@@ -136,7 +136,7 @@ export default function LandingPage() {
               Real-time compliance tracking & AI recommendations
             </p>
           </div>
-          <div className="relative rounded-xl bg-[#0c0f1a] border border-white/[0.06] overflow-hidden">
+          <div className="relative rounded-xl bg-[var(--card)] border border-[var(--border)] overflow-hidden">
             <div className="relative aspect-video w-full">
               <iframe
                 className="absolute inset-0 w-full h-full"
@@ -180,12 +180,12 @@ function FeatureCard({ icon: Icon, title, description, delay }: FeatureCardProps
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay }}
-      className="p-6 rounded-2xl border border-white/[0.06] bg-[#141825] hover:border-white/[0.12] hover:bg-[#1a1f30] transition-all group"
+      className="p-6 rounded-2xl border border-[var(--border)] bg-[var(--card)] hover:border-[var(--border-bright)] hover:bg-[var(--card-hover)] transition-all group"
     >
       <div className="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mb-4 group-hover:bg-emerald-500/15 transition-colors">
         <Icon size={24} className="text-emerald-400" />
       </div>
-      <h3 className="text-lg font-bold text-white mb-2">{title}</h3>
+      <h3 className="text-lg font-bold text-foreground mb-2">{title}</h3>
       <p className="text-sm text-gray-400 leading-relaxed">{description}</p>
     </motion.div>
   );

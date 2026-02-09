@@ -40,7 +40,7 @@ export default function PropertyPage() {
 
   if (!initialized || deals.length === 0) {
     return (
-      <div className="h-screen flex items-center justify-center bg-[#0c0f1a]">
+      <div className="h-screen flex items-center justify-center bg-[var(--background)]">
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -57,7 +57,7 @@ export default function PropertyPage() {
   }
 
   return (
-    <div dir={dir} className="min-h-[100dvh] flex flex-col bg-[#0c0f1a]">
+    <div dir={dir} className="min-h-[100dvh] flex flex-col bg-[var(--background)]">
       <div className="bg-particles" />
       <TopBar />
 
@@ -71,7 +71,7 @@ export default function PropertyPage() {
           >
             <Link
               href="/app"
-              className="flex items-center gap-2 px-3 py-2 text-sm text-gray-400 hover:text-white hover:bg-white/5 rounded-lg transition-all"
+              className="flex items-center gap-2 px-3 py-2 text-sm text-gray-400 hover:text-foreground hover:bg-white/5 rounded-lg transition-all"
             >
               <ArrowLeft size={16} />
               Back to Dashboard
@@ -87,10 +87,10 @@ export default function PropertyPage() {
                 animate={{ opacity: 1, y: 0 }}
                 className="mb-6"
               >
-                <h2 className="text-xl font-bold text-white mb-2">
+                <h2 className="text-xl font-bold text-foreground mb-2">
                   {lang === "ar" ? deal.nameAr : deal.name}
                 </h2>
-                <p className="text-sm text-gray-400">{deal.city} • {deal.propertyType}</p>
+                <p className="text-sm text-muted">{deal.city} • {deal.propertyType}</p>
               </motion.div>
 
               {/* My Property Component */}
@@ -100,7 +100,7 @@ export default function PropertyPage() {
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="flex items-center justify-center min-h-[240px] sm:min-h-[320px] lg:min-h-[400px] text-gray-400"
+              className="flex items-center justify-center min-h-[240px] sm:min-h-[320px] lg:min-h-[400px] text-muted"
             >
               <p className="text-sm">No property selected. Please select a property from the dashboard.</p>
             </motion.div>

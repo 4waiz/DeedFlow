@@ -50,7 +50,7 @@ export default function JudgePage() {
   };
 
   return (
-    <div dir={dir} className="min-h-screen bg-[#0c0f1a]">
+    <div dir={dir} className="min-h-screen bg-[var(--background)]">
       <TopBar />
 
       <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8 sm:py-10">
@@ -70,7 +70,7 @@ export default function JudgePage() {
           <h1 className="text-2xl sm:text-3xl font-black text-white mb-3">
             AI-Powered Property Compliance
           </h1>
-          <p className="text-sm sm:text-base text-gray-400 max-w-2xl mx-auto">
+          <p className="text-sm sm:text-base text-muted max-w-2xl mx-auto">
             TurboTax + DocuSign + compliance ops for fractional/tokenized real estate in the UAE
           </p>
         </motion.div>
@@ -125,7 +125,7 @@ export default function JudgePage() {
               </div>
               <ul className="space-y-2">
                 {card.points.map((point) => (
-                  <li key={point} className="flex items-start gap-2 text-xs text-gray-400 leading-relaxed">
+                  <li key={point} className="flex items-start gap-2 text-xs text-muted leading-relaxed">
                     <span className="mt-1 flex-shrink-0">•</span>
                     {point}
                   </li>
@@ -152,7 +152,7 @@ export default function JudgePage() {
               { label: "Completed", value: completedDeals, icon: CheckCircle, color: "text-emerald-400", bg: "bg-emerald-500/[0.06] border-emerald-500/15" },
               { label: "Avg Compliance", value: `${avgCompliance}%`, icon: Shield, color: "text-blue-400", bg: "bg-blue-500/[0.06] border-blue-500/15" },
               { label: "Total Value", value: `AED ${(totalValue / 1000000).toFixed(1)}M`, icon: TrendingUp, color: "text-emerald-400", bg: "bg-emerald-500/[0.06] border-emerald-500/15" },
-              { label: "Docs Uploaded", value: totalDocs, icon: FileCheck, color: "text-gray-400", bg: "bg-white/[0.03] border-white/[0.06]" },
+              { label: "Docs Uploaded", value: totalDocs, icon: FileCheck, color: "text-muted", bg: "bg-white/[0.03] border-white/[0.06]" },
               { label: "Docs Verified", value: verifiedDocs, icon: CheckCircle, color: "text-emerald-400", bg: "bg-emerald-500/[0.06] border-emerald-500/15" },
               { label: "Steps Done", value: `${completedSteps}/${totalSteps}`, icon: Clock, color: "text-amber-400", bg: "bg-amber-500/[0.06] border-amber-500/15" },
             ].map((metric, i) => (
@@ -194,8 +194,8 @@ export default function JudgePage() {
               >
                 <span className="text-xl">{feat.icon}</span>
                 <div>
-                  <h4 className="text-sm font-bold text-white">{feat.title}</h4>
-                  <p className="text-xs text-gray-400">{feat.desc}</p>
+                  <h4 className="text-sm font-bold text-foreground">{feat.title}</h4>
+                  <p className="text-xs text-muted">{feat.desc}</p>
                 </div>
               </motion.div>
             ))}
