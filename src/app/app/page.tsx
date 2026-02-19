@@ -26,7 +26,6 @@ export default function Dashboard() {
     lang,
     user,
     initializeDeals,
-    simulateEvent,
     getSelectedDeal,
     selectedStepId,
     setSelectedStepId,
@@ -48,20 +47,6 @@ export default function Dashboard() {
       setInitialized(true);
     }
   }, [initialized, initializeDeals, user]);
-
-  // Auto-simulation every ~15 seconds
-  useEffect(() => {
-    if (deals.length === 0) return;
-    const timer = setInterval(() => {
-      const activeDeal = deals.find((d) => d.status === "active");
-      if (activeDeal) {
-        const events = ["doc_verified", "step_completed", "approval_delay"] as const;
-        const randomEvent = events[Math.floor(Math.random() * events.length)];
-        simulateEvent({ type: randomEvent, dealId: activeDeal.id });
-      }
-    }, 15000);
-    return () => clearInterval(timer);
-  }, [deals, simulateEvent]);
 
   const deal = getSelectedDeal();
   const dir = lang === "ar" ? "rtl" : "ltr";

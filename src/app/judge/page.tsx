@@ -4,8 +4,6 @@ import { useEffect, useState } from "react";
 import { useStore } from "@/lib/store";
 import { motion } from "framer-motion";
 import TopBar from "@/components/TopBar";
-import ToastStack from "@/components/ToastStack";
-import DemoScriptModal from "@/components/DemoScriptModal";
 import {
   Target,
   Lightbulb,
@@ -255,8 +253,6 @@ export default function JudgePage() {
         </motion.footer>
       </div>
 
-      <DemoScriptModal />
-      <ToastStack />
     </div>
   );
 }

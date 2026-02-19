@@ -6,8 +6,6 @@ import { useStore } from "@/lib/store";
 import { motion } from "framer-motion";
 import TopBar from "@/components/TopBar";
 import MyProperty from "@/components/MyProperty";
-import ToastStack from "@/components/ToastStack";
-import DemoScriptModal from "@/components/DemoScriptModal";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 
@@ -108,9 +106,6 @@ export default function PropertyPage() {
         </div>
       </div>
 
-      {/* Overlays */}
-      <DemoScriptModal />
-      <ToastStack />
     </div>
   );
 }

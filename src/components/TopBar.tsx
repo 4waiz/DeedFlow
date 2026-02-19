@@ -14,11 +14,13 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/cn";
+import { isDemoModeEnabled } from "@/lib/feature-flags";
 
 export default function TopBar() {
   const { lang, setDemoScriptOpen, user, logout } = useStore();
   const pathname = usePathname();
   const router = useRouter();
+  const isDemoMode = isDemoModeEnabled();
 
   const navItems = [
     { href: "/app", label: t("nav.dashboard", lang), icon: LayoutDashboard },
@@ -51,21 +53,22 @@ export default function TopBar() {
               priority
             />
           </Link>
-          {/* Demo Mode badge with gold glow */}
-          <motion.span
-            initial={{ scale: 0.8 }}
-            animate={{ scale: 1 }}
-            className="px-2 py-0.5 text-[10px] font-semibold rounded-full"
-            style={{
-              background: "rgba(251, 191, 36, 0.1)",
-              color: "#fbbf24",
-              border: "1px solid rgba(251, 191, 36, 0.3)",
-              boxShadow: "0 0 12px rgba(251, 191, 36, 0.15), inset 0 0 8px rgba(251, 191, 36, 0.05)",
-              textShadow: "0 0 8px rgba(251, 191, 36, 0.4)",
-            }}
-          >
-            {t("demo.mode", lang)}
-          </motion.span>
+          {isDemoMode && (
+            <motion.span
+              initial={{ scale: 0.8 }}
+              animate={{ scale: 1 }}
+              className="px-2 py-0.5 text-[10px] font-semibold rounded-full"
+              style={{
+                background: "rgba(251, 191, 36, 0.1)",
+                color: "#fbbf24",
+                border: "1px solid rgba(251, 191, 36, 0.3)",
+                boxShadow: "0 0 12px rgba(251, 191, 36, 0.15), inset 0 0 8px rgba(251, 191, 36, 0.05)",
+                textShadow: "0 0 8px rgba(251, 191, 36, 0.4)",
+              }}
+            >
+              {t("demo.mode", lang)}
+            </motion.span>
+          )}
         </div>
 
         {/* Navigation */}
@@ -116,34 +119,34 @@ export default function TopBar() {
 
         {/* Actions */}
         <div className="flex flex-wrap items-center justify-center md:justify-end gap-2">
-          {/* Demo Script — emerald accent */}
-          <motion.button
-            whileHover={{ scale: 1.03 }}
-            whileTap={{ scale: 0.97 }}
-            onClick={() => setDemoScriptOpen(true)}
-            className="flex items-center gap-1.5 px-2 sm:px-3 py-1 sm:py-1.5 text-[11px] sm:text-sm font-medium rounded-lg transition-all duration-200"
-            style={{
-              background: "rgba(52, 211, 153, 0.1)",
-              color: "#6ee7b7",
-              border: "1px solid rgba(52, 211, 153, 0.2)",
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = "rgba(52, 211, 153, 0.18)";
-              e.currentTarget.style.boxShadow = "0 0 16px rgba(52, 211, 153, 0.15)";
-              e.currentTarget.style.borderColor = "rgba(52, 211, 153, 0.35)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = "rgba(52, 211, 153, 0.1)";
-              e.currentTarget.style.boxShadow = "none";
-              e.currentTarget.style.borderColor = "rgba(52, 211, 153, 0.2)";
-            }}
-          >
-            <BookOpen size={14} />
-            {t("demo.script", lang)}
-          </motion.button>
+          {isDemoMode && (
+            <motion.button
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
+              onClick={() => setDemoScriptOpen(true)}
+              className="flex items-center gap-1.5 px-2 sm:px-3 py-1 sm:py-1.5 text-[11px] sm:text-sm font-medium rounded-lg transition-all duration-200"
+              style={{
+                background: "rgba(52, 211, 153, 0.1)",
+                color: "#6ee7b7",
+                border: "1px solid rgba(52, 211, 153, 0.2)",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = "rgba(52, 211, 153, 0.18)";
+                e.currentTarget.style.boxShadow = "0 0 16px rgba(52, 211, 153, 0.15)";
+                e.currentTarget.style.borderColor = "rgba(52, 211, 153, 0.35)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = "rgba(52, 211, 153, 0.1)";
+                e.currentTarget.style.boxShadow = "none";
+                e.currentTarget.style.borderColor = "rgba(52, 211, 153, 0.2)";
+              }}
+            >
+              <BookOpen size={14} />
+              {t("demo.script", lang)}
+            </motion.button>
+          )}
 
-          {/* Simulate Event */}
-          <SimulateDropdown />
+          {isDemoMode && <SimulateDropdown />}
 
           {/* Settings Button */}
           <Link

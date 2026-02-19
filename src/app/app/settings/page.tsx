@@ -5,8 +5,6 @@ import { useRouter } from "next/navigation";
 import { useStore } from "@/lib/store";
 import { motion } from "framer-motion";
 import TopBar from "@/components/TopBar";
-import ToastStack from "@/components/ToastStack";
-import DemoScriptModal from "@/components/DemoScriptModal";
 import {
   ArrowLeft,
   Globe,
@@ -294,9 +292,6 @@ export default function SettingsPage() {
         </div>
       </div>
 
-      {/* Overlays */}
-      <DemoScriptModal />
-      <ToastStack />
     </div>
   );
 }

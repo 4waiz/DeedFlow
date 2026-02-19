@@ -4,6 +4,7 @@ import { useStore } from "@/lib/store";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, CheckCircle, AlertTriangle, Info, AlertCircle } from "lucide-react";
 import { cn } from "@/lib/cn";
+import { usePathname } from "next/navigation";
 
 const toastConfig = {
   success: { icon: CheckCircle, bg: "bg-emerald-500/15 border-emerald-500/30", text: "text-emerald-300", iconColor: "text-emerald-400" },
@@ -14,6 +15,11 @@ const toastConfig = {
 
 export default function ToastStack() {
   const { toasts, removeToast } = useStore();
+  const pathname = usePathname();
+
+  if (pathname !== "/app") {
+    return null;
+  }
 
   return (
     <div className="fixed bottom-20 sm:bottom-24 right-3 sm:right-4 z-[200] space-y-2 max-w-[calc(100vw-2rem)] sm:max-w-sm">

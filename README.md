@@ -112,6 +112,7 @@ Copy `.env.example` to `.env` and fill values for your environment.
 | `GOOGLE_CLIENT_ID` | Google OAuth client ID |
 | `GOOGLE_CLIENT_SECRET` | Google OAuth client secret |
 | `DEMO_MODE` | Enables demo-only seeding and simulation UI |
+| `NEXT_PUBLIC_DEMO_MODE` | Client-side demo feature gating |
 | `S3_REGION` | S3 bucket region |
 | `S3_BUCKET` | S3 bucket name for documents/exports |
 | `S3_ACCESS_KEY_ID` | S3 access key ID |

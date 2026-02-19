@@ -5,6 +5,7 @@ import { t } from "@/lib/i18n";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Play, Clock, CheckCircle } from "lucide-react";
 import { useState, useEffect, useCallback } from "react";
+import { isDemoModeEnabled } from "@/lib/feature-flags";
 
 const demoSteps = [
   {
@@ -69,6 +70,7 @@ export default function DemoScriptModal() {
   const { demoScriptOpen, setDemoScriptOpen, lang, selectedDealId, simulateEvent, setLang } = useStore();
   const [currentStep, setCurrentStep] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
+  const isDemoMode = isDemoModeEnabled();
 
   const executeAction = useCallback((action: string | null) => {
     if (!action || !selectedDealId) return;
@@ -94,6 +96,10 @@ export default function DemoScriptModal() {
     }, 10000);
     return () => clearInterval(timer);
   }, [isPlaying, executeAction]);
+
+  if (!isDemoMode) {
+    return null;
+  }
 
   return (
     <AnimatePresence>
