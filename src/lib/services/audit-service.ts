@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/db";
+import { Prisma } from "@prisma/client";
 
 export async function createAuditEvent(input: {
   dealId: string;
@@ -11,7 +12,7 @@ export async function createAuditEvent(input: {
       dealId: input.dealId,
       actorUserId: input.actorUserId ?? null,
       type: input.type,
-      payloadJson: input.payloadJson ?? {},
+      payloadJson: (input.payloadJson ?? {}) as Prisma.InputJsonValue,
     },
   });
 }
