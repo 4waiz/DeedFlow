@@ -153,7 +153,7 @@ Integration targets:
 ## Team
 
 * Awaiz Ahmed (Leader)
-* Nikhil Mundarh
+* Nikhil Mundhra
 * Bilal Khan
 * Mohammad Umar
 
