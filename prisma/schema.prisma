@@ -1,0 +1,207 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  OPERATOR
+  MANAGER
+  REVIEWER
+}
+
+enum DealStatus {
+  DRAFT
+  ACTIVE
+  ON_HOLD
+  COMPLETED
+}
+
+enum StepStatus {
+  TODO
+  IN_PROGRESS
+  DONE
+  BLOCKED
+}
+
+enum DealDocumentStatus {
+  PENDING
+  PROCESSING
+  REVIEW_REQUIRED
+  APPROVED
+  REJECTED
+}
+
+enum NotificationSeverity {
+  INFO
+  WARNING
+  ERROR
+  SUCCESS
+}
+
+model Organization {
+  id        String   @id @default(cuid())
+  name      String
+  createdAt DateTime @default(now()) @map("created_at")
+
+  users User[]
+  deals Deal[]
+
+  @@map("organizations")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  orgId     String   @map("org_id")
+  email     String   @unique
+  name      String?
+  image     String?
+  role      Role     @default(OPERATOR)
+  createdAt DateTime @default(now()) @map("created_at")
+
+  organization Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  accounts     Account[]
+  sessions     Session[]
+  auditEvents  AuditEvent[] @relation("AuditActor")
+  ownedSteps   DealStep[]   @relation("StepOwner")
+
+  @@index([orgId])
+  @@map("users")
+}
+
+model Deal {
+  id              String     @id @default(cuid())
+  orgId           String     @map("org_id")
+  title           String
+  propertyMetaJson Json      @default("{}") @map("property_meta_json")
+  status          DealStatus @default(DRAFT)
+  complianceScore Int        @default(0) @map("compliance_score")
+  riskScore       Int        @default(0) @map("risk_score")
+  createdAt       DateTime   @default(now()) @map("created_at")
+  updatedAt       DateTime   @updatedAt @map("updated_at")
+
+  organization  Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  steps         DealStep[]
+  documents     DealDocument[]
+  auditEvents   AuditEvent[]
+  notifications Notification[]
+
+  @@index([orgId])
+  @@map("deals")
+}
+
+model DealStep {
+  id            String     @id @default(cuid())
+  dealId        String     @map("deal_id")
+  key           String
+  title         String
+  status        StepStatus @default(TODO)
+  ownerUserId   String?    @map("owner_user_id")
+  dueDate       DateTime?  @map("due_date")
+  blockingReason String?   @map("blocking_reason")
+  createdAt     DateTime   @default(now()) @map("created_at")
+  updatedAt     DateTime   @updatedAt @map("updated_at")
+
+  deal  Deal  @relation(fields: [dealId], references: [id], onDelete: Cascade)
+  owner User? @relation("StepOwner", fields: [ownerUserId], references: [id], onDelete: SetNull)
+
+  @@unique([dealId, key])
+  @@index([dealId])
+  @@index([ownerUserId])
+  @@map("deal_steps")
+}
+
+model DealDocument {
+  id            String             @id @default(cuid())
+  dealId        String             @map("deal_id")
+  type          String
+  filename      String
+  storageKey    String             @map("storage_key")
+  extractedJson Json?              @map("extracted_json")
+  validationJson Json?             @map("validation_json")
+  status        DealDocumentStatus @default(PENDING)
+  createdAt     DateTime           @default(now()) @map("created_at")
+
+  deal Deal @relation(fields: [dealId], references: [id], onDelete: Cascade)
+
+  @@index([dealId])
+  @@index([status])
+  @@map("deal_documents")
+}
+
+model AuditEvent {
+  id          String   @id @default(cuid())
+  dealId      String   @map("deal_id")
+  actorUserId String?  @map("actor_user_id")
+  type        String
+  payloadJson Json?    @map("payload_json")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  deal  Deal  @relation(fields: [dealId], references: [id], onDelete: Cascade)
+  actor User? @relation("AuditActor", fields: [actorUserId], references: [id], onDelete: SetNull)
+
+  @@index([dealId, createdAt])
+  @@index([actorUserId])
+  @@map("audit_events")
+}
+
+model Notification {
+  id        String               @id @default(cuid())
+  dealId    String               @map("deal_id")
+  severity  NotificationSeverity
+  message   String
+  dedupeKey String               @map("dedupe_key")
+  createdAt DateTime             @default(now()) @map("created_at")
+  readAt    DateTime?            @map("read_at")
+
+  deal Deal @relation(fields: [dealId], references: [id], onDelete: Cascade)
+
+  @@index([dealId, readAt])
+  @@unique([dealId, dedupeKey])
+  @@map("notifications")
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String  @map("user_id")
+  type              String
+  provider          String
+  providerAccountId String  @map("provider_account_id")
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+  @@map("accounts")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique @map("session_token")
+  userId       String   @map("user_id")
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("sessions")
+}
+
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map("verification_tokens")
+}
