@@ -1,5 +1,5 @@
 import type { Role, User } from "@prisma/client";
-import { prisma } from "@/lib/db";
+import { getPrismaClient } from "@/lib/db";
 
 export function getEmailDomain(email: string): string {
   const parts = email.toLowerCase().split("@");
@@ -13,6 +13,8 @@ export async function resolveOrgAndRoleByEmail(email: string): Promise<{
   orgId: string;
   role: Role;
 }> {
+  const prisma = getPrismaClient();
+
   const domain = getEmailDomain(email);
 
   const org = await prisma.organization.upsert({
@@ -37,6 +39,8 @@ export async function provisionOAuthUser(params: {
   image?: string | null;
   emailVerified?: Date | null;
 }): Promise<User> {
+  const prisma = getPrismaClient();
+
   const existingUser = await prisma.user.findUnique({
     where: { email: params.email },
   });

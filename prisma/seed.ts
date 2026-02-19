@@ -1,5 +1,7 @@
-import { prisma } from "../src/lib/db";
+import { getPrismaClient } from "../src/lib/db";
 import { seedDemoData } from "../src/lib/demo/seed-demo";
+
+const prisma = getPrismaClient();
 
 async function main() {
   if (process.env.DEMO_MODE !== "true") {

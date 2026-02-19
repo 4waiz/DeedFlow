@@ -1,5 +1,5 @@
 import { DealStatus, NotificationSeverity, Prisma, StepStatus } from "@prisma/client";
-import { prisma } from "@/lib/db";
+import { getPrismaClient } from "@/lib/db";
 import { createAuditEvent } from "@/lib/services/audit-service";
 import { upsertNotification } from "@/lib/services/notification-service";
 
@@ -15,6 +15,8 @@ const DEFAULT_DEAL_STEPS = [
 ] as const;
 
 export async function listDealsForOrg(orgId: string) {
+  const prisma = getPrismaClient();
+
   const deals = await prisma.deal.findMany({
     where: { orgId },
     include: {
@@ -51,6 +53,7 @@ export async function createDealForOrg(input: {
   propertyMetaJson?: Prisma.InputJsonValue;
   actorUserId?: string | null;
 }) {
+  const prisma = getPrismaClient();
   const propertyMetaJson: Prisma.InputJsonValue = (input.propertyMetaJson ?? {}) as Prisma.InputJsonValue;
 
   const deal = await prisma.deal.create({
@@ -89,6 +92,8 @@ export async function createDealForOrg(input: {
 }
 
 export async function getDealByIdForOrg(input: { orgId: string; dealId: string }) {
+  const prisma = getPrismaClient();
+
   return prisma.deal.findFirst({
     where: {
       id: input.dealId,
@@ -129,6 +134,8 @@ export async function updateDealStepForOrg(input: {
   dueDate?: Date | null;
   actorUserId?: string | null;
 }) {
+  const prisma = getPrismaClient();
+
   const step = await prisma.dealStep.findFirst({
     where: {
       id: input.stepId,

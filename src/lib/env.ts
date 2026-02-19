@@ -13,7 +13,8 @@ const serverEnvSchema = z.object({
   NEXT_PUBLIC_DEMO_MODE: boolStringSchema,
 });
 
-const publicEnvSchema = z.object({
+const demoEnvSchema = z.object({
+  DEMO_MODE: boolStringSchema,
   NEXT_PUBLIC_DEMO_MODE: boolStringSchema,
 });
 
@@ -23,6 +24,22 @@ let cachedServerEnv: ServerEnv | null = null;
 
 function asBool(value: string | undefined): boolean {
   return value === "true";
+}
+
+function asBoolString(value: string | undefined): "true" | "false" | undefined {
+  if (value === "true" || value === "false") {
+    return value;
+  }
+
+  return undefined;
+}
+
+function isBuildPhase(): boolean {
+  return process.env.NEXT_PHASE === "phase-production-build";
+}
+
+function formatIssues(issues: z.ZodIssue[]): string {
+  return issues.map((issue) => issue.message).join(", ");
 }
 
 export function getServerEnv(): ServerEnv {
@@ -35,25 +52,46 @@ export function getServerEnv(): ServerEnv {
   }
 
   const parsed = serverEnvSchema.safeParse(process.env);
-  if (!parsed.success) {
-    throw new Error(`Invalid server env: ${parsed.error.issues.map((issue) => issue.message).join(", ")}`);
+  if (parsed.success) {
+    cachedServerEnv = parsed.data;
+    return cachedServerEnv;
   }
 
-  cachedServerEnv = parsed.data;
-  return cachedServerEnv;
+  if (isBuildPhase()) {
+    return {
+      DATABASE_URL: process.env.DATABASE_URL ?? "build-placeholder-database-url",
+      DIRECT_URL: process.env.DIRECT_URL,
+      NEXTAUTH_URL: process.env.NEXTAUTH_URL ?? "http://localhost:3000",
+      NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET ?? "build-placeholder-nextauth-secret",
+      GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID ?? "build-placeholder-google-client-id",
+      GOOGLE_CLIENT_SECRET:
+        process.env.GOOGLE_CLIENT_SECRET ?? "build-placeholder-google-client-secret",
+      DEMO_MODE: asBoolString(process.env.DEMO_MODE),
+      NEXT_PUBLIC_DEMO_MODE: asBoolString(process.env.NEXT_PUBLIC_DEMO_MODE),
+    };
+  }
+
+  throw new Error(`Invalid server env: ${formatIssues(parsed.error.issues)}`);
 }
-
-const publicEnv = publicEnvSchema.parse({
-  NEXT_PUBLIC_DEMO_MODE: process.env.NEXT_PUBLIC_DEMO_MODE,
-});
-
-const serverEnv = typeof window === "undefined" ? getServerEnv() : null;
-
-export const env = {
-  DEMO_MODE: asBool(serverEnv?.DEMO_MODE),
-  NEXT_PUBLIC_DEMO_MODE: asBool(publicEnv.NEXT_PUBLIC_DEMO_MODE),
-} as const;
 
 export function getServerDemoMode(): boolean {
-  return env.DEMO_MODE || env.NEXT_PUBLIC_DEMO_MODE;
+  if (typeof window !== "undefined") {
+    return asBool(process.env.NEXT_PUBLIC_DEMO_MODE);
+  }
+
+  const parsed = demoEnvSchema.safeParse(process.env);
+  if (!parsed.success) {
+    return false;
+  }
+
+  return asBool(parsed.data.DEMO_MODE) || asBool(parsed.data.NEXT_PUBLIC_DEMO_MODE);
 }
+
+export const env = {
+  get DEMO_MODE() {
+    return getServerDemoMode();
+  },
+  get NEXT_PUBLIC_DEMO_MODE() {
+    return asBool(process.env.NEXT_PUBLIC_DEMO_MODE);
+  },
+} as const;

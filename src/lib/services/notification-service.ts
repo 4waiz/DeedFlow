@@ -1,5 +1,5 @@
 import { NotificationSeverity } from "@prisma/client";
-import { prisma } from "@/lib/db";
+import { getPrismaClient } from "@/lib/db";
 
 export async function upsertNotification(input: {
   dealId: string;
@@ -7,6 +7,8 @@ export async function upsertNotification(input: {
   message: string;
   dedupeKey: string;
 }) {
+  const prisma = getPrismaClient();
+
   return prisma.notification.upsert({
     where: {
       dealId_dedupeKey: {
@@ -32,6 +34,8 @@ export async function listDealNotifications(input: {
   orgId: string;
   unreadOnly?: boolean;
 }) {
+  const prisma = getPrismaClient();
+
   return prisma.notification.findMany({
     where: {
       dealId: input.dealId,

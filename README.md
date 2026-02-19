@@ -129,7 +129,13 @@ Supabase connectivity notes:
 
 1. Use pooler (`DATABASE_URL`) for app/runtime because it is typically IPv4-compatible.
 2. Use direct host (`DIRECT_URL`) for schema migrations when your network supports it.
-3. If direct host is unreachable (`P1001`), follow the fallback procedure in `docs/runbook-dev.md`.
+3. If direct host is unreachable (`P1001`), set `DIRECT_URL` to `DATABASE_URL` temporarily or follow `docs/runbook-dev.md`.
+
+NextAuth deployment notes (Vercel):
+
+1. Set `NEXTAUTH_URL` to your production domain (for example `https://your-app.vercel.app`).
+2. Set `NEXTAUTH_SECRET` in Vercel project environment variables.
+3. In Google Cloud OAuth settings, include callback URI: `https://<your-domain>/api/auth/callback/google`.
 
 ---
 

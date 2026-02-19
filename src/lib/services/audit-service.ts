@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/db";
+import { getPrismaClient } from "@/lib/db";
 import { Prisma } from "@prisma/client";
 
 export async function createAuditEvent(input: {
@@ -7,6 +7,7 @@ export async function createAuditEvent(input: {
   type: string;
   payloadJson?: Prisma.InputJsonValue;
 }) {
+  const prisma = getPrismaClient();
   const payloadJson: Prisma.InputJsonValue = (input.payloadJson ?? {}) as Prisma.InputJsonValue;
 
   return prisma.auditEvent.create({
