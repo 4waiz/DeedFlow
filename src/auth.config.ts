@@ -4,6 +4,7 @@ export type AppRole = "OPERATOR" | "MANAGER" | "REVIEWER";
 
 export function getBaseAuthConfig(): NextAuthOptions {
   return {
+    providers: [],
     pages: {
       signIn: "/login",
     },
