@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { FormEvent, useState } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
@@ -8,12 +8,59 @@ import { signIn } from "next-auth/react";
 import { Building2 } from "lucide-react";
 
 export default function SignupPage() {
-  const [isLoading, setIsLoading] = useState(false);
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
+  const [isCredentialsLoading, setIsCredentialsLoading] = useState(false);
 
-  const handleSignup = async () => {
-    setIsLoading(true);
+  const handleGoogleSignup = async () => {
+    setError(null);
+    setIsGoogleLoading(true);
     await signIn("google", { callbackUrl: "/app" });
-    setIsLoading(false);
+    setIsGoogleLoading(false);
+  };
+
+  const handleCredentialsSignup = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setError(null);
+    setIsCredentialsLoading(true);
+
+    const response = await fetch("/api/auth/register", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name,
+        email,
+        password,
+      }),
+    });
+
+    if (!response.ok) {
+      const data = (await response.json().catch(() => null)) as { error?: string } | null;
+      setError(data?.error ?? "Unable to create account");
+      setIsCredentialsLoading(false);
+      return;
+    }
+
+    const signInResult = await signIn("credentials", {
+      email,
+      password,
+      callbackUrl: "/app",
+      redirect: false,
+    });
+
+    setIsCredentialsLoading(false);
+
+    if (!signInResult || signInResult.error) {
+      setError("Account created, but sign-in failed. Try logging in.");
+      return;
+    }
+
+    window.location.href = signInResult.url ?? "/app";
   };
 
   return (
@@ -50,19 +97,57 @@ export default function SignupPage() {
         >
           <div className="text-center mb-8">
             <h1 className="text-2xl font-bold text-foreground mb-2">Create your DeedFlow account</h1>
-            <p className="text-sm text-muted">
-              Sign in with Google. Your organization is derived from your email domain.
-            </p>
+            <p className="text-sm text-muted">Use email/password or Google. Org is derived from email domain.</p>
           </div>
+
+          <form onSubmit={handleCredentialsSignup} className="space-y-3">
+            <input
+              type="text"
+              value={name}
+              onChange={(event) => setName(event.target.value)}
+              placeholder="Full name"
+              className="w-full rounded-xl border border-[var(--border)] bg-transparent px-3 py-2.5 text-sm text-foreground placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-emerald-500/30"
+            />
+            <input
+              type="email"
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
+              placeholder="Email"
+              required
+              className="w-full rounded-xl border border-[var(--border)] bg-transparent px-3 py-2.5 text-sm text-foreground placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-emerald-500/30"
+            />
+            <input
+              type="password"
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
+              placeholder="Password (min 8 chars)"
+              minLength={8}
+              required
+              className="w-full rounded-xl border border-[var(--border)] bg-transparent px-3 py-2.5 text-sm text-foreground placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-emerald-500/30"
+            />
+            {error ? <p className="text-xs text-rose-400">{error}</p> : null}
+
+            <motion.button
+              whileHover={{ scale: 1.01 }}
+              whileTap={{ scale: 0.99 }}
+              type="submit"
+              disabled={isCredentialsLoading || isGoogleLoading}
+              className="w-full py-3 rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-700 text-white font-bold text-sm shadow-[0_8px_32px_rgba(16,185,129,0.25)] hover:shadow-[0_12px_40px_rgba(16,185,129,0.35)] transition-all disabled:opacity-70"
+            >
+              {isCredentialsLoading ? "Creating account..." : "Sign up with Email"}
+            </motion.button>
+          </form>
+
+          <div className="my-4 text-center text-xs text-muted uppercase tracking-wide">or</div>
 
           <motion.button
             whileHover={{ scale: 1.01 }}
             whileTap={{ scale: 0.99 }}
-            onClick={handleSignup}
-            disabled={isLoading}
-            className="w-full py-3 rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-700 text-white font-bold text-sm shadow-[0_8px_32px_rgba(16,185,129,0.25)] hover:shadow-[0_12px_40px_rgba(16,185,129,0.35)] transition-all disabled:opacity-70"
+            onClick={handleGoogleSignup}
+            disabled={isGoogleLoading || isCredentialsLoading}
+            className="w-full py-3 rounded-xl border border-[var(--border)] bg-transparent text-foreground font-semibold text-sm transition-colors hover:bg-white/[0.03] disabled:opacity-70"
           >
-            {isLoading ? "Redirecting..." : "Sign up with Google"}
+            {isGoogleLoading ? "Redirecting..." : "Sign up with Google"}
           </motion.button>
 
           <div className="mt-6 p-3 rounded-xl border border-white/[0.08] bg-white/[0.03]">

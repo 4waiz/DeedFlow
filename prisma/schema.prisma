@@ -61,6 +61,7 @@ model User {
   email     String   @unique
   name      String?
   image     String?
+  passwordHash String? @map("password_hash")
   emailVerified DateTime? @map("email_verified")
   role      Role     @default(OPERATOR)
   createdAt DateTime @default(now()) @map("created_at")

@@ -2,9 +2,13 @@ import { getServerSession } from "next-auth";
 import type { Adapter, AdapterUser } from "next-auth/adapters";
 import type { NextAuthOptions, Session } from "next-auth";
 import { PrismaAdapter } from "@auth/prisma-adapter";
-import { getAuthConfig, type AppRole } from "@/auth.config";
+import CredentialsProvider from "next-auth/providers/credentials";
+import GoogleProvider from "next-auth/providers/google";
+import { getBaseAuthConfig, type AppRole } from "@/auth.config";
 import { getPrismaClient } from "@/lib/db";
 import { provisionOAuthUser, resolveOrgAndRoleByEmail } from "@/lib/auth/provision-user";
+import { verifyPassword } from "@/lib/auth/password";
+import { getServerEnv } from "@/lib/env";
 
 function createAdapter(): Adapter {
   const prisma = getPrismaClient();
@@ -29,9 +33,57 @@ function createAdapter(): Adapter {
 
 export function getAuthOptions(): NextAuthOptions {
   const prisma = getPrismaClient();
+  const serverEnv = getServerEnv();
 
   return {
-    ...getAuthConfig(),
+    ...getBaseAuthConfig(),
+    secret: serverEnv.NEXTAUTH_SECRET,
+    providers: [
+      GoogleProvider({
+        clientId: serverEnv.GOOGLE_CLIENT_ID,
+        clientSecret: serverEnv.GOOGLE_CLIENT_SECRET,
+      }),
+      CredentialsProvider({
+        name: "Email and password",
+        credentials: {
+          email: { label: "Email", type: "email" },
+          password: { label: "Password", type: "password" },
+        },
+        async authorize(credentials) {
+          const email = credentials?.email?.toLowerCase().trim();
+          const password = credentials?.password;
+
+          if (!email || !password) {
+            return null;
+          }
+
+          const user = await prisma.user.findUnique({
+            where: { email },
+            select: {
+              id: true,
+              email: true,
+              name: true,
+              passwordHash: true,
+            },
+          });
+
+          if (!user?.passwordHash) {
+            return null;
+          }
+
+          const validPassword = await verifyPassword(password, user.passwordHash);
+          if (!validPassword) {
+            return null;
+          }
+
+          return {
+            id: user.id,
+            email: user.email,
+            name: user.name,
+          };
+        },
+      }),
+    ],
     adapter: createAdapter(),
     callbacks: {
       async signIn({ user }) {

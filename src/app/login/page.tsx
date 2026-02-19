@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { FormEvent, useState } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
@@ -8,12 +8,39 @@ import { signIn } from "next-auth/react";
 import { Shield } from "lucide-react";
 
 export default function LoginPage() {
-  const [isLoading, setIsLoading] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
+  const [isCredentialsLoading, setIsCredentialsLoading] = useState(false);
 
   const handleGoogleSignIn = async () => {
-    setIsLoading(true);
+    setError(null);
+    setIsGoogleLoading(true);
     await signIn("google", { callbackUrl: "/app" });
-    setIsLoading(false);
+    setIsGoogleLoading(false);
+  };
+
+  const handleCredentialsSignIn = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setError(null);
+    setIsCredentialsLoading(true);
+
+    const result = await signIn("credentials", {
+      email,
+      password,
+      callbackUrl: "/app",
+      redirect: false,
+    });
+
+    setIsCredentialsLoading(false);
+
+    if (!result || result.error) {
+      setError("Invalid email or password");
+      return;
+    }
+
+    window.location.href = result.url ?? "/app";
   };
 
   return (
@@ -50,19 +77,49 @@ export default function LoginPage() {
         >
           <div className="text-center mb-8">
             <h1 className="text-2xl font-bold text-foreground mb-2">Welcome back</h1>
-            <p className="text-sm text-muted">
-              Sign in with your Google workspace account to continue.
-            </p>
+            <p className="text-sm text-muted">Sign in with email/password or Google to continue.</p>
           </div>
+
+          <form onSubmit={handleCredentialsSignIn} className="space-y-3">
+            <input
+              type="email"
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
+              placeholder="Email"
+              required
+              className="w-full rounded-xl border border-[var(--border)] bg-transparent px-3 py-2.5 text-sm text-foreground placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-emerald-500/30"
+            />
+            <input
+              type="password"
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
+              placeholder="Password"
+              required
+              className="w-full rounded-xl border border-[var(--border)] bg-transparent px-3 py-2.5 text-sm text-foreground placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-emerald-500/30"
+            />
+            {error ? <p className="text-xs text-rose-400">{error}</p> : null}
+
+            <motion.button
+              whileHover={{ scale: 1.01 }}
+              whileTap={{ scale: 0.99 }}
+              type="submit"
+              disabled={isCredentialsLoading || isGoogleLoading}
+              className="w-full py-3 rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-700 text-white font-bold text-sm shadow-[0_8px_32px_rgba(16,185,129,0.25)] hover:shadow-[0_12px_40px_rgba(16,185,129,0.35)] transition-all disabled:opacity-70"
+            >
+              {isCredentialsLoading ? "Signing in..." : "Sign in with Email"}
+            </motion.button>
+          </form>
+
+          <div className="my-4 text-center text-xs text-muted uppercase tracking-wide">or</div>
 
           <motion.button
             whileHover={{ scale: 1.01 }}
             whileTap={{ scale: 0.99 }}
             onClick={handleGoogleSignIn}
-            disabled={isLoading}
-            className="w-full py-3 rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-700 text-white font-bold text-sm shadow-[0_8px_32px_rgba(16,185,129,0.25)] hover:shadow-[0_12px_40px_rgba(16,185,129,0.35)] transition-all disabled:opacity-70"
+            disabled={isGoogleLoading || isCredentialsLoading}
+            className="w-full py-3 rounded-xl border border-[var(--border)] bg-transparent text-foreground font-semibold text-sm transition-colors hover:bg-white/[0.03] disabled:opacity-70"
           >
-            {isLoading ? "Redirecting..." : "Continue with Google"}
+            {isGoogleLoading ? "Redirecting..." : "Continue with Google"}
           </motion.button>
 
           <div className="mt-6 p-3 rounded-xl border border-white/[0.08] bg-white/[0.03]">

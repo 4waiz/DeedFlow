@@ -62,3 +62,31 @@ export async function provisionOAuthUser(params: {
     },
   });
 }
+
+export async function provisionCredentialsUser(params: {
+  email: string;
+  name?: string | null;
+  passwordHash: string;
+}): Promise<User> {
+  const prisma = getPrismaClient();
+
+  const existingUser = await prisma.user.findUnique({
+    where: { email: params.email },
+  });
+
+  if (existingUser) {
+    throw new Error("An account with this email already exists");
+  }
+
+  const { orgId, role } = await resolveOrgAndRoleByEmail(params.email);
+
+  return prisma.user.create({
+    data: {
+      email: params.email,
+      name: params.name ?? null,
+      passwordHash: params.passwordHash,
+      orgId,
+      role,
+    },
+  });
+}
