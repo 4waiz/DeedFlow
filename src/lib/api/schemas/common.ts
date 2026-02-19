@@ -9,4 +9,4 @@ export const stepParamSchema = z.object({
   stepId: z.string().min(1),
 });
 
-export const jsonObjectSchema = z.record(z.any()).default({});
+export const jsonObjectSchema = z.record(z.string(), z.any()).default({});

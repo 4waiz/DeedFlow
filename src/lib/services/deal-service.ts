@@ -1,4 +1,4 @@
-import { DealStatus, NotificationSeverity, StepStatus } from "@prisma/client";
+import { DealStatus, NotificationSeverity, Prisma, StepStatus } from "@prisma/client";
 import { prisma } from "@/lib/db";
 import { createAuditEvent } from "@/lib/services/audit-service";
 import { upsertNotification } from "@/lib/services/notification-service";
@@ -56,7 +56,7 @@ export async function createDealForOrg(input: {
       orgId: input.orgId,
       title: input.title,
       status: DealStatus.DRAFT,
-      propertyMetaJson: input.propertyMetaJson ?? {},
+      propertyMetaJson: (input.propertyMetaJson ?? {}) as Prisma.InputJsonValue,
       complianceScore: 0,
       riskScore: 0,
       steps: {
