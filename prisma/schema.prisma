@@ -47,10 +47,29 @@ model Organization {
   name      String
   createdAt DateTime @default(now()) @map("created_at")
 
-  users User[]
-  deals Deal[]
+  users   User[]
+  deals   Deal[]
+  invites OrganizationInvite[]
 
+  @@unique([name])
   @@map("organizations")
+}
+
+model OrganizationInvite {
+  id         String   @id @default(cuid())
+  orgId      String   @map("org_id")
+  email      String
+  role       Role     @default(OPERATOR)
+  token      String   @unique
+  expiresAt  DateTime @map("expires_at")
+  acceptedAt DateTime? @map("accepted_at")
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  organization Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+
+  @@index([email])
+  @@index([orgId, acceptedAt])
+  @@map("organization_invites")
 }
 
 model User {
@@ -59,6 +78,7 @@ model User {
   email     String   @unique
   name      String?
   image     String?
+  emailVerified DateTime? @map("email_verified")
   role      Role     @default(OPERATOR)
   createdAt DateTime @default(now()) @map("created_at")
 
