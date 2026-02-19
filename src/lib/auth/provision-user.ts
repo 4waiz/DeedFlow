@@ -13,26 +13,6 @@ export async function resolveOrgAndRoleByEmail(email: string): Promise<{
   orgId: string;
   role: Role;
 }> {
-  const invite = await prisma.organizationInvite.findFirst({
-    where: {
-      email: email.toLowerCase(),
-      acceptedAt: null,
-      expiresAt: {
-        gt: new Date(),
-      },
-    },
-    orderBy: {
-      createdAt: "desc",
-    },
-  });
-
-  if (invite) {
-    return {
-      orgId: invite.orgId,
-      role: invite.role,
-    };
-  }
-
   const domain = getEmailDomain(email);
 
   const org = await prisma.organization.upsert({
@@ -67,7 +47,7 @@ export async function provisionOAuthUser(params: {
 
   const { orgId, role } = await resolveOrgAndRoleByEmail(params.email);
 
-  const user = await prisma.user.create({
+  return prisma.user.create({
     data: {
       email: params.email,
       name: params.name,
@@ -77,19 +57,4 @@ export async function provisionOAuthUser(params: {
       role,
     },
   });
-
-  await prisma.organizationInvite.updateMany({
-    where: {
-      email: params.email.toLowerCase(),
-      acceptedAt: null,
-      expiresAt: {
-        gt: new Date(),
-      },
-    },
-    data: {
-      acceptedAt: new Date(),
-    },
-  });
-
-  return user;
 }

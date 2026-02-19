@@ -3,7 +3,6 @@ import {
   DealDocumentStatus,
   DealStatus,
   NotificationSeverity,
-  Role,
   StepStatus,
 } from "@prisma/client";
 
@@ -140,20 +139,6 @@ export async function seedDemoData(prisma: PrismaClient): Promise<void> {
       severity: NotificationSeverity.INFO,
       message: "Demo dataset ready for guided replay.",
       dedupeKey: "demo-seed-welcome",
-    },
-  });
-
-  await prisma.organizationInvite.upsert({
-    where: {
-      token: `demo-reviewer-invite-${organization.id}`,
-    },
-    update: {},
-    create: {
-      orgId: organization.id,
-      email: `reviewer@${DEMO_ORG_DOMAIN}`,
-      role: Role.REVIEWER,
-      token: `demo-reviewer-invite-${organization.id}`,
-      expiresAt: new Date("2100-01-01T00:00:00.000Z"),
     },
   });
 }
