@@ -12,14 +12,14 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { cn } from "@/lib/cn";
 import { isDemoModeEnabled } from "@/lib/feature-flags";
+import { signOut } from "next-auth/react";
 
 export default function TopBar() {
   const { lang, setDemoScriptOpen, user, logout } = useStore();
   const pathname = usePathname();
-  const router = useRouter();
   const isDemoMode = isDemoModeEnabled();
 
   const navItems = [
@@ -212,9 +212,9 @@ export default function TopBar() {
                 </div>
                 <div className="p-1">
                   <button
-                    onClick={() => {
+                    onClick={async () => {
                       logout();
-                      router.push("/");
+                      await signOut({ callbackUrl: "/" });
                     }}
                     className="w-full text-left px-3 py-2 text-sm rounded-lg text-red-400 hover:bg-red-500/10 transition-all"
                   >

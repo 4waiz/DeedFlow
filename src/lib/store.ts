@@ -7,7 +7,16 @@ import { Lang } from "./i18n";
 interface User {
   name: string;
   email: string;
-  role: "developer" | "platform" | "asset_manager" | "compliance" | "regulator" | "demo";
+  role:
+    | "developer"
+    | "platform"
+    | "asset_manager"
+    | "compliance"
+    | "regulator"
+    | "demo"
+    | "OPERATOR"
+    | "MANAGER"
+    | "REVIEWER";
   org?: string;
 }
 

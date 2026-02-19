@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import { useStore } from "@/lib/store";
 import { t } from "@/lib/i18n";
 import { motion } from "framer-motion";
@@ -20,11 +19,9 @@ import { MapPin, Building2, Coins, DollarSign, Hash, Calendar, TrendingUp } from
 import Link from "next/link";
 
 export default function Dashboard() {
-  const router = useRouter();
   const {
     deals,
     lang,
-    user,
     initializeDeals,
     getSelectedDeal,
     selectedStepId,
@@ -33,28 +30,16 @@ export default function Dashboard() {
   } = useStore();
   const [initialized, setInitialized] = useState(false);
 
-  // Route guard: redirect to login if not authenticated
-  useEffect(() => {
-    if (!user) {
-      router.push("/login");
-    }
-  }, [user, router]);
-
   // Initialize deals on mount
   useEffect(() => {
-    if (!initialized && user) {
+    if (!initialized) {
       initializeDeals();
       setInitialized(true);
     }
-  }, [initialized, initializeDeals, user]);
+  }, [initialized, initializeDeals]);
 
   const deal = getSelectedDeal();
   const dir = lang === "ar" ? "rtl" : "ltr";
-
-  // Show nothing while checking auth
-  if (!user) {
-    return null;
-  }
 
   if (!initialized || deals.length === 0) {
     return (

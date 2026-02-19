@@ -1,10 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import { useStore } from "@/lib/store";
 import { motion } from "framer-motion";
 import TopBar from "@/components/TopBar";
+import { signOut } from "next-auth/react";
 import {
   ArrowLeft,
   Globe,
@@ -18,21 +18,17 @@ import {
 import Link from "next/link";
 
 export default function SettingsPage() {
-  const router = useRouter();
   const { user, lang, setLang, logout, addToast } = useStore();
   const [initialized, setInitialized] = useState(false);
   const [isDark, setIsDark] = useState(true);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const dir = lang === "ar" ? "rtl" : "ltr";
 
-  // Route guard: redirect to login if not authenticated
   useEffect(() => {
-    if (!user) {
-      router.push("/login");
-    } else {
+    if (user) {
       setInitialized(true);
     }
-  }, [user, router]);
+  }, [user]);
 
   // Initialize theme from saved preference or system setting
   useEffect(() => {
@@ -53,8 +49,8 @@ export default function SettingsPage() {
     try {
       logout();
       addToast("Logged out successfully", "success");
-      await new Promise((resolve) => setTimeout(resolve, 500));
-      router.push("/");
+      await new Promise((resolve) => setTimeout(resolve, 300));
+      await signOut({ callbackUrl: "/" });
     } catch {
       addToast("Logout failed", "error");
       setIsLoggingOut(false);

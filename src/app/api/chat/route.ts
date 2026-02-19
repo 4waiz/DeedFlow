@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { requireApiSession } from "@/lib/auth/require-session";
 
 interface ChatMessage {
   role: "user" | "assistant" | "system";
@@ -6,6 +7,11 @@ interface ChatMessage {
 }
 
 export async function POST(request: NextRequest) {
+  const auth = await requireApiSession("deals:read");
+  if (!auth.ok) {
+    return auth.response;
+  }
+
   try {
     const { messages, dealContext } = (await request.json()) as {
       messages: ChatMessage[];

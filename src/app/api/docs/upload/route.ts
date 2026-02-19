@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { DealDoc } from "@/lib/types";
+import { requireApiSession } from "@/lib/auth/require-session";
 
 // Mock extracted fields based on document type
 const mockExtractedFields: Record<string, Record<string, string>> = {
@@ -15,6 +16,11 @@ const mockExtractedFields: Record<string, Record<string, string>> = {
 };
 
 export async function POST(req: NextRequest) {
+  const auth = await requireApiSession("documents:upload");
+  if (!auth.ok) {
+    return auth.response;
+  }
+
   const body = await req.json();
   const { dealId, docType, filename, uploadedBy } = body;
 

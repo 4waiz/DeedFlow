@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import { useStore } from "@/lib/store";
 import { motion } from "framer-motion";
 import TopBar from "@/components/TopBar";
@@ -10,31 +9,19 @@ import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 
 export default function PropertyPage() {
-  const router = useRouter();
-  const { user, deals, selectedDealId, initializeDeals, lang } = useStore();
+  const { deals, selectedDealId, initializeDeals, lang } = useStore();
   const [initialized, setInitialized] = useState(false);
   const dir = lang === "ar" ? "rtl" : "ltr";
 
-  // Route guard: redirect to login if not authenticated
-  useEffect(() => {
-    if (!user) {
-      router.push("/login");
-    }
-  }, [user, router]);
-
   // Initialize deals on mount
   useEffect(() => {
-    if (!initialized && user) {
+    if (!initialized) {
       initializeDeals();
       setInitialized(true);
     }
-  }, [initialized, initializeDeals, user]);
+  }, [initialized, initializeDeals]);
 
   const deal = deals.find((d) => d.id === selectedDealId);
-
-  if (!user) {
-    return null;
-  }
 
   if (!initialized || deals.length === 0) {
     return (

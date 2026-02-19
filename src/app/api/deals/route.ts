@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createMockDeals } from "@/lib/mock-data";
 import { Deal } from "@/lib/types";
+import { requireApiSession } from "@/lib/auth/require-session";
 
 // In-memory store for server-side
 let deals: Deal[] | null = null;
@@ -13,6 +14,11 @@ function getDeals(): Deal[] {
 }
 
 export async function GET() {
+  const auth = await requireApiSession("deals:read");
+  if (!auth.ok) {
+    return auth.response;
+  }
+
   const allDeals = getDeals();
   const summary = allDeals.map((d) => ({
     id: d.id,
@@ -30,6 +36,11 @@ export async function GET() {
 }
 
 export async function POST(req: NextRequest) {
+  const auth = await requireApiSession("deals:write");
+  if (!auth.ok) {
+    return auth.response;
+  }
+
   const body = await req.json();
   const allDeals = getDeals();
 
