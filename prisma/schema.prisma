@@ -50,6 +50,7 @@ model Organization {
   users User[]
   deals Deal[]
 
+  @@unique([name])
   @@map("organizations")
 }
 
@@ -59,6 +60,7 @@ model User {
   email     String   @unique
   name      String?
   image     String?
+  emailVerified DateTime? @map("email_verified")
   role      Role     @default(OPERATOR)
   createdAt DateTime @default(now()) @map("created_at")
 
