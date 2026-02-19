@@ -2,6 +2,7 @@ import { createDealSchema } from "@/lib/api/schemas/deals";
 import { handleRouteError, jsonError, jsonOk, parseJsonBody } from "@/lib/api/route-helpers";
 import { requireApiSession } from "@/lib/auth/require-session";
 import { createDealForOrg, listDealsForOrg } from "@/lib/services/deal-service";
+import { Prisma } from "@prisma/client";
 
 export async function GET() {
   const auth = await requireApiSession("deals:read");
@@ -37,10 +38,12 @@ export async function POST(request: Request) {
   }
 
   try {
+    const propertyMetaJson = (parsed.data.propertyMetaJson ?? {}) as Prisma.InputJsonValue;
+
     const deal = await createDealForOrg({
       orgId: auth.session.user.orgId,
       title: parsed.data.title,
-      propertyMetaJson: parsed.data.propertyMetaJson,
+      propertyMetaJson,
       actorUserId: auth.session.user.id,
     });
     return jsonOk({ deal }, 201);

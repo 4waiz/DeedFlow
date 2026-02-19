@@ -48,15 +48,17 @@ export async function listDealsForOrg(orgId: string) {
 export async function createDealForOrg(input: {
   orgId: string;
   title: string;
-  propertyMetaJson?: Record<string, unknown>;
+  propertyMetaJson?: Prisma.InputJsonValue;
   actorUserId?: string | null;
 }) {
+  const propertyMetaJson: Prisma.InputJsonValue = (input.propertyMetaJson ?? {}) as Prisma.InputJsonValue;
+
   const deal = await prisma.deal.create({
     data: {
       orgId: input.orgId,
       title: input.title,
       status: DealStatus.DRAFT,
-      propertyMetaJson: (input.propertyMetaJson ?? {}) as Prisma.InputJsonValue,
+      propertyMetaJson,
       complianceScore: 0,
       riskScore: 0,
       steps: {
