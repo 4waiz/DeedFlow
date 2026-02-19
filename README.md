@@ -100,13 +100,14 @@ GitHub: https://github.com/4waiz/DeedFlow
 
 ---
 
-## Environment Variables (MVP Placeholder)
+## Environment Variables
 
-Copy `.env.example` to `.env` and fill values for your environment.
+Copy `.env.example` to `.env` and set values.
 
 | Variable | Purpose |
 | --- | --- |
-| `DATABASE_URL` | Postgres connection string for Prisma |
+| `DATABASE_URL` | Supabase **Session Pooler** URL (IPv4-compatible) used by Prisma Client at runtime |
+| `DIRECT_URL` | Supabase **Direct** Postgres URL used by Prisma migrations (`prisma migrate ...`) |
 | `NEXTAUTH_URL` | Base app URL for auth callbacks |
 | `NEXTAUTH_SECRET` | Secret used to sign auth sessions |
 | `GOOGLE_CLIENT_ID` | Google OAuth client ID |
@@ -123,6 +124,12 @@ Copy `.env.example` to `.env` and fill values for your environment.
 | `GROQ_API_KEY` | Optional key for OCR extraction enhancement |
 | `GROQ_CHAT_API_KEY` | Optional key for chat endpoint |
 | `LINGODOTDEV_API_KEY` | Optional key for translation endpoint |
+
+Supabase connectivity notes:
+
+1. Use pooler (`DATABASE_URL`) for app/runtime because it is typically IPv4-compatible.
+2. Use direct host (`DIRECT_URL`) for schema migrations when your network supports it.
+3. If direct host is unreachable (`P1001`), follow the fallback procedure in `docs/runbook-dev.md`.
 
 ---
 
