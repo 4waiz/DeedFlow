@@ -71,25 +71,25 @@ export default function DealTimeline({ steps, onStepClick, selectedStepId }: Pro
                 )}
               >
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-semibold text-gray-200">
+                  <span className="text-sm font-semibold text-gray-200">
                     {lang === "ar" ? step.titleAr : step.title}
                   </span>
-                  <span className={cn("text-[10px] font-medium px-1.5 py-0.5 rounded-full", config.bg, config.color)}>
+                  <span className={cn("text-[11px] font-medium px-1.5 py-0.5 rounded-full", config.bg, config.color)}>
                     {t(`status.${step.status}`, lang)}
                   </span>
                 </div>
                 {step.blockedReason && (
-                  <p className="text-[10px] text-red-400 mt-0.5">
+                  <p className="text-xs text-red-400 mt-0.5">
                     {step.blockedReason}
                   </p>
                 )}
                 {step.notes.length > 0 && (
-                  <p className="text-[10px] text-gray-500 mt-0.5">
+                  <p className="text-xs text-gray-500 mt-0.5">
                     {step.notes[step.notes.length - 1]}
                   </p>
                 )}
                 {step.completedAt && (
-                  <p className="text-[10px] text-emerald-400 mt-0.5">
+                  <p className="text-xs text-emerald-400 mt-0.5">
                     Completed {new Date(step.completedAt).toLocaleDateString()}
                   </p>
                 )}

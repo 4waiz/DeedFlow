@@ -177,6 +177,65 @@ function parseTraceOcrResponse(
   return { extractedText, extractedFields, confidence: avgConfidence };
 }
 
+// Auto-fill template fields using Groq + deal context
+async function autoFillWithGroq(
+  rawText: string,
+  docType: string,
+  dealContext: string
+): Promise<Record<string, string> | null> {
+  const groqApiKey = process.env.GROQ_API_KEY;
+  if (!groqApiKey) return null;
+
+  const expectedFields = expectedFieldsMap[docType];
+  if (!expectedFields) return null;
+
+  try {
+    const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${groqApiKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model: "llama-3.1-8b-instant",
+        messages: [
+          {
+            role: "system",
+            content:
+              'You are a UAE real estate document auto-fill assistant. You will receive deal information AND data extracted from previously uploaded documents (passports, IDs, title deeds, etc.). Use this existing data to fill in the fields of a new document template. PRIORITY: Always use exact values from previously uploaded documents first (names, IDs, dates, addresses). Only use deal-level info or generate plausible values if no matching data exists. Return ONLY a valid JSON object with field names as keys and filled values as strings. Use realistic formatting (dates as DD/MM/YYYY, amounts with commas).',
+          },
+          {
+            role: "user",
+            content: `Document type to fill: ${docType.replace(/_/g, " ")}\n\nTemplate text from OCR (may have empty fields):\n${rawText.slice(0, 2000)}\n\nDeal info + previously uploaded document data:\n${dealContext}\n\nFill these fields using the data above:\n${expectedFields.map((f) => `- ${f}`).join("\n")}`,
+          },
+        ],
+        temperature: 0.2,
+        max_tokens: 1024,
+        response_format: { type: "json_object" },
+      }),
+    });
+
+    if (!response.ok) {
+      console.error("Groq auto-fill error:", response.status, await response.text());
+      return null;
+    }
+
+    const data = await response.json();
+    const content = data.choices?.[0]?.message?.content;
+    if (!content) return null;
+
+    const parsed = JSON.parse(content);
+    const result: Record<string, string> = {};
+    for (const [key, value] of Object.entries(parsed)) {
+      result[key] = String(value);
+    }
+    return result;
+  } catch (error) {
+    console.error("Groq auto-fill error:", error);
+    return null;
+  }
+}
+
 // AI field extraction using Groq — takes raw OCR text and extracts structured fields
 async function extractFieldsWithGroq(
   rawText: string,
@@ -240,6 +299,7 @@ export async function POST(request: NextRequest) {
     const formData = await request.formData();
     const file = formData.get("file") as File | null;
     const docType = (formData.get("docType") as string) || "unknown";
+    const dealContext = (formData.get("dealContext") as string) || "";
 
     // If we have a real file, call Trace OCR directly (no API key needed!)
     if (file && file.size > 0) {
@@ -259,6 +319,24 @@ export async function POST(request: NextRequest) {
             const { extractedText, extractedFields: basicFields, confidence } =
               parseTraceOcrResponse(results[0], docType);
 
+            // If OCR found very little text, it might be a blank/empty template
+            const wordCount = extractedText.trim().split(/\s+/).length;
+            if (wordCount < 5 && dealContext) {
+              const filledFields = await autoFillWithGroq("(blank document)", docType, dealContext);
+              if (filledFields) {
+                return NextResponse.json({
+                  success: true,
+                  mode: "live",
+                  docType,
+                  extractedFields: filledFields,
+                  confidence: 0,
+                  aiExtracted: true,
+                  autoFilled: true,
+                  message: "Blank document detected — fields auto-filled from deal data by Groq AI",
+                });
+              }
+            }
+
             // Step 2: AI extraction with Groq — parse raw text into structured fields
             const aiFields = await extractFieldsWithGroq(extractedText, docType);
 
@@ -271,7 +349,24 @@ export async function POST(request: NextRequest) {
               const validRatio = totalFields > 0 ? (totalFields - naCount) / totalFields : 0;
 
               if (validRatio < 0.3) {
-                // Less than 30% of fields found — reject as invalid document
+                // Template detected — try auto-fill if deal context is available
+                if (dealContext) {
+                  const filledFields = await autoFillWithGroq(extractedText, docType, dealContext);
+                  if (filledFields) {
+                    return NextResponse.json({
+                      success: true,
+                      mode: "live",
+                      docType,
+                      extractedFields: filledFields,
+                      confidence,
+                      aiExtracted: true,
+                      autoFilled: true,
+                      message: "Empty template detected — fields auto-filled from deal data by Groq AI",
+                    });
+                  }
+                }
+
+                // No deal context or auto-fill failed — reject as invalid
                 return NextResponse.json({
                   success: false,
                   mode: "live",
@@ -316,6 +411,23 @@ export async function POST(request: NextRequest) {
 
     // Mock fallback — no file uploaded, or Trace OCR call failed
     await new Promise((resolve) => setTimeout(resolve, 1500));
+
+    // If deal context is available, try auto-fill even in demo mode
+    if (dealContext) {
+      const filledFields = await autoFillWithGroq("(no document content)", docType, dealContext);
+      if (filledFields) {
+        return NextResponse.json({
+          success: true,
+          mode: "demo",
+          docType,
+          extractedFields: filledFields,
+          confidence: 0.95,
+          aiExtracted: true,
+          autoFilled: true,
+          message: "Auto-filled from deal data by Groq AI (demo mode)",
+        });
+      }
+    }
 
     const fields = mockOcrResults[docType] || mockOcrResults.emirates_id;
 

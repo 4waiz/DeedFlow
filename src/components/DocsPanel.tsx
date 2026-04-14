@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { DealDoc, DealStep, DocVerificationStatus } from "@/lib/types";
+import { Deal, DealDoc, DealStep, DocVerificationStatus } from "@/lib/types";
 import { useStore } from "@/lib/store";
 import { t } from "@/lib/i18n";
 import { motion, AnimatePresence } from "framer-motion";
@@ -17,6 +17,8 @@ import {
   Loader2,
   Eye,
   Sparkles,
+  Download,
+  Wand2,
 } from "lucide-react";
 import { cn } from "@/lib/cn";
 
@@ -31,6 +33,7 @@ interface Props {
   docs: DealDoc[];
   steps: DealStep[];
   dealId: string;
+  deal?: Deal;
 }
 
 interface OcrResult {
@@ -41,10 +44,11 @@ interface OcrResult {
   confidence?: number;
   message?: string;
   aiExtracted?: boolean;
+  autoFilled?: boolean;
   error?: string;
 }
 
-export default function DocsPanel({ docs, steps, dealId }: Props) {
+export default function DocsPanel({ docs, steps, dealId, deal }: Props) {
   const {
     lang,
     updateDeal,
@@ -100,6 +104,71 @@ export default function DocsPanel({ docs, steps, dealId }: Props) {
   );
 
   const uploadOptions = missingDocTypes.length > 0 ? missingDocTypes : visibleRequiredDocTypes;
+
+  // Build deal context string for auto-fill — includes deal metadata + ALL extracted fields from existing docs
+  const buildDealContext = (): string => {
+    if (!deal) return "";
+    const parties = deal.parties.map((p) => `${p.name} (${p.role}${p.sharePercent ? `, ${p.sharePercent}%` : ""})`).join("; ");
+
+    const dealInfo = [
+      `Deal: ${deal.name}`,
+      `City: ${deal.city}`,
+      `Property: ${deal.propertyAddress}`,
+      `Property Type: ${deal.propertyType}`,
+      `Total Value: AED ${deal.totalValue.toLocaleString()}`,
+      `Tokenization: ${deal.tokenizationMode}`,
+      `Total Shares: ${deal.totalShares}`,
+      `Share Price: AED ${deal.sharePrice.toLocaleString()}`,
+      `Status: ${deal.status}`,
+      `Created: ${deal.createdAt}`,
+      `Parties: ${parties}`,
+    ].join("\n");
+
+    // Gather extracted fields from ALL previously uploaded documents
+    const existingDocsData = docs
+      .filter((doc) => Object.keys(doc.extractedFields).length > 0)
+      .map((doc) => {
+        const fields = Object.entries(doc.extractedFields)
+          .filter(([key]) => !key.startsWith("_"))
+          .map(([key, value]) => `  ${key}: ${value}`)
+          .join("\n");
+        return `[${doc.type.replace(/_/g, " ").toUpperCase()} — ${doc.filename}]\n${fields}`;
+      })
+      .join("\n\n");
+
+    return `${dealInfo}\n\n--- Previously Uploaded Documents Data ---\n${existingDocsData || "(no documents uploaded yet)"}`;
+  };
+
+  const handleDownloadFilledPdf = async () => {
+    if (!ocrResult?.extractedFields || !uploadDocType) return;
+
+    try {
+      const response = await fetch("/api/fill-pdf", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          docType: uploadDocType,
+          fields: ocrResult.extractedFields,
+        }),
+      });
+
+      if (!response.ok) throw new Error("PDF generation failed");
+
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `${uploadDocType}_filled_${Date.now()}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+
+      addToast("Filled PDF downloaded!", "success");
+    } catch {
+      addToast("Failed to generate PDF", "error");
+    }
+  };
 
   useEffect(() => {
     if (!docsPanelOpen && !preselectDocType) {
@@ -189,6 +258,10 @@ export default function DocsPanel({ docs, steps, dealId }: Props) {
         formData.append("file", selectedFile);
       }
       formData.append("docType", uploadDocType);
+      const dealCtx = buildDealContext();
+      if (dealCtx) {
+        formData.append("dealContext", dealCtx);
+      }
 
       const response = await fetch("/api/ocr", {
         method: "POST",
@@ -505,9 +578,13 @@ export default function DocsPanel({ docs, steps, dealId }: Props) {
                       >
                         <div className="mt-3 p-2.5 rounded-lg border border-emerald-500/20 bg-emerald-500/[0.05]">
                           <div className="flex items-center gap-2 mb-2">
-                            <Sparkles size={12} className="text-emerald-400" />
-                            <p className="text-[10px] font-bold text-emerald-400">
-                              {t("ocr.results", lang)}
+                            {ocrResult.autoFilled ? (
+                              <Wand2 size={12} className="text-violet-400" />
+                            ) : (
+                              <Sparkles size={12} className="text-emerald-400" />
+                            )}
+                            <p className={cn("text-[10px] font-bold", ocrResult.autoFilled ? "text-violet-400" : "text-emerald-400")}>
+                              {ocrResult.autoFilled ? "Auto-Filled from Deal Data" : t("ocr.results", lang)}
                             </p>
                             {ocrResult.aiExtracted && (
                               <span className="text-[8px] px-1.5 py-0.5 rounded-full bg-violet-500/15 text-violet-300 border border-violet-500/25">
@@ -555,11 +632,28 @@ export default function DocsPanel({ docs, steps, dealId }: Props) {
                               </span>
                             </div>
                           )}
+                          {ocrResult.autoFilled && (
+                            <motion.button
+                              whileHover={{ scale: 1.02 }}
+                              whileTap={{ scale: 0.98 }}
+                              onClick={handleDownloadFilledPdf}
+                              className="mt-2 w-full flex items-center justify-center gap-1.5 px-3 py-2 text-[11px] font-bold rounded-md transition-all"
+                              style={{
+                                background: "linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(6, 182, 212, 0.2))",
+                                color: "#c4b5fd",
+                                border: "1px solid rgba(139, 92, 246, 0.3)",
+                                boxShadow: "0 0 12px rgba(139, 92, 246, 0.1)",
+                              }}
+                            >
+                              <Download size={12} />
+                              Download Filled PDF
+                            </motion.button>
+                          )}
                           <motion.button
                             whileHover={{ scale: 1.02 }}
                             whileTap={{ scale: 0.98 }}
                             onClick={handleReset}
-                            className="mt-2 w-full px-3 py-1.5 text-[10px] font-semibold rounded-md bg-emerald-500/15 border border-emerald-500/25 text-emerald-300 hover:bg-emerald-500/25 transition-all"
+                            className="mt-1.5 w-full px-3 py-1.5 text-[10px] font-semibold rounded-md bg-emerald-500/15 border border-emerald-500/25 text-emerald-300 hover:bg-emerald-500/25 transition-all"
                           >
                             {t("ocr.done", lang)}
                           </motion.button>

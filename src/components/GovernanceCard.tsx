@@ -59,7 +59,7 @@ export default function GovernanceCard({ parties, monthlyRent = 8500 }: Props) {
         <h4 className="text-xs font-bold text-white mb-2">
           💰 {t("deal.rent", lang)}
         </h4>
-        <div className="text-[10px] text-gray-500 mb-2">
+        <div className="text-xs text-gray-500 mb-2">
           Monthly rent: AED {monthlyRent.toLocaleString()} • Pro-rata distribution
         </div>
         <div className="space-y-1">
@@ -67,7 +67,7 @@ export default function GovernanceCard({ parties, monthlyRent = 8500 }: Props) {
             const share = buyer.sharePercent || 0;
             const rent = Math.round((share / 100) * monthlyRent);
             return (
-              <div key={buyer.id} className="flex justify-between text-xs py-0.5 border-b border-white/[0.04] last:border-0">
+              <div key={buyer.id} className="flex justify-between text-sm py-1 border-b border-white/[0.04] last:border-0">
                 <span className="text-gray-400">{buyer.name}</span>
                 <span className="font-semibold text-emerald-400">
                   AED {rent.toLocaleString()}/mo <span className="text-gray-600">({share}%)</span>

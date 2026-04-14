@@ -57,14 +57,14 @@ export default function AgentPanel({ deal }: Props) {
           </span>
         </div>
         <div className="h-0.5 bg-white/[0.06] rounded my-2" />
-        <ul className="space-y-1.5">
+        <ul className="space-y-2">
           {(lang === "ar" ? insight.rationaleAr : insight.rationale).map((r: string, i: number) => (
             <motion.li
               key={i}
               initial={{ opacity: 0, x: -5 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: i * 0.1 }}
-              className="flex items-start gap-1.5 text-xs text-gray-400"
+              className="flex items-start gap-1.5 text-sm text-gray-400"
             >
               <span className="text-[10px] mt-0.5">•</span>
               {r}
@@ -83,7 +83,7 @@ export default function AgentPanel({ deal }: Props) {
             onClick={() => handleAction(action.action, lang === "ar" ? action.labelAr : action.label)}
             className="w-full flex items-center justify-between p-2.5 rounded-lg bg-white/[0.03] border border-white/[0.08] hover:border-emerald-500/30 hover:bg-emerald-500/[0.05] transition-all text-left"
           >
-            <span className="text-xs font-medium text-gray-300">
+            <span className="text-sm font-medium text-gray-300">
               {lang === "ar" ? action.labelAr : action.label}
             </span>
             <ArrowRight size={14} className="text-gray-500" />
@@ -91,23 +91,6 @@ export default function AgentPanel({ deal }: Props) {
         ))}
       </div>
 
-      {/* Deal metrics summary */}
-      <div className="mt-auto pt-3 border-t border-white/[0.06]">
-        <div className="grid grid-cols-3 gap-2 text-center">
-          <div className="p-1.5 bg-white/[0.04] rounded-lg border border-white/[0.06]">
-            <p className="text-[10px] text-gray-500">Score</p>
-            <p className="text-sm font-bold text-emerald-400">{deal.metrics.complianceScore}</p>
-          </div>
-          <div className="p-1.5 bg-white/[0.04] rounded-lg border border-white/[0.06]">
-            <p className="text-[10px] text-gray-500">Risk</p>
-            <p className="text-sm font-bold text-amber-400">{deal.metrics.riskScore}</p>
-          </div>
-          <div className="p-1.5 bg-white/[0.04] rounded-lg border border-white/[0.06]">
-            <p className="text-[10px] text-gray-500">Days</p>
-            <p className="text-sm font-bold text-gray-300">{deal.metrics.estTimeToCloseDays}</p>
-          </div>
-        </div>
-      </div>
     </div>
   );
 }
