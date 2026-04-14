@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { requireApiSession } from "@/lib/auth/require-session";
 
 // Expected fields per document type — Groq AI will extract these from raw OCR text
 const expectedFieldsMap: Record<string, string[]> = {
@@ -295,6 +296,11 @@ async function extractFieldsWithGroq(
 }
 
 export async function POST(request: NextRequest) {
+  const auth = await requireApiSession("documents:upload");
+  if (!auth.ok) {
+    return auth.response;
+  }
+
   try {
     const formData = await request.formData();
     const file = formData.get("file") as File | null;

@@ -1,6 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
+import { requireApiSession } from "@/lib/auth/require-session";
 
 export async function POST(req: NextRequest) {
+  const auth = await requireApiSession("steps:update");
+  if (!auth.ok) {
+    return auth.response;
+  }
+
   const body = await req.json();
   const { type, dealId } = body;
 

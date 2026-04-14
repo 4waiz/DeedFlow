@@ -12,13 +12,15 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { cn } from "@/lib/cn";
+import { isDemoModeEnabled } from "@/lib/feature-flags";
+import { signOut } from "next-auth/react";
 
 export default function TopBar() {
   const { lang, setDemoScriptOpen, user, logout } = useStore();
   const pathname = usePathname();
-  const router = useRouter();
+  const isDemoMode = isDemoModeEnabled();
 
   const navItems = [
     { href: "/app", label: t("nav.dashboard", lang), icon: LayoutDashboard },
@@ -38,38 +40,39 @@ export default function TopBar() {
         boxShadow: "0 4px 30px rgba(0, 0, 0, 0.4)",
       }}
     >
-      <div className="flex items-center justify-between px-4 py-2.5">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2 px-3 sm:px-4 py-2.5">
         {/* Logo + Badge */}
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-2">
           <Link href="/" className="flex items-center gap-2 group">
             <Image
               src="/logo.png"
               alt="DeedFlow"
               width={140}
               height={36}
-              className="h-9 w-auto brightness-0 invert opacity-90 group-hover:opacity-100 transition-opacity"
+              className="h-8 sm:h-9 w-auto brightness-0 invert opacity-90 group-hover:opacity-100 transition-opacity"
               priority
             />
           </Link>
-          {/* Demo Mode badge with gold glow */}
-          <motion.span
-            initial={{ scale: 0.8 }}
-            animate={{ scale: 1 }}
-            className="px-2 py-0.5 text-[10px] font-semibold rounded-full"
-            style={{
-              background: "rgba(251, 191, 36, 0.1)",
-              color: "#fbbf24",
-              border: "1px solid rgba(251, 191, 36, 0.3)",
-              boxShadow: "0 0 12px rgba(251, 191, 36, 0.15), inset 0 0 8px rgba(251, 191, 36, 0.05)",
-              textShadow: "0 0 8px rgba(251, 191, 36, 0.4)",
-            }}
-          >
-            {t("demo.mode", lang)}
-          </motion.span>
+          {isDemoMode && (
+            <motion.span
+              initial={{ scale: 0.8 }}
+              animate={{ scale: 1 }}
+              className="px-2 py-0.5 text-[10px] font-semibold rounded-full"
+              style={{
+                background: "rgba(251, 191, 36, 0.1)",
+                color: "#fbbf24",
+                border: "1px solid rgba(251, 191, 36, 0.3)",
+                boxShadow: "0 0 12px rgba(251, 191, 36, 0.15), inset 0 0 8px rgba(251, 191, 36, 0.05)",
+                textShadow: "0 0 8px rgba(251, 191, 36, 0.4)",
+              }}
+            >
+              {t("demo.mode", lang)}
+            </motion.span>
+          )}
         </div>
 
         {/* Navigation */}
-        <nav className="hidden md:flex items-center gap-1">
+        <nav className="flex flex-wrap items-center justify-center md:justify-start gap-1">
           {navItems.map((item) => {
             const isActive = pathname === item.href;
             return (
@@ -77,7 +80,7 @@ export default function TopBar() {
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-200"
+                  "flex items-center gap-1.5 px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg text-[11px] sm:text-sm font-medium transition-all duration-200"
                 )}
                 style={
                   isActive
@@ -115,40 +118,40 @@ export default function TopBar() {
         </nav>
 
         {/* Actions */}
-        <div className="flex items-center gap-2">
-          {/* Demo Script — emerald accent */}
-          <motion.button
-            whileHover={{ scale: 1.03 }}
-            whileTap={{ scale: 0.97 }}
-            onClick={() => setDemoScriptOpen(true)}
-            className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-lg transition-all duration-200"
-            style={{
-              background: "rgba(52, 211, 153, 0.1)",
-              color: "#6ee7b7",
-              border: "1px solid rgba(52, 211, 153, 0.2)",
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = "rgba(52, 211, 153, 0.18)";
-              e.currentTarget.style.boxShadow = "0 0 16px rgba(52, 211, 153, 0.15)";
-              e.currentTarget.style.borderColor = "rgba(52, 211, 153, 0.35)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = "rgba(52, 211, 153, 0.1)";
-              e.currentTarget.style.boxShadow = "none";
-              e.currentTarget.style.borderColor = "rgba(52, 211, 153, 0.2)";
-            }}
-          >
-            <BookOpen size={14} />
-            {t("demo.script", lang)}
-          </motion.button>
+        <div className="flex flex-wrap items-center justify-center md:justify-end gap-2">
+          {isDemoMode && (
+            <motion.button
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
+              onClick={() => setDemoScriptOpen(true)}
+              className="flex items-center gap-1.5 px-2 sm:px-3 py-1 sm:py-1.5 text-[11px] sm:text-sm font-medium rounded-lg transition-all duration-200"
+              style={{
+                background: "rgba(52, 211, 153, 0.1)",
+                color: "#6ee7b7",
+                border: "1px solid rgba(52, 211, 153, 0.2)",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = "rgba(52, 211, 153, 0.18)";
+                e.currentTarget.style.boxShadow = "0 0 16px rgba(52, 211, 153, 0.15)";
+                e.currentTarget.style.borderColor = "rgba(52, 211, 153, 0.35)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = "rgba(52, 211, 153, 0.1)";
+                e.currentTarget.style.boxShadow = "none";
+                e.currentTarget.style.borderColor = "rgba(52, 211, 153, 0.2)";
+              }}
+            >
+              <BookOpen size={14} />
+              {t("demo.script", lang)}
+            </motion.button>
+          )}
 
-          {/* Simulate Event */}
-          <SimulateDropdown />
+          {isDemoMode && <SimulateDropdown />}
 
           {/* Settings Button */}
           <Link
             href="/app/settings"
-            className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-lg transition-all duration-200"
+            className="flex items-center gap-1.5 px-2 sm:px-3 py-1 sm:py-1.5 text-[11px] sm:text-sm font-medium rounded-lg transition-all duration-200"
             style={{
               background: "rgba(255, 255, 255, 0.04)",
               color: "#d1d5db",
@@ -176,7 +179,7 @@ export default function TopBar() {
               <motion.button
                 whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.97 }}
-                className="flex items-center gap-2 px-3 py-1.5 text-sm font-medium rounded-lg transition-all duration-200"
+                className="flex items-center gap-2 px-2 sm:px-3 py-1 sm:py-1.5 text-[11px] sm:text-sm font-medium rounded-lg transition-all duration-200"
                 style={{
                   background: "rgba(255, 255, 255, 0.04)",
                   color: "#d1d5db",
@@ -188,7 +191,7 @@ export default function TopBar() {
                     {user.name.charAt(0).toUpperCase()}
                   </span>
                 </div>
-                <span className="text-xs">{user.name}</span>
+                <span className="text-xs hidden sm:inline">{user.name}</span>
               </motion.button>
 
               {/* Dropdown */}
@@ -209,9 +212,9 @@ export default function TopBar() {
                 </div>
                 <div className="p-1">
                   <button
-                    onClick={() => {
+                    onClick={async () => {
                       logout();
-                      router.push("/");
+                      await signOut({ callbackUrl: "/" });
                     }}
                     className="w-full text-left px-3 py-2 text-sm rounded-lg text-red-400 hover:bg-red-500/10 transition-all"
                   >
@@ -243,7 +246,7 @@ function SimulateDropdown() {
       <motion.button
         whileHover={{ scale: 1.03 }}
         whileTap={{ scale: 0.97 }}
-        className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-lg transition-all duration-200"
+        className="flex items-center gap-1.5 px-2 sm:px-3 py-1 sm:py-1.5 text-[11px] sm:text-sm font-medium rounded-lg transition-all duration-200"
         style={{
           background: "rgba(251, 191, 36, 0.1)",
           color: "#fbbf24",
@@ -265,7 +268,7 @@ function SimulateDropdown() {
       </motion.button>
       {/* Dark dropdown panel */}
       <div
-        className="absolute right-0 top-full mt-1 w-56 rounded-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50"
+        className="absolute right-0 top-full mt-1 w-48 sm:w-56 rounded-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50"
         style={{
           background: "rgba(20, 24, 37, 0.95)",
           backdropFilter: "blur(20px)",

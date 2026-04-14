@@ -42,7 +42,7 @@ export default function ComplianceMeter({ score, type }: Props) {
   return (
     <div className={cn("p-3 rounded-xl border", getBgColor())}>
       <div className="flex items-center justify-between mb-2">
-        <span className="text-xs font-semibold text-gray-400">{label}</span>
+        <span className="text-xs font-semibold text-muted">{label}</span>
         <span className="text-lg font-bold text-white">
           {emoji} {score}
         </span>

@@ -1,13 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import { useStore } from "@/lib/store";
 import { t } from "@/lib/i18n";
 import { motion } from "framer-motion";
 import TopBar from "@/components/TopBar";
 import DealTimeline from "@/components/DealTimeline";
 import DocsPanel from "@/components/DocsPanel";
+import ComplianceMeter from "@/components/ComplianceMeter";
 import GovernanceCard from "@/components/GovernanceCard";
 import AgentPanel from "@/components/AgentPanel";
 import AuditFeed from "@/components/AuditFeed";
@@ -15,212 +15,228 @@ import DemoScriptModal from "@/components/DemoScriptModal";
 import ToastStack from "@/components/ToastStack";
 import ChatBot from "@/components/ChatBot";
 import { cn } from "@/lib/cn";
-import {
-  MapPin, Building2, Coins, DollarSign, Calendar,
-  TrendingUp, Upload, ShieldCheck, AlertTriangle, Clock,
-} from "lucide-react";
+import { MapPin, Building2, Coins, DollarSign, Hash, Calendar, TrendingUp } from "lucide-react";
 import Link from "next/link";
 
 export default function Dashboard() {
-  const router = useRouter();
   const {
-    deals, lang, user, initializeDeals, simulateEvent,
-    getSelectedDeal, selectedStepId, setSelectedStepId, setDocsFilterRequired,
+    deals,
+    lang,
+    initializeDeals,
+    getSelectedDeal,
+    selectedStepId,
+    setSelectedStepId,
+    setDocsFilterRequired,
   } = useStore();
   const [initialized, setInitialized] = useState(false);
 
-  useEffect(() => { if (!user) router.push("/login"); }, [user, router]);
-  useEffect(() => { if (!initialized && user) { initializeDeals(); setInitialized(true); } }, [initialized, initializeDeals, user]);
+  // Initialize deals on mount
   useEffect(() => {
-    if (deals.length === 0) return;
-    const timer = setInterval(() => {
-      const d = deals.find((d) => d.status === "active");
-      if (d) { const ev = ["doc_verified", "step_completed", "approval_delay"] as const; simulateEvent({ type: ev[Math.floor(Math.random() * ev.length)], dealId: d.id }); }
-    }, 15000);
-    return () => clearInterval(timer);
-  }, [deals, simulateEvent]);
+    if (!initialized) {
+      initializeDeals();
+      setInitialized(true);
+    }
+  }, [initialized, initializeDeals]);
 
   const deal = getSelectedDeal();
   const dir = lang === "ar" ? "rtl" : "ltr";
 
-  if (!user) return null;
-
   if (!initialized || deals.length === 0) {
     return (
-      <div className="h-screen flex items-center justify-center bg-[#0c0f1a]">
-        <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="text-center">
+      <div className="h-screen flex items-center justify-center bg-[var(--background)]">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="text-center"
+        >
           <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-emerald-500 to-emerald-700 flex items-center justify-center mx-auto mb-4 shadow-[0_8px_32px_rgba(16,185,129,0.25)]">
             <span className="text-white text-2xl font-bold">D</span>
           </div>
-          <h1 className="text-xl font-bold text-white mb-2">DeedFlow</h1>
+          <h1 className="text-xl font-bold text-foreground mb-2">DeedFlow</h1>
           <p className="text-sm text-gray-500">Loading deals...</p>
+          <div className="mt-4 flex justify-center gap-1">
+            <span className="w-2 h-2 rounded-full bg-emerald-500/60 animate-pulse" />
+            <span className="w-2 h-2 rounded-full bg-emerald-500/40 animate-pulse [animation-delay:0.2s]" />
+            <span className="w-2 h-2 rounded-full bg-emerald-500/20 animate-pulse [animation-delay:0.4s]" />
+          </div>
         </motion.div>
       </div>
     );
   }
 
-  const compScore = deal?.metrics.complianceScore ?? 0;
-  const riskScore = deal?.metrics.riskScore ?? 0;
-  const daysLeft = deal?.metrics.estTimeToCloseDays ?? 0;
-
-  const compColor = compScore >= 80 ? "text-emerald-400" : compScore >= 50 ? "text-amber-400" : "text-red-400";
-  const riskColor = riskScore >= 60 ? "text-red-400" : riskScore >= 30 ? "text-amber-400" : "text-emerald-400";
-
   return (
-    <div dir={dir} className="h-screen flex flex-col bg-[#0c0f1a]">
+    <div dir={dir} className="min-h-[100dvh] flex flex-col bg-[var(--background)]">
       <div className="bg-particles" />
       <TopBar />
 
-      <div className="flex-1 flex overflow-hidden">
-        <main className="flex-1 overflow-y-auto px-8 py-6 bg-[#0c0f1a]">
+      <div className="flex-1 flex min-h-0 overflow-hidden">
+        {/* Main Content */}
+        <main className="flex-1 overflow-y-auto overflow-x-hidden p-3 sm:p-4 bg-[var(--background)]">
           {deal ? (
-            <div className="max-w-6xl mx-auto space-y-6">
-
-              {/* ====== DEAL HEADER — everything at a glance ====== */}
+            <div className="max-w-5xl mx-auto space-y-3 sm:space-y-4">
+              {/* Deal Header Card */}
               <motion.div
                 key={deal.id}
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="relative bg-[#141825] rounded-2xl border border-white/[0.06] shadow-[0_8px_32px_rgba(0,0,0,0.3)] overflow-hidden"
+                className="relative bg-[var(--card)] rounded-2xl border border-[var(--border)] shadow-soft p-4 overflow-hidden"
               >
+                {/* Subtle gradient top border */}
                 <div className="absolute inset-x-0 top-0 h-[1px] bg-gradient-to-r from-transparent via-emerald-500/40 to-transparent" />
 
-                {/* Top: Name + Status + Actions */}
-                <div className="px-6 pt-6 pb-4 flex items-start justify-between">
+                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-3">
                   <div>
-                    <h2 className="text-2xl font-bold text-white tracking-tight">
+                    <h2 className="text-xl font-bold text-foreground">
                       {lang === "ar" ? deal.nameAr : deal.name}
                     </h2>
-                    <div className="flex items-center gap-4 mt-2 text-sm text-gray-400">
-                      <span className="flex items-center gap-1.5"><MapPin size={14} className="text-gray-500" />{deal.city}</span>
-                      <span className="flex items-center gap-1.5">
-                        {deal.tokenizationMode === "fractional" ? <Building2 size={14} className="text-gray-500" /> : <Coins size={14} className="text-gray-500" />}
+                    <div className="flex items-center gap-3 mt-1 text-xs text-gray-500 flex-wrap">
+                      <span className="flex items-center gap-1">
+                        <MapPin size={12} />
+                        {deal.city}
+                      </span>
+                      <span className="flex items-center gap-1">
+                        {deal.tokenizationMode === "fractional" ? <Building2 size={12} /> : <Coins size={12} />}
                         {deal.tokenizationMode}
                       </span>
-                      <span className="flex items-center gap-1.5"><DollarSign size={14} className="text-gray-500" />AED {deal.totalValue.toLocaleString()}</span>
-                      <span className="flex items-center gap-1.5"><Calendar size={14} className="text-gray-500" />{new Date(deal.createdAt).toLocaleDateString()}</span>
+                      <span className="flex items-center gap-1">
+                        <DollarSign size={12} />
+                        AED {deal.totalValue.toLocaleString()}
+                      </span>
+                      <span className="flex items-center gap-1">
+                        <Hash size={12} />
+                        {deal.totalShares} shares @ AED {deal.sharePrice.toLocaleString()}
+                      </span>
+                      <span className="flex items-center gap-1">
+                        <Calendar size={12} />
+                        {new Date(deal.createdAt).toLocaleDateString()}
+                      </span>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2">
+                  <DealStatusBadge status={deal.status} lang={lang} />
+                </div>
+
+                {/* Metrics Row */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <ComplianceMeter score={deal.metrics.complianceScore} type="compliance" />
+                  <ComplianceMeter score={deal.metrics.riskScore} type="risk" />
+                </div>
+              </motion.div>
+
+              {/* Main Layout: Left Timeline + Upload, Right Main Content */}
+              <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
+                {/* LEFT SIDEBAR — Timeline (3 cols) */}
+                <div className="md:col-span-3 space-y-4">
+                  {/* Upload Document Button */}
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.05 }}
+                  >
                     <button
                       onClick={() => document.getElementById("docs-panel")?.scrollIntoView({ behavior: "smooth" })}
-                      className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-emerald-500/10 border border-emerald-500/20 hover:bg-emerald-500/20 transition-all text-sm font-medium text-emerald-400"
+                      className="w-full px-4 py-3 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg font-semibold transition-all shadow-lg hover:shadow-emerald-500/20"
                     >
-                      <Upload size={14} /> Upload Doc
+                      ↑ Upload Document
                     </button>
+                  </motion.div>
+
+                  {/* My Property Button */}
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.1 }}
+                  >
                     <Link
                       href="/app/property"
-                      className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-blue-500/10 border border-blue-500/20 hover:bg-blue-500/20 transition-all text-sm font-medium text-blue-400"
+                      className="w-full px-4 py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-lg font-semibold transition-all shadow-lg hover:shadow-blue-500/20 flex items-center justify-center gap-2"
                     >
-                      <TrendingUp size={14} /> My Property
+                      <TrendingUp size={18} />
+                      My Property
                     </Link>
-                    <DealStatusBadge status={deal.status} lang={lang} />
+                  </motion.div>
+
+                  {/* Workflow Timeline */}
+                  <motion.div
+                    id="deal-timeline"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.1 }}
+                    className="bg-[var(--card)] rounded-2xl border border-[var(--border)] shadow-soft p-4"
+                  >
+                    <DealTimeline
+                      steps={deal.steps}
+                      onStepClick={(step) => {
+                        setSelectedStepId(step.id);
+                        setDocsFilterRequired(step.requiredDocs.length > 0 ? [...step.requiredDocs] : []);
+                      }}
+                      selectedStepId={selectedStepId || undefined}
+                    />
+                  </motion.div>
+                </div>
+
+                {/* RIGHT MAIN CONTENT (9 cols) */}
+                <div className="md:col-span-9 space-y-4">
+                  {/* Blockers & Required Documents */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {/* AI Recommendations */}
+                    <motion.div
+                      id="compliance-panel"
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.1 }}
+                      className="bg-[var(--card)] rounded-2xl border border-[var(--border)] shadow-soft p-4"
+                    >
+                      <AgentPanel deal={deal} />
+                    </motion.div>
+
+                    {/* Governance */}
+                    <motion.div
+                      id="governance-panel"
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.15 }}
+                      className="bg-[var(--card)] rounded-2xl border border-[var(--border)] shadow-soft p-4"
+                    >
+                      <GovernanceCard parties={deal.parties} />
+                    </motion.div>
                   </div>
+
+                  {/* Documents Panel */}
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.2 }}
+                    className="bg-[var(--card)] rounded-2xl border border-[var(--border)] shadow-soft p-4"
+                    id="docs-panel"
+                  >
+                    <DocsPanel docs={deal.docs} steps={deal.steps} dealId={deal.id} />
+                  </motion.div>
+
+                  {/* Activity Feed */}
+                  <motion.div
+                    id="activity-feed"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.25 }}
+                    className="bg-[var(--card)] rounded-2xl border border-[var(--border)] shadow-soft p-4"
+                  >
+                    <AuditFeed entries={deal.audit} />
+                  </motion.div>
                 </div>
-
-                {/* Bottom: 3 Key Metrics */}
-                <div className="px-6 pb-5 grid grid-cols-3 gap-4">
-                  <MetricCard icon={ShieldCheck} label="Compliance Score" value={compScore} suffix="/100" color={compColor} />
-                  <MetricCard icon={AlertTriangle} label="Risk Score" value={riskScore} suffix="/100" color={riskColor} />
-                  <MetricCard icon={Clock} label="Est. Days to Close" value={daysLeft} suffix=" days" color="text-white" />
-                </div>
-              </motion.div>
-
-              {/* ====== COPILOT + TIMELINE ====== */}
-              <div className="grid grid-cols-12 gap-5">
-                <motion.div
-                  id="compliance-panel"
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.05 }}
-                  className="col-span-7 bg-[#141825] rounded-2xl border border-white/[0.06] shadow-[0_8px_32px_rgba(0,0,0,0.3)] p-5"
-                >
-                  <AgentPanel deal={deal} />
-                </motion.div>
-
-                <motion.div
-                  id="deal-timeline"
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.1 }}
-                  className="col-span-5 bg-[#141825] rounded-2xl border border-white/[0.06] shadow-[0_8px_32px_rgba(0,0,0,0.3)] p-5"
-                >
-                  <DealTimeline
-                    steps={deal.steps}
-                    onStepClick={(step) => {
-                      setSelectedStepId(step.id);
-                      setDocsFilterRequired(step.requiredDocs.length > 0 ? [...step.requiredDocs] : []);
-                    }}
-                    selectedStepId={selectedStepId || undefined}
-                  />
-                </motion.div>
-              </div>
-
-              {/* ====== DOCUMENTS ====== */}
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.15 }}
-                className="bg-[#141825] rounded-2xl border border-white/[0.06] shadow-[0_8px_32px_rgba(0,0,0,0.3)] p-5"
-                id="docs-panel"
-              >
-                <DocsPanel docs={deal.docs} steps={deal.steps} dealId={deal.id} deal={deal} />
-              </motion.div>
-
-              {/* ====== GOVERNANCE + ACTIVITY ====== */}
-              <div className="grid grid-cols-12 gap-5">
-                <motion.div
-                  id="governance-panel"
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.2 }}
-                  className="col-span-5 bg-[#141825] rounded-2xl border border-white/[0.06] shadow-[0_8px_32px_rgba(0,0,0,0.3)] p-5"
-                >
-                  <GovernanceCard parties={deal.parties} />
-                </motion.div>
-
-                <motion.div
-                  id="activity-feed"
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.25 }}
-                  className="col-span-7 bg-[#141825] rounded-2xl border border-white/[0.06] shadow-[0_8px_32px_rgba(0,0,0,0.3)] p-5"
-                >
-                  <AuditFeed entries={deal.audit} />
-                </motion.div>
               </div>
             </div>
           ) : (
-            <div className="flex items-center justify-center h-full text-gray-400">
+            <div className="flex items-center justify-center h-full text-muted">
               <p className="text-sm">Select a deal to view details</p>
             </div>
           )}
         </main>
       </div>
 
+      {/* Overlays */}
       <DemoScriptModal />
       <ToastStack />
       <ChatBot />
-    </div>
-  );
-}
-
-/* ---- Subcomponents ---- */
-
-function MetricCard({ icon: Icon, label, value, suffix, color }: {
-  icon: typeof ShieldCheck; label: string; value: number; suffix: string; color: string;
-}) {
-  return (
-    <div className="flex items-center gap-4 p-4 rounded-xl bg-white/[0.03] border border-white/[0.06]">
-      <div className="w-10 h-10 rounded-lg bg-white/[0.04] flex items-center justify-center flex-shrink-0">
-        <Icon size={18} className={color} />
-      </div>
-      <div>
-        <p className="text-xs text-gray-500 mb-0.5">{label}</p>
-        <p className={cn("text-xl font-bold", color)}>
-          {value}<span className="text-sm font-normal text-gray-500">{suffix}</span>
-        </p>
-      </div>
     </div>
   );
 }
@@ -237,7 +253,7 @@ function DealStatusBadge({ status, lang }: { status: string; lang: "en" | "ar" }
     <motion.span
       initial={{ scale: 0.9 }}
       animate={{ scale: 1 }}
-      className={cn("px-3 py-1.5 text-sm font-bold rounded-full border", colors[status])}
+      className={cn("px-3 py-1 text-xs font-bold rounded-full border", colors[status])}
     >
       {t(`status.${status}`, lang)}
     </motion.span>

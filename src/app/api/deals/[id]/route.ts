@@ -1,24 +1,38 @@
-import { NextRequest, NextResponse } from "next/server";
-import { createMockDeals } from "@/lib/mock-data";
-import { Deal } from "@/lib/types";
-
-let deals: Deal[] | null = null;
-
-function getDeals(): Deal[] {
-  if (!deals) {
-    deals = createMockDeals();
-  }
-  return deals;
-}
+import { idParamSchema } from "@/lib/api/schemas/common";
+import { handleRouteError, jsonError, jsonOk } from "@/lib/api/route-helpers";
+import { requireApiSession } from "@/lib/auth/require-session";
+import { getDealByIdForOrg } from "@/lib/services/deal-service";
 
 export async function GET(
-  _req: NextRequest,
-  { params }: { params: { id: string } }
+  _request: Request,
+  context: { params: { id: string } }
 ) {
-  const allDeals = getDeals();
-  const deal = allDeals.find((d) => d.id === params.id);
-  if (!deal) {
-    return NextResponse.json({ error: "Deal not found" }, { status: 404 });
+  const auth = await requireApiSession("deals:read");
+  if (!auth.ok) {
+    return auth.response;
   }
-  return NextResponse.json(deal);
+
+  if (!auth.session.user.orgId) {
+    return jsonError("Organization is required", 403);
+  }
+
+  const parsedParams = idParamSchema.safeParse(context.params);
+  if (!parsedParams.success) {
+    return jsonError("Invalid deal id", 400, parsedParams.error.flatten());
+  }
+
+  try {
+    const deal = await getDealByIdForOrg({
+      orgId: auth.session.user.orgId,
+      dealId: parsedParams.data.id,
+    });
+
+    if (!deal) {
+      return jsonError("Deal not found", 404);
+    }
+
+    return jsonOk({ deal });
+  } catch (error) {
+    return handleRouteError(error);
+  }
 }

@@ -5,6 +5,7 @@ import { t } from "@/lib/i18n";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Play, Clock, CheckCircle } from "lucide-react";
 import { useState, useEffect, useCallback } from "react";
+import { isDemoModeEnabled } from "@/lib/feature-flags";
 
 const demoSteps = [
   {
@@ -69,6 +70,7 @@ export default function DemoScriptModal() {
   const { demoScriptOpen, setDemoScriptOpen, lang, selectedDealId, simulateEvent, setLang } = useStore();
   const [currentStep, setCurrentStep] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
+  const isDemoMode = isDemoModeEnabled();
 
   const executeAction = useCallback((action: string | null) => {
     if (!action || !selectedDealId) return;
@@ -95,6 +97,10 @@ export default function DemoScriptModal() {
     return () => clearInterval(timer);
   }, [isPlaying, executeAction]);
 
+  if (!isDemoMode) {
+    return null;
+  }
+
   return (
     <AnimatePresence>
       {demoScriptOpen && (
@@ -109,7 +115,7 @@ export default function DemoScriptModal() {
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.9, opacity: 0 }}
-            className="rounded-2xl shadow-2xl w-[500px] max-h-[80vh] overflow-hidden border border-white/[0.08]"
+            className="mx-4 rounded-2xl shadow-2xl w-[min(500px,calc(100vw-2rem))] max-h-[calc(100dvh-6rem)] sm:max-h-[80vh] overflow-hidden border border-white/[0.08]"
             style={{
               background: "rgba(20, 24, 37, 0.95)",
               backdropFilter: "blur(20px)",
@@ -148,7 +154,7 @@ export default function DemoScriptModal() {
             </div>
 
             {/* Steps */}
-            <div className="p-4 space-y-2 max-h-[60vh] overflow-y-auto">
+            <div className="p-3 sm:p-4 space-y-2 max-h-[calc(100dvh-14rem)] sm:max-h-[60vh] overflow-y-auto">
               {demoSteps.map((step, i) => (
                 <motion.div
                   key={i}

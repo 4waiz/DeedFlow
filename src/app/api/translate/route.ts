@@ -1,7 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { mockTranslate } from "@/lib/i18n";
+import { requireApiSession } from "@/lib/auth/require-session";
 
 export async function POST(req: NextRequest) {
+  const auth = await requireApiSession("deals:read");
+  if (!auth.ok) {
+    return auth.response;
+  }
+
   const body = await req.json();
   const { text, targetLang } = body;
 

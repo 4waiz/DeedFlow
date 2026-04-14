@@ -25,7 +25,7 @@ export default function DealTimeline({ steps, onStepClick, selectedStepId }: Pro
 
   return (
     <div className="space-y-1">
-      <h3 className="text-sm font-bold text-white mb-3">
+      <h3 className="text-sm font-bold text-foreground mb-3">
         {t("deal.timeline", lang)}
       </h3>
       <div className="relative">
@@ -56,7 +56,7 @@ export default function DealTimeline({ steps, onStepClick, selectedStepId }: Pro
                   "relative z-10 flex-shrink-0 w-[26px] h-[26px] rounded-full border-2 flex items-center justify-center transition-all",
                   config.bg,
                   config.glow,
-                  isSelected && "ring-2 ring-emerald-400/50 ring-offset-1 ring-offset-[#141825]"
+                  isSelected && "ring-2 ring-emerald-400/50 ring-offset-1 ring-offset-[var(--card)]"
                 )}
               >
                 <Icon size={12} className={config.color} />
