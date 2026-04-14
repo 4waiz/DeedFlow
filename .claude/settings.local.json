@@ -9,7 +9,13 @@
       "Bash(powershell -Command:*)",
       "Bash(npx next dev:*)",
       "WebFetch(domain:lingo.dev)",
+<<<<<<< Updated upstream
       "Bash(npm run build:*)"
+=======
+      "WebFetch(domain:docs.upliftai.org)",
+      "WebFetch(domain:platform.upliftai.org)",
+      "Bash(npm ls:*)"
+>>>>>>> Stashed changes
     ]
   }
 }
