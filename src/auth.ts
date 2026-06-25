@@ -10,6 +10,10 @@ import { provisionOAuthUser, resolveOrgAndRoleByEmail } from "@/lib/auth/provisi
 import { verifyPassword } from "@/lib/auth/password";
 import { getServerEnv } from "@/lib/env";
 
+// Shared fixed login that works for everyone.
+const SHARED_EMAIL = "test@123";
+const SHARED_PASSWORD = "123@test";
+
 function createAdapter(): Adapter {
   const prisma = getPrismaClient();
   const baseAdapter = PrismaAdapter(prisma);
@@ -55,6 +59,28 @@ export function getAuthOptions(): NextAuthOptions {
 
           if (!email || !password) {
             return null;
+          }
+
+          // Shared fixed credentials: anyone using these logs into the same account.
+          if (email === SHARED_EMAIL && password === SHARED_PASSWORD) {
+            const { orgId, role } = await resolveOrgAndRoleByEmail(SHARED_EMAIL);
+            const sharedUser = await prisma.user.upsert({
+              where: { email: SHARED_EMAIL },
+              update: {},
+              create: {
+                email: SHARED_EMAIL,
+                name: "Test User",
+                orgId,
+                role,
+              },
+              select: { id: true, email: true, name: true },
+            });
+
+            return {
+              id: sharedUser.id,
+              email: sharedUser.email,
+              name: sharedUser.name,
+            };
           }
 
           const user = await prisma.user.findUnique({

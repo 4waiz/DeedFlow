@@ -8,8 +8,8 @@ import { signIn } from "next-auth/react";
 import { Shield } from "lucide-react";
 
 export default function LoginPage() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("test@123");
+  const [password, setPassword] = useState("123@test");
   const [error, setError] = useState<string | null>(null);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [isCredentialsLoading, setIsCredentialsLoading] = useState(false);
