@@ -10,9 +10,12 @@ import { provisionOAuthUser, resolveOrgAndRoleByEmail } from "@/lib/auth/provisi
 import { verifyPassword } from "@/lib/auth/password";
 import { getServerEnv } from "@/lib/env";
 
-// Shared fixed login that works for everyone.
+// Shared fixed login that works for everyone (fully synthetic — no DB required).
 const SHARED_EMAIL = "test@123";
 const SHARED_PASSWORD = "123@test";
+const SHARED_USER_ID = "shared-test-user";
+const SHARED_ORG_ID = "shared-test-org";
+const SHARED_ROLE: AppRole = "MANAGER";
 
 function createAdapter(): Adapter {
   const prisma = getPrismaClient();
@@ -61,25 +64,13 @@ export function getAuthOptions(): NextAuthOptions {
             return null;
           }
 
-          // Shared fixed credentials: anyone using these logs into the same account.
+          // Shared fixed credentials: anyone using these logs in. Fully synthetic,
+          // no database lookup so it works even when the DB is unreachable.
           if (email === SHARED_EMAIL && password === SHARED_PASSWORD) {
-            const { orgId, role } = await resolveOrgAndRoleByEmail(SHARED_EMAIL);
-            const sharedUser = await prisma.user.upsert({
-              where: { email: SHARED_EMAIL },
-              update: {},
-              create: {
-                email: SHARED_EMAIL,
-                name: "Test User",
-                orgId,
-                role,
-              },
-              select: { id: true, email: true, name: true },
-            });
-
             return {
-              id: sharedUser.id,
-              email: sharedUser.email,
-              name: sharedUser.name,
+              id: SHARED_USER_ID,
+              email: SHARED_EMAIL,
+              name: "Test User",
             };
           }
 
@@ -117,6 +108,11 @@ export function getAuthOptions(): NextAuthOptions {
           return false;
         }
 
+        // Shared synthetic user bypasses all DB checks.
+        if (user.email === SHARED_EMAIL) {
+          return true;
+        }
+
         const dbUser = await prisma.user.findUnique({
           where: { email: user.email },
           select: { id: true, orgId: true, role: true },
@@ -137,6 +133,13 @@ export function getAuthOptions(): NextAuthOptions {
         return true;
       },
       async jwt({ token, user }) {
+        if (user?.email === SHARED_EMAIL) {
+          token.sub = SHARED_USER_ID;
+          token.role = SHARED_ROLE;
+          token.orgId = SHARED_ORG_ID;
+          return token;
+        }
+
         if (user?.email) {
           const dbUser = await prisma.user.findUnique({
             where: { email: user.email },
