@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { useStore } from "@/lib/store";
 import { motion } from "framer-motion";
 import TopBar from "@/components/TopBar";
-import { signOut } from "next-auth/react";
 import {
   ArrowLeft,
   Globe,
@@ -46,15 +45,10 @@ export default function SettingsPage() {
 
   const handleLogout = async () => {
     setIsLoggingOut(true);
-    try {
-      logout();
-      addToast("Logged out successfully", "success");
-      await new Promise((resolve) => setTimeout(resolve, 300));
-      await signOut({ callbackUrl: "/" });
-    } catch {
-      addToast("Logout failed", "error");
-      setIsLoggingOut(false);
-    }
+    logout();
+    addToast("Logged out successfully", "success");
+    await new Promise((resolve) => setTimeout(resolve, 300));
+    window.location.href = "/";
   };
 
   const handleLanguageChange = (newLang: "en" | "ar") => {

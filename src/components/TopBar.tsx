@@ -15,7 +15,6 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/cn";
 import { isDemoModeEnabled } from "@/lib/feature-flags";
-import { signOut } from "next-auth/react";
 
 export default function TopBar() {
   const { lang, setDemoScriptOpen, user, logout } = useStore();
@@ -212,9 +211,9 @@ export default function TopBar() {
                 </div>
                 <div className="p-1">
                   <button
-                    onClick={async () => {
+                    onClick={() => {
                       logout();
-                      await signOut({ callbackUrl: "/" });
+                      window.location.href = "/";
                     }}
                     className="w-full text-left px-3 py-2 text-sm rounded-lg text-red-400 hover:bg-red-500/10 transition-all"
                   >
